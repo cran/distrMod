@@ -1,0 +1,2 @@
+modelExp3         This example illustrates how easy it is to define a new location and scale model
+censoredPois      This example illustrates how easy it is to define a new L2 differentiable model

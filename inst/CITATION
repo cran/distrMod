@@ -1,0 +1,19 @@
+citHeader("To cite package distrMod in publications use:")
+
+citEntry(entry = "TechReport",
+         author = personList(as.person("P. Ruckdeschel"),
+                        as.person("M. Kohl"),
+                        as.person("T. Stabla"),
+                        as.person("F. Camphausen")),
+         title = "{S4 Classes for Distributions---a manual for packages distr, distrSim, distrTEst, distrEx,
+                 distrMod, and distrTeach}",
+         language = "English",
+         institution=" {Fraunhofer ITWM}",
+         month="July",
+         year="2008",
+         address="{Kaiserslautern, Germany}",
+         URL = "http://r-forge.r-project.org/plugins/scmsvn/viewcvs.php/*checkout*/pkg/distrDoc/inst/doc/distr.pdf?root=distr",
+         textVersion = paste("Ruckdeschel, P., Kohl, M., Stabla, T., & Camphausen, F. (2006): ",
+                       "S4 Classes for Distributions---a manual for packages distr, distrSim, distrTEst, distrEx, ",
+                        "distrMod, and distrTeach")
+         )

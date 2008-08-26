@@ -1,0 +1,29 @@
+######################################################################
+#  News: to package distrMod 
+######################################################################
+
+##############
+v 2.0 
+##############
+
+* start of the package
+* includes Parametric Models (with corresponding S4 classes)
+* parameter (realized as corresponding S4 class) is split up into  
+    +main part
+    +nuisance part
+    +fixed part
+  may be transformed by user defined trafo function
+* includes Minimum Criterium Estimators (with corresponding S4 classes)
+   ---with particular cases 
+   +Maximum Likelihood
+   +Minimum Distance Estimators for 
+    Kolmogorov, Hellinger, Totalvariation, and Cramer von Mises distance
+* Minimum Criterum Estimators can (but do not need to) use method dispatch;
+  this way particular methods beyond numerical optimization can be used
+  without changing distrMod code
+* has Symmetry classes (useful for avoiding unnecessary integrations)
+* has biastype classes
+* has norm classes (to be used for differently standardized risks and ICs)
+* includes confint() methods for our Estimator classes
+* features risk classes (mainly used in RobASt packages, though)
+* includes demos/scripts

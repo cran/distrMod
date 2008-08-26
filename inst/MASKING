@@ -1,0 +1,22 @@
+######################################################################
+#  On masking of and by other functions in package "distrMod"       
+######################################################################
+
+Attention:
+
+*** intentional masking: ***
+
+To be able to use the same symbol for objects of S4-classes 'Estimate',
+'PosSemDefSymmMatrix', 'matrix', respectively, 
+we intentionally mask the following functions --- however these 
+functions may still be used in exactly the same way as before 
+masking:
+
++confint()    (package "stats")
++solve()      (package "base")
++sqrt()       (package "base")
+ 
+ 
+solve() more specifically will first try the 'usual' methods and
+if this fails due to singularity, it will use 'ginv' for usual
+matrices and an adapted eigen decomposition for 'PosSemDefSymmMatrix'.
