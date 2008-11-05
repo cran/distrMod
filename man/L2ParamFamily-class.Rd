@@ -20,7 +20,7 @@
 %\alias{modifyModel}
 %\alias{modifyModel-methods}
 %\alias{modifyModel,L2ParamFamily,ParamFamParameter-method}
-\alias{plot,L2ParamFamily,ANY-method}
+\alias{plot,L2ParamFamily,missing-method}
 
 \title{L2 differentiable parametric family}
 \description{Class of L2 differentiable parametric families.}

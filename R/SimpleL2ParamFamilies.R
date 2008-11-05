@@ -362,17 +362,24 @@ LnormScaleFamily <- function(meanlog = 0, sdlog = 1, trafo){
                   centraldistribution = Lnorm(meanlog = 0, sdlog = sdlog),
                   modParam = modParam,
                   LogDeriv = function(x) log(x)/x/sdlog^2 + 1/x,
-                  L2derivDistr.0 = AbscontDistribution(r=function(n){
-                    x <- rlnorm(n); (log(x)-1)/x}),
-       ###wrong!!!           L2derivDistr.0 = Norm(mean=0, sd=1/sdlog^2),
-       ###wrong!!!           FisherInfo.0 = matrix(1/sdlog^2,
-       ###wrong!!!                                 dimnames = list("scale","scale")), 
+#                  L2derivDistr.0 = AbscontDistribution(r=function(n){
+#                    x <- rlnorm(n); (log(x)-1)/x}),
+# wrong in my opinion
+# (x/scale*LogDeriv(x/scale) - 1)/scale = (log(x/scale)/sdlog^2 + 1 - 1)/scale
+#                                       = log(x/scale)/sdlog^2/scale
+#                                       = (log(x) - meanlog)/sdlog/(sdlog*scale)
+# now x ~ Lnorm(meanlog, sdlog)
+# => log(x) ~ Norm(meanlog, sdlog^2)
+# => (log(x) - meanlog)/sdlog ~ Norm(0, 1)
+                  L2derivDistr.0 = Norm(mean=0, sd=1/sdlog/exp(meanlog)),
+                  FisherInfo.0 = matrix(1/exp(2*meanlog)/sdlog^2,
+                                        dimnames = list("scale","scale")), 
                   distrSymm = NoSymmetry(), 
                   L2derivSymm = FunSymmList(NonSymmetric()), 
                   L2derivDistrSymm = DistrSymmList(SphericalSymmetry(SymmCenter = 0)),
                   trafo = trafo, .returnClsName = "LnormScaleFamily")
     f.call <- substitute(LnormScaleFamily(meanlog = m, sdlog = s,
-                          trafo = matrix(Tr, dimnames = list("meanlog","meanlog"))),
+                          trafo = matrix(Tr, dimnames = list("scale","scale"))),
                          list(m = meanlog, s = sdlog, Tr = trafo))
     res@fam.call <- f.call
     return(res)
@@ -389,6 +396,7 @@ GumbelLocationFamily <- function(loc = 0, scale = 1, trafo){
                                  list(sd = scale))
     res <- L2LocationFamily(loc = loc,  
                      name = "Gumbel location family", 
+                     locname = c("loc"="loc"),
                      centraldistribution = Gumbel(loc = 0, scale = scale),
                      modParam = modParam,
                      LogDeriv = function(x) (1 - exp(-x/scale))/scale,

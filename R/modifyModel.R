@@ -79,6 +79,7 @@ setMethod("modifyModel", signature(model = "L2LocationFamily",
              M <- modifyModel(as(model, "L2ParamFamily"), param = param,
                               .withCall = FALSE)
              loc <- main(param(M))
+             M@L2derivDistr <- L2derivDistr(model)
              M@distrSymm <- SphericalSymmetry(SymmCenter = loc)
              M@L2derivSymm <- FunSymmList(OddSymmetric(SymmCenter = loc))
              M@L2derivDistrSymm <- DistrSymmList(SphericalSymmetry(
@@ -96,6 +97,8 @@ setMethod("modifyModel", signature(model = "L2LocationFamily",
              }
              M@fam.call <- cl
              class(M) <- class(model)
+             M@locscalename <- locscalename(model)
+             M@LogDeriv <- LogDeriv(model)
              return(M)
           })
 
@@ -109,18 +112,23 @@ setMethod("modifyModel", signature(model = "L2ScaleFamily",
              scale <- main(M@param)
              M@distrSymm <- SphericalSymmetry(SymmCenter = loc)
              M@L2derivSymm <- FunSymmList(EvenSymmetric(SymmCenter = loc))
+             L2derivDistr.0 <- L2derivDistr(model)[[1]]*main(param(model))/scale
+             M@L2derivDistr <- UnivarDistrList(L2derivDistr.0)
+             M@L2derivDistrSymm <- L2derivDistrSymm(model)
 
              fn <- paste(cl[1])
              loc.name <- locscalename(model)["loc"]
              scale.name <- locscalename(model)["scale"]
              cl.l <- length(cl)
              cl.n <- names(cl)
-             if(loc.name %in% cl.n){
-                cl[loc.name] <- loc
-             }else{
-                cl.l <- cl.l +1
-                cl[[cl.l]] <- loc
-                names(cl)[cl.l] <- loc.name
+             if(loc.name != ""){
+                if(loc.name %in% cl.n){
+                    cl[loc.name] <- loc
+                }else{
+                    cl.l <- cl.l +1
+                    cl[[cl.l]] <- loc
+                    names(cl)[cl.l] <- loc.name
+                }
              }
              if(scale.name %in% cl.n){
                 cl[scale.name] <- scale
@@ -131,6 +139,8 @@ setMethod("modifyModel", signature(model = "L2ScaleFamily",
              }
              M@fam.call <- cl
              class(M) <- class(model)
+             M@locscalename <- locscalename(model)
+             M@LogDeriv <- LogDeriv(model)
              return(M)
           })
 
@@ -144,13 +154,19 @@ setMethod("modifyModel", signature(model = "L2LocationScaleFamily",
              if(!length(nuisance(param))){
                 loc <- main(param)[1]
                 scale <- main(param)[2]
+                L2derivDistr1 <- L2derivDistr(model)[[1]]*main(param(model))[2]/scale
+                L2derivDistr2 <- L2derivDistr(model)[[2]]*main(param(model))[2]/scale
              }else{
                 if(names(nuisance(param)) == "loc"){
                     loc <- nuisance(param)
                     scale <- main(param)
+                    L2derivDistr1 <- L2derivDistr(model)[[1]]*main(param(model))/scale
+                    L2derivDistr2 <- L2derivDistr(model)[[2]]*main(param(model))/scale
                 }else{
                     loc <- main(param)
                     scale <- nuisance(param)
+                    L2derivDistr1 <- L2derivDistr(model)[[1]]*nuisance(param(model))/scale
+                    L2derivDistr2 <- L2derivDistr(model)[[2]]*nuisance(param(model))/scale
                 }
              }
              M@distrSymm <- SphericalSymmetry(SymmCenter = loc)
@@ -159,7 +175,8 @@ setMethod("modifyModel", signature(model = "L2LocationScaleFamily",
              M@L2derivDistrSymm <- DistrSymmList(SphericalSymmetry(
                                                    SymmCenter = loc),
                                                  NoSymmetry())
-
+             M@L2derivDistr[[1]] <- L2derivDistr1
+             M@L2derivDistr[[2]] <- L2derivDistr2
              fn <- paste(cl[1])
              loc.name <- locscalename(model)["loc"]
              scale.name <- locscalename(model)["scale"]
@@ -182,6 +199,8 @@ setMethod("modifyModel", signature(model = "L2LocationScaleFamily",
              }
              M@fam.call <- cl
              class(M) <- class(model)
+             M@locscalename <- locscalename(model)
+             M@LogDeriv <- LogDeriv(model)
              return(M)
           })
 
@@ -201,8 +220,11 @@ setMethod("modifyModel", signature(model = "ExpScaleFamily",
           function(model, param, ...){
              M <- modifyModel(as(model, "L2ParamFamily"), param = param,
                               .withCall = FALSE)
+             scale <- main(param)
+             M@L2derivDistr <- UnivarDistrList((Exp(rate = 1)-1)/scale)
              M@L2derivSymm <- FunSymmList(OddSymmetric(SymmCenter = main(param)))
              class(M) <- class(model)
+             M@locscalename <- locscalename(model)
+             M@LogDeriv <- LogDeriv(model)
              return(M)
           })
-
