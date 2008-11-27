@@ -1,9 +1,10 @@
 require(distrMod)
+options("newDevice"=TRUE)
 
 ## example to CvM MDE for Normal Location and Scale
 
-x=rnorm(30)
-NF=NormLocationScaleFamily()
+x <- rnorm(30)
+NF <- NormLocationScaleFamily()
 
 system.time(print(MDEstimator(x,NF,CvMDist)))
 #with useApply

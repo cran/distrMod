@@ -1,3 +1,6 @@
+require(distrMod)
+options("newDevice"=TRUE)
+
 CensoredPoisFamily <- function(lambda = 1, trunc.pt = 2){
     ## name
     name <- "Censored Poisson family"

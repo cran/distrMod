@@ -232,7 +232,12 @@ setMethod("show", "MCEstimate",
 
 setMethod("show", "Confint", 
     function(object){
-        cat(gettextf("A[n] %s confidence interval:\n",type(object)))
+        if (length(type(object))<2)
+            cat(gettextf("A[n] %s confidence interval:\n",type(object)))
+        else{
+            cat(gettextf("A[n] %s confidence interval:\n",type(object)[1]))
+            cat(gettextf("%s\n",type(object)[-1]), sep = "  ")
+        }
         print(confint(object), quote = FALSE)
         if(getdistrModOption("show.details")!="minimal"){
             cat(gettextf("Type of estimator: %s\n", name.estimate(object)))
@@ -279,6 +284,7 @@ setMethod("print", "ShowDetails",
 
         oldDigits <- getOption("digits")
         options("digits" = digits)
+        on.exit(options("digits" = oldDigits))
         # unfortunately, within this methods, the straightforward
         #          distrModOptions("show.details"=show.details)
         # /does not work/ --- our work-around
@@ -297,7 +303,6 @@ setMethod("print", "ShowDetails",
         # end workaround
         show(object = x)
          
-        options("digits" = oldDigits)
 #        instead of distrModOptions("show.details"=old.show.details) ::
          if(assign.error) distrModOptions("show.details" = old.show.details)
          else  assign(".distrModOptions", old.distrModOptions, envir = env)

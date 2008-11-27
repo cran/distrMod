@@ -29,7 +29,10 @@
 \section{Slots}{
   \describe{
     \item{\code{type}:}{Object of class \code{"character"}:
-      type of the confidence interval (asymptotic, bootstrap,\dots). }
+      type of the confidence interval (asymptotic, bootstrap,\dots). 
+      Can be of length \code{>2}. Then in printing, the first element
+      is printed in the gap '[...]' in 'an [...] confidence interval',
+      while the other elements are printed below.}
     \item{\code{confint}:}{Object of class \code{"array"}:
       the confidence interval(s).}
     \item{\code{call.estimate}:}{Object of class \code{"call"}:

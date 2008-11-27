@@ -1,3 +1,6 @@
+require(distrMod)
+options("newDevice"=TRUE)
+
 ## generation of distribution with density ~ e^{-|x|^3
 myD <- AbscontDistribution(d = function(x) exp(-abs(x)^3),
                            withS = TRUE)

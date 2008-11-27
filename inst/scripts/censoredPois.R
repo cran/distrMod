@@ -3,6 +3,8 @@
 ### i.e. we only observe values if they are larger than
 ##  a lower truncation point
 ##########################################################
+require(distrMod)
+options("newDevice"=TRUE)
 
 CensoredPoisFamily <- function(lambda = 1, trunc.pt = 2){
     ## name

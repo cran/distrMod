@@ -9,15 +9,15 @@
 .onAttach <- function(library, pkg){
     unlockBinding(".distrModOptions", asNamespace("distrMod"))
     msga <- gettext(
-    "Some functions from pkg's 'base' and 'stats' are intentionally masked\n---see distrModMASK().\n"
+    "Some functions from pkg's 'base' and 'stats' are intentionally masked ---see distrModMASK().\n"
                    )
     msgb <- gettext(
-    "Note that global options are controlled by distrModoptions()\n---c.f. ?\"distrModoptions\"."
+    "Note that global options are controlled by distrModoptions() ---c.f. ?\"distrModoptions\"."
                    )
     buildStartupMessage(pkg = "distrMod", msga, msgb,
                         library = library, packageHelp = TRUE,
         #                    MANUAL="http://www.uni-bayreuth.de/departments/math/org/mathe7/DISTR/distr.pdf",
-        VIGNETTE = gettext("Package \"distrDoc\" provides a vignette to this package as well as\nto several related packages; try vignette(\"distr\").")
+        VIGNETTE = gettext("Package \"distrDoc\" provides a vignette to this package as well as to several related packages; try vignette(\"distr\").")
         )
     invisible()
 }

@@ -128,9 +128,11 @@ setMethod("plot", signature(x = "L2ParamFamily", y = "missing"),
              col.inner = col.inner, cex.inner = 1.5*cex.inner),
              dots, mfColRow=mfColRow))       
      
-      w0 <- options("warn")
+        o.warn <- options("warn")
         options(warn = -1)
+        on.exit(options(warn=o.warn))
         opar <- par()
+        on.exit(par(opar))
         if (!withSweave)
              devNew()
         nrows <- trunc(sqrt(dims))
@@ -170,7 +172,5 @@ setMethod("plot", signature(x = "L2ParamFamily", y = "missing"),
             mtext(text = sub, side = 1, cex = cex.sub, adj = .5,
                   outer = TRUE, line = -1.6, col = col.sub)
 
-     par(opar)
-     options(w0)
      invisible()
     })

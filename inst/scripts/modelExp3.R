@@ -3,6 +3,7 @@
 ##########################################################
 
 require(distrMod)
+options("newDevice"=TRUE)
 
 my3d <- AbscontDistribution( d = function(x) exp(-abs(x)^3), withS = TRUE)
 plot(my3d)

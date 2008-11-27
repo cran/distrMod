@@ -3,6 +3,27 @@
 ######################################################################
 
 ##############
+v 2.0.3
+##############
+  
+  * under the hood: 
+     + enhanced plotting (correct dispatch; opening of new device is controlled
+       by option("newDevice") )
+     + after JMC's changes: gone through setIs relations to ensure 
+       "correct" inheritance
+  * moved license to LGPL-3
+  * new plot()-methods capabilities comparable to those of plot()-methods
+    in package distr(): 
+     + plot-L2ParamFamily now also digests ... , in particular panel.first=grid()
+  * corrected some buglets:
+     + corrected small bug in SimpleL2ParamFamilies.R ...
+     + corrected small bug in GumbelLocationFamily ...
+     + small modifications to modifyModel.R 
+       ... modification of model a crucial step ... find a better way to do this???
+  * new show() for 'confint'
+  * new 'confint' methods for robust confidence intervals 
+
+##############
 v 2.0 
 ##############
 

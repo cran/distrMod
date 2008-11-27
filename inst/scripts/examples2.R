@@ -1,5 +1,6 @@
 ### some further examples:
 require(distrMod)
+options("newDevice"=TRUE)
 
 ### Poisson Family
 P <- PoisFamily(3)
