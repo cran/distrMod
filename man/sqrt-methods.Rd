@@ -14,7 +14,7 @@
 }
 \section{Methods}{\describe{
 \item{sqrt}{\code{signature(x = "PosSemDefSymmMatrix")}: produces a symmetric,
- p.s.d. matrix \eqn{y} such that  \eqn{x = y^2}}
+ p.s.d. matrix \eqn{y} such that  \eqn{x = y^2}.}
 }}
 \author{Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
 \seealso{

@@ -33,10 +33,10 @@ getdistrModOption("use.generalized.inverse.by.default"), tol = 1e-10)
 \section{Methods}{\describe{
 \item{solve}{\code{signature(a = "ANY", b = "ANY")}: tries to evaluate \code{solve.default} method from \pkg{base} in classical way;
 if this gives an error, this one is returned if \code{generalized} is \code{TRUE}, else it will then
-return \eqn{a^-b} where \eqn{a^-} is the pseudo or Moore-Penrose inverse of \eqn{a} }
+return \eqn{a^-b} where \eqn{a^-} is the pseudo or Moore-Penrose inverse of \eqn{a}.}
 \item{solve}{\code{signature(a = "PosSemDefSymmMatrix", b = "ANY")}: evaluates \eqn{a^-b} where \eqn{a^-} is the pseudo or Moore-Penrose
-inverse of \eqn{a}}
-\item{solve}{\code{signature(a = "PosDefSymmMatrix", b = "ANY")}: evaluates solve method from \pkg{base} in classical way}
+inverse of \eqn{a}.}
+\item{solve}{\code{signature(a = "PosDefSymmMatrix", b = "ANY")}: evaluates solve method from \pkg{base} in classical way.}
 }}
 \details{The method for the Moore-Penrose inverse for 
 \code{signature(a = "PosSemDefSymmMatrix", b = "ANY")} uses \code{eigen} to find the eigenvalue 
