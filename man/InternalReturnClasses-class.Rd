@@ -113,7 +113,7 @@ Classes \code{BinomFamily}, \code{PoisFamily}, \code{GammaFamily}
 Class \code{"L2ParamFamily"},  directly.\cr
 Class \code{"ParamFamily"}, by class \code{"L2ParamFamily"}.\cr
 Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
-{ }\cr
+\cr
 Classes \code{NormLocationFamily} and \code{GumbelLocationFamily}, 
 ``extend'' (no new slots!):\cr
 Class \code{"L2LocationFamily"}, directly.\cr
@@ -122,7 +122,7 @@ Class \code{"L2GroupParamFamily"}, by class \code{"L2LocationScaleUnion"}.\cr
 Class \code{"L2ParamFamily"},  directly.\cr
 Class \code{"ParamFamily"}, by class \code{"L2ParamFamily"}.\cr
 Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
-{ }\cr
+\cr
 \code{NormScaleFamily}, \code{ExpScaleFamily}, and \code{LnormScaleFamily} 
 ``extend'' (no new slots!):\cr
 Class \code{"L2ScaleFamily"}, directly.\cr
@@ -131,7 +131,7 @@ Class \code{"L2GroupParamFamily"}, by class \code{"L2LocationScaleUnion"}.\cr
 Class \code{"L2ParamFamily"},  directly.\cr
 Class \code{"ParamFamily"}, by class \code{"L2ParamFamily"}.\cr
 Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
-{ }\cr
+\cr
 \code{CauchyLocationScaleFamily} and \code{NormLocationScaleFamily}
 ``extend'' (no new slots!):\cr
 Class \code{"L2LocationScaleFamily"}, directly.\cr

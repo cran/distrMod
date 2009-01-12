@@ -45,7 +45,6 @@ mleCalc(x, PFam, ...)
 }
 \value{
   a list with components
-  \itemize{
   \item{\code{estimate}}{ --- the estimate as a named vector of \code{numeric}}
   \item{\code{criterion}}{ --- the criterion value (i.e.; a \code{numeric} of length 1); 
                            e.g. the neg. log likelihood}
@@ -60,7 +59,7 @@ mleCalc(x, PFam, ...)
   \item{Infos}{matrix; info slot to be filled in object of class \code{MCEstimate}; 
                may be \code{NULL}}
   \item{samplesize}{numeric; sample size of \code{x}}
-  }}
+  }
 
 \details{
   \code{mceCalc} is used internally by function \code{MCEstimator} to allow

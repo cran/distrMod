@@ -41,7 +41,6 @@ trafo(object) <- value
 }
 \value{
   The return value depends on the signature.
-  \itemize{
   \item{signature \code{Estimate,missing}:}{a list of length two with components
   \code{fct} and \code{mat} (see below)}
   \item{signature \code{Estimate,ParamFamParameter}:}{a list of length two with components
@@ -50,7 +49,6 @@ trafo(object) <- value
   \item{signature \code{ParamFamily,missing}:}{a matrix (see below)}
   \item{signature \code{ParamFamily,ParamFamParameter}:}{a list of length two
   with components \code{fct} and \code{mat} (see below)}
-  }
 }
 \details{
   \code{trafo} is a slot of class \code{ParamFamParameter}, which
@@ -63,7 +61,7 @@ trafo(object) <- value
   linear or even coordinate-wise) aspect/transformation \eqn{\tau}{tau}
   of the parameter \eqn{\theta}{theta}.
 
-  To be coherent with the corresponding {\em nuisance}
+  To be coherent with the corresponding \emph{nuisance}
   implementation, we make the following convention:
 
   The full parameter \eqn{\theta}{theta} is split up coordinate-wise
@@ -83,12 +81,12 @@ trafo(object) <- value
   
   Slot \code{trafo} can either contain a (constant) matrix
   \eqn{D_\theta}{D_theta} or a function
-  \deqn{\tau\colon \Theta' \to \tilde \Theta,\qquad \theta \mapsto \tau(\theta)}%
-  {tau:  Theta' -> TTheta,  theta |-> tau(theta)} mapping main parameter
+  \deqn{\tau\colon \Theta' \to \tilde \Theta,\qquad \theta \mapsto \tau(\theta)}{tau:  Theta' -> TTheta,  theta |-> tau(theta)} 
+  mapping main parameter
   \eqn{\theta'}{theta'} to some range \eqn{\tilde \Theta}{TTheta}.
 
-  If {\em slot value} \code{trafo} is a function, besides \eqn{\tau(\theta)}%
-  {tau(theta)}, it will also return the corresponding derivative matrix
+  If \emph{slot value} \code{trafo} is a function, besides \eqn{\tau(\theta)}{tau(theta)}, 
+  it will also return the corresponding derivative matrix
   \eqn{\frac{\partial}{\partial \theta}\tau(\theta)}{(d/d theta) (tau(theta))}.
   More specifically, the return value of this function \code{theta} is a
   list with entries \code{fval}, the function value \eqn{\tau(\theta)}{tau(theta)},
@@ -97,9 +95,9 @@ trafo(object) <- value
   In case \code{trafo} is a matrix \eqn{D}, we interpret it as such a derivative
   matrix \eqn{\frac{\partial}{\partial \theta}\tau(\theta)}{(d/d theta) (tau(theta))},
   and, correspondingly, \eqn{\tau(\theta)}{tau(theta)} as the linear mapping
-  \eqn{\tau(\theta)=D\,\theta}{tau(theta)=D * theta}.\par
+  \eqn{\tau(\theta)=D\,\theta}{tau(theta)=D * theta}.\cr
 
-  According to the signature, {\em method} \code{trafo} will return different
+  According to the signature, \emph{method} \code{trafo} will return different
   return value types. For signature
   \itemize{
     \item{\code{Estimate,missing}:}{it will return a list with entries

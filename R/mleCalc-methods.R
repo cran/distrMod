@@ -177,7 +177,8 @@ setMethod("mleCalc", signature(x = "numeric", PFam = "NormLocationFamily"),
 
 setMethod("mleCalc", signature(x = "numeric", PFam = "NormScaleFamily"),
            function(x, PFam, ...){
-           theta <- sd(x); mn <- mean(distribution(PFam))
+           n <- length(x)
+           theta <- sqrt((n-1)/n)*sd(x); mn <- mean(distribution(PFam))
            ll <- -sum(dnorm(x, mean=mn, sd = theta, log=TRUE))
            names(ll) <- "neg.Loglikelihood"
            crit.fct <- function(sd)
@@ -190,7 +191,8 @@ setMethod("mleCalc", signature(x = "numeric", PFam = "NormScaleFamily"),
 
 setMethod("mleCalc", signature(x = "numeric", PFam = "NormLocationScaleFamily"),
            function(x, PFam, ...){
-           sd0 <- sd(x); mn <- mean(x); 
+           n <- length(x)
+           sd0 <- sqrt((n-1)/n)*sd(x); mn <- mean(x); 
            theta <- c(mn, sd0); 
            names(theta) <- c("mean", "sd")
            ll <- -sum(dnorm(x, mean = mn, sd = sd0, log = TRUE))

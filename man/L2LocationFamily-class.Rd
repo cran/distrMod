@@ -91,8 +91,10 @@ Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
 }
 
 \section{Methods}{
+  \describe{
     \item{modifyModel}{\code{signature(model = "L2LocationFamily", param = "ParamFamParameter")}:
       moves the L2-location family \code{model} to parameter \code{param} }
+   }
 }
 \references{
   Rieder, H. (1994) \emph{Robust Asymptotic Statistics}. New York: Springer.
@@ -112,3 +114,4 @@ plot(F1)
 \keyword{classes}
 \keyword{models}
 
+                                                                                                                   

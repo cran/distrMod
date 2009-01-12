@@ -35,13 +35,11 @@ confint(object, method, \dots)
   \item{\dots}{additional argument(s) for methods.}
 }
 \value{
-  \itemize{
   \item{signature \code{ANY,missing}:}{
   A matrix (or vector) with columns giving lower and upper confidence
   limits for each parameter. These will be labelled as (1-level)/2 and
   1 - (1-level)/2 in \% (by default 2.5\% and 97.5\%).}
   \item{signature \code{Estimate,missing}:}{An object of class \code{Confint}}
-  }
 }
 \details{
   \code{confint} is a generic function.  Its behavior differs according to

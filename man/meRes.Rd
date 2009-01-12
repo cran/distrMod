@@ -58,13 +58,11 @@ get.criterion.fct(theta, Data, ParamFam, criterion, fun, ...)
 }
 
 \value{
-\itemize{
 \item{meRes}{a list of prescribed structure to be digested in functions 
 \code{\link{mceCalc}} and \code{\link{mleCalc}} by the internal helper function 
 \code{\link{.process.meCalcRes}}.}
 \item{get.criterion.fct}{a function; see details below;}
 \item{samplesize}{numeric}
-}
 }
 
 \author{Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}

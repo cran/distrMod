@@ -31,12 +31,12 @@ Class \code{"RiskType"}, directly.
       accessor function for slot \code{biastype}. }
     \item{biastype<-}{\code{signature(object = "asRiskwithBias", value = "BiasType")}: 
       replacement function for slot \code{biastype}. }
-      accessor function for slot \code{fct} of the slot \code{normtype}. }
     \item{normtype}{\code{signature(object = "asRiskwithBias")}: 
       accessor function for slot \code{normtype}. }
     \item{normtype<-}{\code{signature(object = "asRiskwithBias", value = "NormType")}: 
       replacement function for slot \code{normtype}. }
     \item{norm}{\code{signature(object = "asRiskwithBias")}: 
+      accessor function for slot \code{fct} of slot \code{norm}. }
         }
 }
 \references{

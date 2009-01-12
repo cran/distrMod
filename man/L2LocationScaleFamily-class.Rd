@@ -90,8 +90,10 @@ Class \code{"ParamFamily"}, by class \code{"L2ParamFamily"}.\cr
 Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
 }
 \section{Methods}{
+  \describe{
     \item{modifyModel}{\code{signature(model = "L2LocationScaleFamily", param = "ParamFamParameter")}:
       moves the L2-location and scale family \code{model} to parameter \code{param} }
+}
 }
 \references{
   Rieder, H. (1994) \emph{Robust Asymptotic Statistics}. New York: Springer.
