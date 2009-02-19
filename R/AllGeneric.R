@@ -15,6 +15,7 @@ confint <- function(object, method, ...)
         nmc <- names(as.list(mc))
         mc0 <- as.list(mc)[!nmc %in% c("object", "parm", "level")]
         argList <- list(object = object)
+        parm <- level <- NULL
         if(hasArg(parm)) argList <- c(argList, parm = dots$"parm")
         if(hasArg(level)) argList <- c(argList, level = dots$"level")
         else argList <- c(argList, level = 0.95)   
