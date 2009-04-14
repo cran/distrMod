@@ -51,9 +51,14 @@ BinomFamily <- function(size = 1, prob = 0.5, trafo){
         FisherInfo.fct = FisherInfo.fct, FisherInfo = FisherInfo,
         startPar = startPar, makeOKPar = makeOKPar, 
         .returnClsName = "BinomFamily")
-    f.call <- substitute(BinomFamily(size = s, prob = p,
+    if(!is.function(trafo))
+       f.call <- substitute(BinomFamily(size = s, prob = p,
   	                     trafo = matrix(Tr, dimnames = list("prob","prob"))),
   	                     list(s = size, p = prob, Tr = trafo))    
+    else
+       f.call <- substitute(BinomFamily(size = s, prob = p,
+  	                     trafo = Tr), list(s = size, p = prob, Tr = trafo))    
+    
     res@fam.call <- f.call
     return(res)
 }
@@ -98,9 +103,14 @@ PoisFamily <- function(lambda = 1, trafo){
         FisherInfo.fct = FisherInfo.fct, FisherInfo = FisherInfo,
         startPar = startPar, makeOKPar = makeOKPar, 
         .returnClsName = "PoisFamily")
-    f.call <- substitute(PoisFamily(lambda = l,
+    if(!is.function(trafo))
+       f.call <- substitute(PoisFamily(lambda = l,
                          trafo = matrix(Tr, dimnames = list("lambda","lambda"))),
                          list(l = lambda, Tr = trafo))
+    else
+       f.call <- substitute(PoisFamily(lambda = l, trafo = Tr),
+                         list(l = lambda, Tr = trafo))
+
     res@fam.call <- f.call
     return(res)
 }
@@ -160,11 +170,16 @@ GammaFamily <- function(scale = 1, shape = 1, trafo){
         L2derivDistr = L2derivDistr, L2derivDistrSymm = L2derivDistrSymm,
         FisherInfo.fct = FisherInfo.fct, FisherInfo = FisherInfo,
         startPar = startPar, makeOKPar = makeOKPar, 
-        .returnClsName = "GammaFamily")
-    f.call <- substitute(GammaFamily(scale = s1, shape = s2,
+        .returnClsName = "GammaFamily") 
+    if(!is.function(trafo))
+       f.call <- substitute(GammaFamily(scale = s1, shape = s2,
   	                           trafo = matrix(Tr, ncol = 2, dimnames = DN)),
   	                     list(s1 = scale, s2 = shape, Tr = trafo,
   	                          DN = dimnames(trafo)))
+    else
+       f.call <- substitute(GammaFamily(scale = s1, shape = s2, trafo = Tr),
+  	                     list(s1 = scale, s2 = shape, Tr = trafo))
+    
     res@fam.call <- f.call
     return(res)
 }
@@ -227,10 +242,14 @@ BetaFamily <- function(shape1 = 1, shape2 = 1, trafo){
         FisherInfo.fct = FisherInfo.fct, FisherInfo = FisherInfo,
         startPar = startPar, makeOKPar = makeOKPar, 
         .returnClsName = "BetaFamily")
-   f.call <- substitute(BetaFamily(shape1 = s1, shape2 = s2,
+    if(!is.function(trafo))
+       f.call <- substitute(BetaFamily(shape1 = s1, shape2 = s2,
                                    trafo = matrix(Tr, ncol = 2, dimnames = DN)),
                         list(s1 = shape1, s2 = shape2, Tr = trafo,
                              DN = dimnames(trafo)))
+    else
+       f.call <- substitute(BetaFamily(shape1 = s1, shape2 = s2, trafo = Tr),
+                        list(s1 = shape1, s2 = shape2, Tr = trafo))
     res@fam.call <- f.call
     return(res)
 }
@@ -259,8 +278,12 @@ NormLocationFamily <- function(mean = 0, sd = 1, trafo){
                      L2derivDistrSymm = DistrSymmList(SphericalSymmetry()),
                      FisherInfo.0 = matrix(1/sd^2, dimnames = list("mean","mean")),
                      trafo = trafo, .returnClsName = "NormLocationFamily")
-    f.call <- substitute(NormLocationFamily(mean = m, sd = s,
+    if(!is.function(trafo))
+       f.call <- substitute(NormLocationFamily(mean = m, sd = s,
                                 trafo = matrix(Tr, dimnames=list("mean","mean"))),
+                         list(m = mean, s = sd, Tr = trafo))
+    else
+       f.call <- substitute(NormLocationFamily(mean = m, sd = s, trafo = Tr),
                          list(m = mean, s = sd, Tr = trafo))
     res@fam.call <- f.call
     return(res)
@@ -284,8 +307,12 @@ NormScaleFamily <- function(sd = 1, mean = 0, trafo){
                   L2derivDistrSymm = DistrSymmList(NoSymmetry()),                  
                   FisherInfo.0 = matrix(2, dimnames = list("sd", "sd")),
                   trafo = trafo, .returnClsName = "NormScaleFamily")
-    f.call <- substitute(NormScaleFamily(sd = s, mean = m,
+    if(!is.function(trafo))
+       f.call <- substitute(NormScaleFamily(sd = s, mean = m,
                             trafo = matrix(Tr, dimnames=list("sd","sd"))),
+                         list(s = sd, m = mean, Tr = trafo))
+    else
+       f.call <- substitute(NormScaleFamily(sd = s, mean = m, trafo = Tr),
                          list(s = sd, m = mean, Tr = trafo))
     res@fam.call <- f.call
     return(res)
@@ -313,9 +340,13 @@ NormLocationScaleFamily <- function(mean = 0, sd = 1, trafo){
               L2derivDistrSymm = DistrSymmList(SphericalSymmetry(), 
                                                NoSymmetry()),
               trafo = trafo, .returnClsName = "NormLocationScaleFamily")
-    f.call <- substitute(NormLocationScaleFamily(mean = m, sd = s,
+    if(!is.function(trafo))
+       f.call <- substitute(NormLocationScaleFamily(mean = m, sd = s,
   	                               trafo = matrix(Tr, ncol = 2, dimnames = DN)),
   	                   list(m = mean, s = sd, Tr = trafo, DN = dimnames(trafo)))
+    else
+       f.call <- substitute(NormLocationScaleFamily(mean = m, sd = s, trafo = Tr),
+  	                   list(m = mean, s = sd, Tr = trafo))
     res@fam.call <- f.call
     return(res)
 }
@@ -340,9 +371,14 @@ ExpScaleFamily <- function(scale = 1, trafo){
                   L2derivSymm = FunSymmList(OddSymmetric(SymmCenter = scale)), 
                   L2derivDistrSymm = DistrSymmList(NoSymmetry()),
                   trafo = trafo, .returnClsName = "ExpScaleFamily")
-    f.call <- substitute(ExpScaleFamily(scale = s,
+    if(!is.function(trafo))
+       f.call <- substitute(ExpScaleFamily(scale = s,
                          trafo = matrix(Tr, dimnames = list("scale","scale"))),
                          list(s = scale, Tr = trafo))
+    else
+      f.call <- substitute(ExpScaleFamily(scale = s, trafo = Tr),
+                         list(s = scale, Tr = trafo))
+
     res@fam.call <- f.call
     return(res)
 }
@@ -378,8 +414,12 @@ LnormScaleFamily <- function(meanlog = 0, sdlog = 1, trafo){
                   L2derivSymm = FunSymmList(NonSymmetric()), 
                   L2derivDistrSymm = DistrSymmList(SphericalSymmetry(SymmCenter = 0)),
                   trafo = trafo, .returnClsName = "LnormScaleFamily")
-    f.call <- substitute(LnormScaleFamily(meanlog = m, sdlog = s,
+    if(!is.function(trafo))
+       f.call <- substitute(LnormScaleFamily(meanlog = m, sdlog = s,
                           trafo = matrix(Tr, dimnames = list("scale","scale"))),
+                         list(m = meanlog, s = sdlog, Tr = trafo))
+    else   
+       f.call <- substitute(LnormScaleFamily(meanlog = m, sdlog = s, trafo = Tr),
                          list(m = meanlog, s = sdlog, Tr = trafo))
     res@fam.call <- f.call
     return(res)
@@ -407,8 +447,12 @@ GumbelLocationFamily <- function(loc = 0, scale = 1, trafo){
                      L2derivSymm = FunSymmList(NonSymmetric()), 
                      L2derivDistrSymm = DistrSymmList(NoSymmetry()),
                      trafo = trafo, .returnClsName = "GumbelLocationFamily")
-    f.call <- substitute(GumbelLocationFamily(loc = l, scale = s,
+    if(!is.function(trafo))
+       f.call <- substitute(GumbelLocationFamily(loc = l, scale = s,
                           trafo = matrix(Tr, dimnames = list("loc","loc"))),
+  	                     list(l = loc, s = scale, Tr = trafo))
+  	else                     
+       f.call <- substitute(GumbelLocationFamily(loc = l, scale = s, trafo = Tr),
   	                     list(l = loc, s = scale, Tr = trafo))
     res@fam.call <- f.call
     return(res)
@@ -437,9 +481,13 @@ CauchyLocationScaleFamily <- function(loc = 0, scale = 1, trafo){
                                                            c("loc","scale"))),
                   trafo = trafo, .returnClsName = "CauchyLocationScaleFamily")
     
-    f.call <- substitute(CauchyLocationScaleFamily(loc = l, scale = s,
+    if(!is.function(trafo))
+       f.call <- substitute(CauchyLocationScaleFamily(loc = l, scale = s,
   	                         trafo = matrix(Tr, ncol = 2, dimnames = DN)),
   	                 list(l = loc, s = scale, Tr = trafo, DN = dimnames(trafo)))
+    else
+       f.call <- substitute(CauchyLocationScaleFamily(loc = l, scale = s, 
+                            trafo = Tr), list(l = loc, s = scale, Tr = trafo))
     res@fam.call <- f.call
     return(res)
 }
@@ -474,9 +522,13 @@ NormLocationUnknownScaleFamily <- function(mean = 0, sd = 1, trafo){
                      L2derivDistrSymm = DistrSymmList(SphericalSymmetry(), 
                                                       NoSymmetry()),
                      trafo = trafo)
-    f.call <- substitute(NormLocationUnknownScaleFamily(mean = m, sd = s,
+    if(!is.function(trafo))
+       f.call <- substitute(NormLocationUnknownScaleFamily(mean = m, sd = s,
                               trafo = matrix(Tr, dimnames = list("mean","mean"))),
                          list(m = mean, s = sd, Tr = trafo))
+    else
+       f.call <- substitute(NormLocationUnknownScaleFamily(mean = m, sd = s,
+                              trafo = Tr), list(m = mean, s = sd, Tr = trafo))
     res@fam.call <- f.call
     return(res)
 }
@@ -504,9 +556,13 @@ NormScaleUnknownLocationFamily <- function(sd = 1, mean = 0, trafo){
                   L2derivDistrSymm = DistrSymmList(SphericalSymmetry(), 
                                                    NoSymmetry()),
                   trafo = trafo)
-    f.call <- substitute(NormScaleUnknownLocationFamily(sd = s, mean = m,
+    if(!is.function(trafo))
+       f.call <- substitute(NormScaleUnknownLocationFamily(sd = s, mean = m,
                               trafo = matrix(Tr, dimnames = list("sd","sd"))),
                          list(m = mean, s = sd, Tr = trafo))
+    else
+       f.call <- substitute(NormScaleUnknownScaleFamily(sd = s, mean = m, 
+                              trafo = Tr), list(m = mean, s = sd, Tr = trafo))
     res@fam.call <- f.call
     return(res)
 }

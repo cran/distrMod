@@ -23,7 +23,8 @@ Estimator <- function(x, estimator, name, Infos, asvar = NULL, nuis.idx,
     estimate <- estimator(x, ...)
     
     l.e <- length(estimate)
-    idx <- idm <- 1:l.e
+    idx <- NULL 
+    idm <- 1:l.e
     mat <- diag(l.e)
 
     name.est <- paste(name.est,idm, sep="")     
@@ -35,7 +36,6 @@ Estimator <- function(x, estimator, name, Infos, asvar = NULL, nuis.idx,
     res@estimate.call <- es.call
     res@name <- name
     res@Infos <- Infos
-    res@fixed <- fixed
     
     if(missing(nuis.idx)) res@nuis.idx <- NULL
     else res@nuis.idx <- nuis.idx
@@ -80,4 +80,40 @@ Estimator <- function(x, estimator, name, Infos, asvar = NULL, nuis.idx,
 
 
     return(res)
+}
+
+trafoEst <- function(fct, estimator){
+  theta <- estimator@untransformed.estimate
+  asvar <- estimator@untransformed.asvar 
+  l.e <- length(theta)
+  idx <- NULL
+  idm <- 1:l.e
+  mat <- diag(l.e)
+  nuis.idx <- estimator@nuis.idx
+  if(!is.null(nuis.idx))
+        {idx <- nuis.idx
+         idm <- idm[-idx]
+         mat <- diag(length(idm))}
+
+  param <- ParamFamParameter(name = names(theta), 
+                               main = theta[idm],
+                               nuisance = theta[idx],
+                               fixed = estimator@fixed)
+  fctv <- fct(main(param))
+  if(!names(fctv)==c("fval","mat") || ! is.list(fctv))
+     stop("Function 'fct' must be like function 'tau' in '?trafo-methods'")
+
+    if(!.isUnitMatrix(fctv$mat)){
+       estimate <- fctv$fval
+       trafm <- fctv$mat
+       if(!is.null(asvar)){
+           asvar <- trafm%*%asvar[idm,idm]%*%t(trafm)
+           rownames(asvar) <- colnames(asvar) <- c(names(estimate))
+          }
+    }
+  estimator@estimate <- estimate
+  estimator@asvar <- asvar
+  estimator@trafo <- list(fct = fct, mat = fctv$mat)
+
+  return(estimator)
 }

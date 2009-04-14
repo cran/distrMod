@@ -1,5 +1,7 @@
 \name{L2ParamFamily-class}
 \docType{class}
+\alias{plot}
+\alias{plot-methods}
 \alias{L2ParamFamily-class}
 \alias{FisherInfo}
 \alias{FisherInfo,L2ParamFamily,missing-method}
@@ -140,7 +142,64 @@ Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
       expectation of \code{fun} under the distribution of \code{object}. }
 
     \item{plot}{\code{signature(x = "L2ParamFamily")}: 
-      plot of \code{distribution} and \code{L2deriv}. }
+      plot of \code{distribution} and \code{L2deriv}. More precisely,
+      this method has arguments
+      \code{
+      plot(x, withSweave = getdistrOption("withSweave"), 
+             main = FALSE, inner = TRUE, sub = FALSE, 
+             col.inner = par("col.main"), cex.inner = 0.8, 
+             bmar = par("mar")[1], tmar = par("mar")[3], ...,
+             mfColRow = TRUE, to.draw.arg = NULL)
+      } where \itemize{
+        \item{x}{object of class \code{"L2ParamFamily"}}
+        \item{withSweave}{logical: if \code{TRUE} (for working with \command{Sweave}) 
+                          no extra device is opened and height/width are not set}
+        \item{main}{logical: is a main title to be used? or \cr
+                    just as argument \code{main} in \code{\link{plot.default}}.}
+        \item{inner}{logical: do panels have their own titles? or \cr
+               character vector of / cast to length 'number of plotted 
+               panels' with the corresponding panel titles. For further 
+               information, see also 
+               \code{\link[distr:plot-methods]{plot}} and the 
+               description of argument \code{main} in \code{\link{plot.default}}.} 
+        \item{sub}{logical: is a sub-title to be used? or \cr
+                   just as argument \code{sub} in \code{\link{plot.default}}.}
+        \item{tmar}{top margin -- useful for non-standard main title sizes}
+        \item{bmar}{bottom margin -- useful for non-standard sub title sizes}
+        \item{cex.inner}{magnification to be used for inner titles relative
+          to the current setting of \code{cex}; as in 
+          \code{\link[stats]{par}}; can be a vector of length 2; in this
+          case the first component is for the distribution panels, the 
+          second for the L2-derivative-panels.}
+       \item{col.inner}{character or integer code; color for the inner title}              
+       \item{mfColRow}{shall default partition in panels be used --- 
+                       defaults to \code{TRUE}}
+       \item{to.draw.arg}{Either \code{NULL} (default; 
+                          everything is plotted) or a vector of either integers 
+                         (the indices of the subplots to be drawn) or characters 
+                         --- the names of the subplots to be drawn: these
+                         names are to be chosen among 
+                         \code{c("d","p","q", dimnms)} where \code{dimnms} is
+                         either the row names of the trafo matrix 
+                         \code{rownames(trafo(x@param))} or if the last expression
+                         is \code{NULL} a vector \code{"dim<dimnr>"}, 
+                         \code{dimnr} running through the number of rows of the 
+                         trafo matrix.
+                         }
+       \item{\dots}{addtional arguments for \code{plot} --- see 
+               \code{\link[stats]{plot}}, 
+               \code{\link[stats]{plot.default}}, 
+               \code{\link[stats]{plot.stepfun}} }
+
+      } 
+      if \code{\dots} contains argument \code{ylim}, this may either be
+      as in \code{plot.default} (i.e. a vector of length 2) or a vector of 
+      length 4, where the first two elements are the values for \code{ylim} 
+      in panels "d.c" and "d.d", and the last
+      two elements are the values for \code{ylim} resp. \code{xlim} in panels 
+      "p", "p.c", "p.d" and "q", "q.c", "q.d".
+    }
+
 
     \item{modifyModel}{\code{signature(model = "L2ParamFamily", param = "ParamFamParameter")}:
       moves the L2-parametric Family \code{model} to parameter \code{param} }
@@ -159,6 +218,14 @@ Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
 \examples{
 F1 <- new("L2ParamFamily")
 plot(F1)
+
+## selection of subpanels for plotting
+F2 <- L2LocationScaleFamily()
+layout(matrix(c(1,2,3,3), nrow=2, byrow=TRUE))
+plot(F2,mfColRow = FALSE,
+     to.draw.arg=c("p","q","loc"))
+plot(F2,mfColRow = FALSE, inner=list("empirical cdf","pseudo-inverse",
+     "L2-deriv, loc.part"), to.draw.arg=c("p","q","loc"))
 }
 \concept{parametric family}
 \keyword{classes}

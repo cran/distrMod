@@ -35,7 +35,7 @@ exportClasses("Estimate", "MCEstimate")
 exportClasses("Confint")
 exportMethods("type", "SymmCenter", "distrSymm",
               "distribution", "props", "props<-", "addProp<-", "main", "main<-",
-              "nuisance", "nuisance<-", "trafo", "trafo<-", 
+              "nuisance", "nuisance<-", "trafo", "trafo<-", "trafo.fct", 
               "fixed", "fixed<-", "modifyParam",
               "dimension", "show", "print", "plot", "param", "E", "name",
               "L2deriv", "L2derivSymm", "L2derivDistr", "L2derivDistrSymm",
@@ -62,6 +62,7 @@ exportMethods("locscalename", "LogDeriv")
 exportMethods("coerce", "profile")
 exportMethods("mleCalc", "mceCalc")
 export("distrModMASK")
+export("trafoEst")
 export("PosDefSymmMatrix","PosSemDefSymmMatrix")
 export("distrModOptions", "distrModoptions", "getdistrModOption",
        "Estimator", "MCEstimator", "MLEstimator", "MDEstimator")

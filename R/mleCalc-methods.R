@@ -27,7 +27,7 @@ get.criterion.fct <- function(theta, Data, ParamFam, criterion, fun, ...){
     ##  we produce a function where all coordinates of theta appear as
     ##  separate named arguments, which then calls 'fun' with these
     ##  separate arguments again stacked to one (named) vector argument;
-    ##  to this end note that in S functions and lists can be coerced
+    ##  to this end note that in S, functions and lists can be coerced
     ##  into each other, i.e. as.list(function(x1=3,x2,x3,...){<body>})
     ##  becomes a list of length length(arglist)+1, where the first
     ##  components are just the named arguments, while the last is the body

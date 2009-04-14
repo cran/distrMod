@@ -37,7 +37,7 @@ setMethod("show", "ParamFamParameter",
                     cat(gettextf("nuisance:\t%s\n", object@nuisance))
                 else{
                     cat(gettext("nuisance:\n"))
-                    cat(gettextf("\t%s:\t%s\n", names(object@nuisance), 
+                    cat(gettextf("%s:\t%s\n", names(object@nuisance), 
                         object@nuisance))
                 }
             }
@@ -50,7 +50,7 @@ setMethod("show", "ParamFamParameter",
                               collapse = ""))
                 else{
                     cat(gettext("fixed part of param.:\n"))
-                    cat(paste(gettextf("\t%s:\t%s\n", names(object@fixed), 
+                    cat(paste(gettextf("%s:\t%s\n", names(object@fixed), 
                         object@fixed), collapse = ""))
                 }
             }else{
@@ -63,7 +63,7 @@ setMethod("show", "ParamFamParameter",
                 }
             }
         }
-        if(!identical(all.equal(object@trafo, diag(length(object)), 
+        if(!identical(all.equal(trafo(object), diag(length(object)), 
                             tolerance = .Machine$double.eps^0.5), TRUE)){
             if(getdistrModOption("show.details")!="minimal"){
                if(is.function(object@trafo)){

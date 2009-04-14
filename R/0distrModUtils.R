@@ -1,9 +1,18 @@
-.getLogDeriv <- function(distr){
-  xs <- seq(2*q(distr)(getdistrOption("TruncQuantile")^2),
-            2*q(distr)(getdistrOption("TruncQuantile")^2, lower = FALSE),
-            length = getdistrOption("DefaultNrGridPoints"))
+.getLogDeriv <- function(distr, 
+             lowerTruncQuantile = getdistrExOption("ElowerTruncQuantile"), 
+             upperTruncQuantile = getdistrExOption("EupperTruncQuantile"), 
+                         IQR.fac = getdistrExOption("IQR.fac")){
+  low0 <- q(distr)(lowerTruncQuantile)
+  upp0 <- q(distr)(upperTruncQuantile,lower.tail=FALSE)
+  me <- median(distr)
+  s1 <- IQR(distr)
+  low1 <- me - IQR.fac * s1 
+  upp1 <- me + IQR.fac * s1 
+  low <- max(low0,low1); upp <- min(upp0, upp1)
+  xs <- seq(low, upp, length = getdistrOption("DefaultNrGridPoints"))
   m <- getdistrOption("DefaultNrGridPoints")%/%100
   dxs<- -d(distr)(xs, log = TRUE)
+#  plot(xs, dxs,type="l")
   x1 <- xs[1]; xn <- (rev(xs)[1])
   f2xs <- approxfun(x = xs, y = D2ss(xs,dxs)$y, rule = 2)
   f2x1 <- f2xs(x1); f2xn <- f2xs(xn);
@@ -11,12 +20,15 @@
   f1x1 <- f1xs(x1); f1xn <- f1xs(xn);
   f3xs <- approxfun(x = xs, y = D2ss(xs,f1xs(xs))$y, rule = 1)
   f3x1 <- median(f3xs(xs[1:m])); f3xn <- median(f3xs(rev(xs)[1:m]));
+#  windows()
+#  plot(xs, f1xs(xs),type="l")
+#  print(xn); print(x0); print(f3x1); print(f3xn); print(f1x1); print(f1xn); print(f2x1); print(f2xn);
   fxs <- function(x){
        f1x0 <- f1xs(x)
        dx1 <- (x[x<x1]-x1)
        dxn <- (x[x>xn]-xn)
-       f1x0[x>xn] <- f1xn+f2xn*dxn+f3xn/2*dxn^2
-       f1x0[x<x1] <- f1x1+f2x1*dx1+f3x1/2*dx1^2
+       f1x0[x>xn] <- f1xn + f2xn*dxn + f3xn/2*dxn^2
+       f1x0[x<x1] <- f1x1 + f2x1*dx1 + f3x1/2*dx1^2
        return(f1x0)}
   return(fxs)
 }
@@ -69,55 +81,75 @@
 ### still to be tested and improved:
 ## covariance for minimum CvM distance estimator acc. Ri:94, pp.132-133
 
-.CvMMDCovariance<- function(L2Fam, param, mu = distribution(L2Fam), expon=3, 
+.CvMMDCovariance<- function(L2Fam, param, mu = distribution(L2Fam),  
                             withplot = FALSE, withpreIC = FALSE,
-                            N = getdistrOption("DefaultNrGridPoints")+1, ...){
+                            N = getdistrOption("DefaultNrGridPoints")+1,
+                            rel.tol=.Machine$double.eps^0.3, 
+                            TruncQuantile = getdistrOption("TruncQuantile"), 
+                            IQR.fac = 15, 
+                            ...){
 
    # preparations:
-   eps <- getdistrOption("TruncQuantile")
-
 
    N1 <- 2*N+1
    odd <- (1:N1)%%2==1
 
    param0 <- L2Fam@param
    dim0 <- dimension(param0)
+#   print(param0)
    paramP <- ParamFamParameter(name = name(param0), main = main(param),
                                trafo = diag(dim0))
+#   print(paramP)
    L2Fam <- modifyModel(L2Fam, paramP)
 
+#   print(L2deriv(L2Fam)[[1]]@Map)
    distr <- L2Fam@distribution
+   
+   ### get a sensible integration range:
+   low0 <- q(distr)(TruncQuantile) 
+   up0 <- q(distr)(TruncQuantile, lower.tail = FALSE) 
+   m0 <- median(distr); s0 <- IQR(distr)
+   low1 <- m0 - IQR.fac * s0
+   up1  <- m0 + IQR.fac * s0
+   low <- max(low0,low1); up <- min(up0,up1)
 
+   ### get a sensible integration range:
    if(missing(mu)) mu <- distr
+   low0.mu <- q(mu)(TruncQuantile) 
+   up0.mu <- q(mu)(TruncQuantile, lower.tail = FALSE) 
+   m0.mu <- median(mu); s0.mu <- IQR(mu)
+   low1.mu <- m0.mu - IQR.fac * s0.mu
+   up1.mu  <- m0.mu + IQR.fac * s0.mu
+   low.mu <- max(low0.mu,low1.mu); up.mu <- min(up0.mu,up1.mu)
+
 
    if(is(distr,"DiscreteDistribution"))
        x.seq <-support(distr)
    else
        {if(is(distr,"AbscontDistribution")){
-           x.seq0 <- seq(q(distr)(eps^expon),
-                         q(distr)(eps^expon, lower = FALSE), length = N1)
+           x.seq0 <- seq(low, up, length = N1)
            h0 <- x.seq0[1:2]%*%c(-1,1)
            x.seq <- x.seq0[odd]
           }else{ 
-           x.seq <- seq(q(distr)(eps^expon),
-                        q(distr)(eps^expon, lower = FALSE), length = N)
+           x.seq <- seq(low,up, length = N)
           }
        }
    if(is(mu,"DiscreteDistribution"))
-       x.mu.seq <-support(distr)
+       x.mu.seq <- support(mu)
    else
        {if(is(mu,"AbscontDistribution")){
-           x.mu.seq0 <- seq(q(mu)(eps^expon),
-                            q(mu)(eps^expon, lower = FALSE), length = N1)
+           x.mu.seq0 <- seq(low.mu, up.mu, length = N1)
            h0.mu <- x.mu.seq0[1:2]%*%c(-1,1)
            x.mu.seq <- x.mu.seq0[odd]
           }else{ 
-           x.mu.seq <- seq(q(mu)(eps^expon),
-                        q(mu)(eps^expon, lower = FALSE), length = N)
+           x.mu.seq <- seq(low.mu, up.mu, length = N)
           }
        }
-
+   
    L2deriv <- L2deriv(L2Fam)[[1]]
+#   y.seq <- sapply(x.seq, function(x) evalRandVar(L2deriv, x))
+#   plot(x.seq[!is.na(y.seq)],y.seq ,type="l")
+
    ## are we working with a one-dim L2deriv or not?
 
    onedim <- (length(L2deriv@Map)==1)
@@ -139,17 +171,24 @@
       Delta0 <- sapply(x.seq, function(Y){ fct <- function(x) L2x(x,y=Y)
                                         return(E(object=distr, fun = fct))})
    }
+ #  print(Delta0)
    Delta1 <- approxfun(x.seq, Delta0, yleft = 0, yright = 0)
    if(is(distr,"DiscreteDistribution"))         
       Delta <- function(x) Delta1(x) * (x %in% support(distr))
    else  Delta <- function(x) Delta1(x)
-
+ #  print(Delta(x.seq))
+ #  print(Delta(rnorm(100)))
 
    ## J = Var_Ptheta Delta
    J1 <- E(object=distr, fun = Delta)
+#   print(J1)
    Delta.0 <- function(x) Delta(x) - J1
-   J <- E(object=distr, fun = function(x) Delta.0(x)^2)
-
+ #  print(Delta.0(x.seq))
+ #  print(Delta.0(r(distr)(100))^2)
+   #J <- distrExIntegrate(function(x) d(distr)(x)*Delta.0(x)^2, lower=low, upper=up)
+   J <- E(object=distr, fun = function(x) Delta.0(x)^2 )
+#   print(J)
+   
    ### CvM-IC phi
    phi <- function(x) Delta.0(x)/J
 
@@ -169,6 +208,7 @@
       psi0 <- sapply(x.mu.seq, function(X){ fct <- function(y) phixy(x=X,y=y)
                                         return(E(object=mu, fun = fct))})
    }
+ #  print(psi0)
    psi.1 <- approxfun(x.mu.seq, psi0, yleft = 0, yright = rev(psi0)[1])
    if(is(distr,"DiscreteDistribution"))
          psi <- function(x) (psi.1(x)-psi1) * (x %in% support(mu))
@@ -203,17 +243,21 @@
    ##        Ptheta- primitive function for Lambda
 
    Map.Delta <- vector("list",Dim)
-   
+  # print("HLL")
+  # print(x.seq0)
    for(i in 1:Dim)
        { if(is(distr,"AbscontDistribution")){
-            fct0 <- sapply(x.seq0, function(x) L2deriv@Map[[i]](x)) * 
+            #print(L2deriv@Map[[i]])
+            fct0 <- sapply(x.seq0, L2deriv@Map[[i]]) * 
                            d(distr)(x.seq0)
+            #print(fct0)
             Delta0 <-  h0*.csimpsum(fct0)   
          }else{
             fct0 <- function(x,y) L2deriv@Map[[i]](x)*(x<=y)
             Delta0 <- sapply(x.seq, function(Y){ fct <- function(x) fct0(x,y=Y)
                                             return(E(object=distr, fun = fct))})
          }         
+         #print(Delta0)
          Delta1 <- approxfun(x.seq, Delta0, yleft = 0, yright = 0)
          if(is(distr,"DiscreteDistribution"))
                Delta <- function(x) Delta1(x) * (x %in% support(distr))
@@ -323,15 +367,27 @@ if(FALSE){
 P0 <- PoisFamily();.CvMMDCovariance(P0,par=ParamFamParameter("lambda",1), withplot=TRUE)
 B0 <- BinomFamily(size=8, prob=0.3);.CvMMDCovariance(B0,par=ParamFamParameter("",.3), withplot=TRUE)
 N0 <- NormLocationFamily();.CvMMDCovariance(N0,par=ParamFamParameter("",0), withplot=TRUE, N = 200)
+C0 <- L2LocationFamily(central=Cauchy());.CvMMDCovariance(C0,par=ParamFamParameter("",0), withplot=TRUE, N = 200)
 N1 <- NormScaleFamily(); re=.CvMMDCovariance(N1,par=ParamFamParameter("",1), withICwithplot=TRUE, N = 200)
-NS <- NormLocationScaleFamily();.CvMMDCovariance(NS,par=ParamFamParameter("",0:1), withplot=TRUE, N = 100)
+NS <- NormLocationScaleFamily();paramP <- ParamFamParameter(name = "locscale", main = c("loc"=0,"scale"=1),trafo = diag(2));
+      .CvMMDCovariance(NS,par=paramP, withplot=TRUE, N = 100)
 cls <- CauchyLocationScaleFamily();.CvMMDCovariance(cls,par=ParamFamParameter("",0:1), withplot=TRUE, N = 200)
 Els <- L2LocationScaleFamily(loc = 0, scale = 1,
                   name = "Laplace Location and scale family",
                   centraldistribution = DExp(),
                   LogDeriv = function(x)  sign(x),
                   FisherInfo = diag(2),
-                  trafo = trafo)
+                  trafo = diag(2))
 .CvMMDCovariance(Els,par=ParamFamParameter("",0:1), withplot=TRUE, N = 100)
+
+system.time(print(.CvMMDCovariance(P0,par=ParamFamParameter("lambda",1))))
+system.time(print(.CvMMDCovariance(B0,par=ParamFamParameter("",.3))))
+system.time(print(.CvMMDCovariance(N0,par=ParamFamParameter("",0), N = 100)))
+system.time(print(.CvMMDCovariance(C0,par=ParamFamParameter("",0), N = 100)))
+system.time(print(.CvMMDCovariance(N1,par=ParamFamParameter("",1), N = 100)))
+system.time(print(.CvMMDCovariance(NS,par=paramP, N = 100)))
+system.time(print(.CvMMDCovariance(cls,par=ParamFamParameter("",0:1), N = 100)))
+system.time(print(.CvMMDCovariance(Els,par=ParamFamParameter("",0:1), N = 100)))
+
 }
 

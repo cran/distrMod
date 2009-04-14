@@ -31,16 +31,22 @@ MCEstimator <- function(x, ParamFamily, criterion, crit.name,
     ## call to mceCalc
     res0 <- do.call(mceCalc, argList)
     
-
-    ## digesting the results of mceCalc
-    res <- .process.meCalcRes(res0, PFam = ParamFamily, 
+    asv <- if("FisherInfo" %in% slotNames(ParamFamily)){
+              function(ParamFamily, param)
+                                  solve(FisherInfo(ParamFamily, param = param))
+           }else NULL
+    
+    argList <- c(list(res0, PFam = ParamFamily, 
                               trafo = trafo, 
                               res.name = paste("Minimum", crit.name, 
                                                "estimate", sep=" ", collapse=""), 
-                              call = es.call, 
-                              asvar.fct = function(ParamFamily, param)
-                                  solve(FisherInfo(ParamFamily, param = param)),
-                              ...)
+                              call = quote(es.call))) 
+
+    if(!is.null(asv))   argList <- c(argList, asvar.fct = asv)
+    if(!is.null(dots))  argList <- c(argList, dots)
+    
+    ## digesting the results of mceCalc
+    res <- do.call(.process.meCalcRes, argList)
 
     return(res)
 }

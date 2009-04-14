@@ -75,14 +75,27 @@ setMethod("trafo", signature(object = "ParamFamily", param = "missing"),
                    function(object, param){ param0 <- object@param 
                                             return(trafo(param0))})
 setMethod("trafo", signature(object = "ParamFamily", param = "ParamFamParameter"), 
-   function(object, param){
-        if(is.function(trafo(object))) 
-             return(list(fct = trafo(object), 
-                         mat = (trafo(object)(main(param)))$mat))
-        else return(list(fct = function(x) trafo(object)%*%x, 
-                         mat = trafo(object)))
+   function(object, param){        
+        param0 <- object@param
+        if(is.function(param0@trafo)) 
+             return(list(fct = param0@trafo, 
+                         mat = (param0@trafo(main(param)))$mat))
+        else return(list(fct = function(x) {
+                               list(fval = param0@trafo%*%x,
+                                    mat  = param0@trafo)}, 
+                         mat = param0@trafo))
    })  
 
+setMethod("trafo.fct", signature(object = "ParamFamily"), 
+   function(object){
+        param0 <- object@param        
+        if(is.function(param0@trafo)) 
+             return(param0@trafo)
+        else return(function(x) {
+                       list(fval = param0@trafo%*%x,
+                            mat  = param0@trafo)}
+                   )
+   })  
 ## replace methods
 #setReplaceMethod("param", "ParamFamily", 
 #    function(object, value){ object@param <- value; object })

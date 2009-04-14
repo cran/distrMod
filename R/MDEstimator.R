@@ -33,11 +33,18 @@ MDEstimator <- function(x, ParamFamily, distance = KolmogorovDist, dist.name,
 
     ## digesting the results of mceCalc
     names(res0$criterion) <- dist.name
-    res <- .process.meCalcRes(res0, PFam = ParamFamily, 
+
+    argList <- c(list(res0, PFam = ParamFamily, 
                               trafo = trafo, 
                               res.name = paste("Minimum", dist.name, 
                                                "estimate", sep = " "), 
-                              call = es.call, asvar.fct = asvar.fct, ...)
+                              call = quote(es.call)))
+
+    if(!missing(asvar.fct))   argList <- c(argList, asvar.fct = asvar.fct)
+    if(!is.null(dots))  argList <- c(argList, dots)
+    
+    ## digesting the results of mceCalc
+    res <- do.call(.process.meCalcRes, argList)
 
     return(res)
 }

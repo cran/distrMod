@@ -17,11 +17,17 @@ These functions are used internally by package ``distrMod''.}
 .isUnitMatrix(m)
 .csimpsum(fx)
 .validTrafo(trafo, dimension)
-.CvMMDCovariance(L2Fam, param, mu = distribution(L2Fam), expon=3, 
+.CvMMDCovariance(L2Fam, param, mu = distribution(L2Fam),  
                  withplot = FALSE, withpreIC = FALSE,
-                 N = getdistrOption("DefaultNrGridPoints")+1, ...)
+                 N = getdistrOption("DefaultNrGridPoints")+1,
+                 rel.tol=.Machine$double.eps^0.3, 
+                 TruncQuantile = getdistrOption("TruncQuantile"), 
+                 IQR.fac = 15, ...)
 .show.with.sd(est, s)
-.getLogDeriv(distr)
+.getLogDeriv(distr, 
+             lowerTruncQuantile = getdistrExOption("ElowerTruncQuantile"), 
+             upperTruncQuantile = getdistrExOption("EupperTruncQuantile"), 
+                         IQR.fac = getdistrExOption("IQR.fac"))
 }
 
 
@@ -41,11 +47,12 @@ These functions are used internally by package ``distrMod''.}
   Minimum CvM estimator}
   \item{mu}{an object of class \code{UnivariateDistribution}: integration 
             measure (resp. distribution) for CvM distance}
-  \item{expon}{a numeric: number to exponentiate 
-               \code{getdistrOption("TruncQuantile")} 
-               to get upper and lower 
-               \eqn{\mu}{mu}- resp. \eqn{P_\theta}{P_theta}-quantiles
-               for the gridpoints (see below)}
+  \item{rel.tol}{relative tolerance for \code{distrExIntegrate}.} 
+  \item{TruncQuantile}{quantile for quantile based integration range.}
+  \item{lowerTruncQuantile}{lower quantile for quantile based integration range.}
+  \item{upperTruncQuantile}{upper quantile for quantile based integration range.}
+  \item{IQR.fac}{factor for scale based integration range (i.e.; 
+  median of the distribution \eqn{\pm}{+-}\code{IQR.fac}\eqn{\times}{*}IQR).}
   \item{withplot}{logical: shall we plot corresponding ICs?}
   \item{withpreIC}{logical: shall we return a list with components \code{preIC} 
        and \code{var} or just \code{var}; here \code{var} is the corresponding

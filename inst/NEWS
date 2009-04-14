@@ -3,6 +3,62 @@
 ######################################################################
 
 ##############
+v 2.1
+##############
+
+ * Rd-style:
+   + several buglets detected with the fuzzier checking mechanism
+     cf [Rd] More intensive checking of R help files, Prof Brian Ripley, 09.01.2009 10:25) 
+        [Rd] Warning: missing text for item ... in \describe? , Prof Brian Ripley,
+
+ * MODELS
+   + added mad.const to guarantee for mad-consistency in location scale model
+   + loc/scale model: standardization by n not by (n-1) as in case of sd .
+   + minor modification, L2derivDistr in case of location and scale families
+   + some modifications such that LnormScaleFamily works properly ...
+   + bug in  LnormScaleFamily corrected ...
+   + modifyModel gains argument .withL2derivDistr --- 
+       if false needs not be calculated (as e.g. this is done in a particular 
+       method calling the general method first...)
+
+ * TRAFO
+   + fixed some inconsistencies with slot trafo:
+     now when trafo is a function, we try to keep it as a function under
+     moves of the parametric model...
+   + we introduce
+     - a function trafo.fct() (see ?trafo.fct)
+       to access the "function" aspect of trafo
+     - a function trafoEst() which transforms an existing estimator of class "estimate"
+       consistently (i.e. with corresponding untransfromed.estimate and untransformed.asvar
+       information and transformed asvar) by a "trafo" function; see ?trafoEst
+
+ * ESTIMATION
+   + minor correction sqrt((n-1)/n)*sd(x)
+   + enhanced Covariance calculation for CvMDist-MDE
+   + modified output in show - Confint-class
+
+
+ * PLOTTING
+   + fixed issue with cex.inner
+   + fixed bug in plot-methods for argument "inner" under use of to.draw.arg argument
+   + realized suggestions by A. Unwin, Augsburg;
+     plot for L2paramFamilies may be restricted to selected subplots;
+   + L2ParamFamily plot in distrMod is now are as flexible as plot-methods in pkg distr
+   + small changes in AllPlot.R in distrMod
+   + plot-L2ParamFamily now also digests ... , in particular grid()
+   + some fix in order to cover the case of argument panel.first=grid()
+     in the ... argument (needs a delayed evaluation...)
+
+
+  * BUGFIXES
+    + some minor issues in L2GroupFamilies (if locscalename is missing)
+    + fixed issue with MCE, MLE and MDE; these are also defined for ParamFamily class
+      objects; so they need not have an Information slot
+    + fixed a bug in L2GroupFamilies:
+      it must be .getLogDeriv(centraldistribution) instead of .getLogDeriv(distribution)
+    + a minor buglet object@trafo instead of trafo(object)
+
+##############
 v 2.0.3
 ##############
   

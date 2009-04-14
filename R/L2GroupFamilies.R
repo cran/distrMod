@@ -68,9 +68,19 @@ L2LocationFamily <- function(loc = 0, name, centraldistribution = Norm(),
            E(centraldistribution, fun = function(x) LogDeriv(x)^2,
              useApply = FALSE) else FisherInfo.0
 
-    FI0 <- matrix(FI0,1,1,dimnames=list("loc","loc"))
+    FI0 <- matrix(FI0,1,1, dimnames = list(locname,locname))
     FisherInfo.fct <- function(param) PosDefSymmMatrix(FI0)
 
+    if(is.function(trafo))  
+        Tr0 <- trafo
+    else if(is.matrix(trafo)){
+            Tr0 <- trafo
+            if(is.null(dimnames(trafo)))
+               dimnames(trafo) <- list(locname,locname) 
+         }else{
+            Tr0 <- matrix(trafo, dimnames = list(locname,locname)) 
+         }                    
+    
     f.call <- substitute(L2LocationFamily(loc = l,
                   name = N,
                   centraldistribution = D0,
@@ -82,7 +92,7 @@ L2LocationFamily <- function(loc = 0, name, centraldistribution = Norm(),
                   distrSymm = DSymm,
                   L2derivSymm = L2Symm,
                   L2derivDistrSymm = L2DSymm,
-                  trafo = matrix(Tr, dimnames = list("loc","loc")),
+                  trafo = Tr,
                   .returnClsName = rtn),
              list(l = loc,
                   N = name,
@@ -95,7 +105,7 @@ L2LocationFamily <- function(loc = 0, name, centraldistribution = Norm(),
                   DSymm = distrSymm,
                   L2Symm = L2derivSymm,
                   L2DSymm = L2derivDistrSymm,
-                  Tr = trafo,
+                  Tr = Tr0,   
                   rtn = .returnClsName))
 
     if(is.null(.returnClsName))
@@ -149,6 +159,7 @@ L2ScaleFamily <- function(scale = 1, loc = 0, name, centraldistribution = Norm()
             is.null(names(locscalename)))
            names(locscalename) <- c("loc", "scale")   
     }
+    scalename <- locscalename["scale"]
     distribution <- scale*centraldistribution + loc
 
     if(missing(distrSymm)){
@@ -170,7 +181,7 @@ L2ScaleFamily <- function(scale = 1, loc = 0, name, centraldistribution = Norm()
     startPar <- function(x,...) c(.Machine$double.eps,max(x)-min(x))
     makeOKPar <- function(param) abs(param)+.Machine$double.eps
     if(missing(trafo))  {trafo <- matrix(1)
-                         dimnames(trafo) <- list("scale","scale")}
+                         dimnames(trafo) <- list(scalename,scalename)}
     param <- ParamFamParameter(name = "scale", main = param0, 
                                fixed = param1, trafo = trafo)
     if(missing(modParam)){
@@ -212,11 +223,22 @@ L2ScaleFamily <- function(scale = 1, loc = 0, name, centraldistribution = Norm()
            E(centraldistribution, fun = function(x) (x*LogDeriv(x)-1)^2,
              useApply = FALSE) else FisherInfo.0
 
-    FI0 <- matrix(FI0,1,1,dimnames=list("scale","scale"))
+    FI0 <- matrix(FI0,1,1, dimnames = list(scalename,scalename))
 
     FisherInfo.fct <- function(param){
                    scale <- main(param)
                    PosDefSymmMatrix(FI0/scale^2)}
+
+    if(is.function(trafo))  
+        Tr0 <- trafo
+    else if(is.matrix(trafo)){
+            Tr0 <- trafo
+            if(is.null(dimnames(trafo)))
+               dimnames(trafo) <- list(scalename,scalename) 
+
+         }else{
+            Tr0 <- matrix(trafo, dimnames = list(scalename,scalename) ) 
+         }                    
 
     f.call <- substitute(L2ScaleFamily(scale = s,
                            loc = l,
@@ -230,7 +252,7 @@ L2ScaleFamily <- function(scale = 1, loc = 0, name, centraldistribution = Norm()
                            distrSymm = DSymm,
                            L2derivSymm = L2Symm,
                            L2derivDistrSymm = L2DSymm,
-                           trafo = matrix(Tr, dimnames = list("scale","scale")),
+                           trafo = Tr,
                            .returnClsName = rtn),
                       list(s = scale,
                            l = loc,
@@ -244,7 +266,7 @@ L2ScaleFamily <- function(scale = 1, loc = 0, name, centraldistribution = Norm()
                            DSymm = distrSymm,
                            L2Symm = L2derivSymm,
                            L2DSymm = L2derivDistrSymm,
-                           Tr = trafo,
+                           Tr = Tr0,   
                            rtn = .returnClsName))
 
     if(is.null(.returnClsName))
@@ -336,8 +358,13 @@ L2LocationScaleFamily <- function(loc = 0, scale = 1, name,
 
     if(missing(LogDeriv)) LogDeriv <- .getLogDeriv(centraldistribution)
     L2deriv.fct <- function(param){
-                   mean <- main(param)[locscalename["loc"]]
-                   sd <-   main(param)[locscalename["scale"]]
+                   nmsL <- names(main(param))
+                   lnm <- if(locscalename["loc"] %in% nmsL)
+                             locscalename["loc"] else 1
+                   snm <- if(locscalename["scale"] %in% nmsL)
+                             locscalename["scale"] else 2          
+                   mean <- main(param)[lnm]
+                   sd <-   main(param)[snm]
                    fct1 <- function(x){}
                    fct2 <- function(x){}
                    body(fct1) <- substitute({ LogDeriv((x - loc)/scale)/scale },
@@ -386,9 +413,23 @@ L2LocationScaleFamily <- function(loc = 0, scale = 1, name,
     FI0 <- matrix(FI0,2,2,dimnames=list(locscalename,locscalename))
 
     FisherInfo.fct <- function(param){
-                   scale <- main(param)[locscalename["scale"]]
+                   nmsI <- names(main(param))
+                   if(locscalename["scale"] %in% nmsI)
+                       scale <- main(param)[locscalename["scale"]]
+                   else
+                       scale <- main(param)[2]
                    PosDefSymmMatrix(FI0/scale^2)}
 
+    if(is.function(trafo))  
+        Tr0 <- trafo
+    else if(is.matrix(trafo)){
+            Tr0 <- trafo
+            if(is.null(dimnames(trafo)))
+               dimnames(trafo) <- list(locscalename,locscalename) 
+
+         }else{
+            Tr0 <- matrix(trafo, dimnames = list(locscalename,locscalename) ) 
+         }                    
 f.call <- substitute(L2LocationScaleFamily(loc = l,
                scale = s,
                name = N,
@@ -401,7 +442,7 @@ f.call <- substitute(L2LocationScaleFamily(loc = l,
                distrSymm = DSymm,
                L2derivSymm = L2Symm,
                L2derivDistrSymm = L2DSymm,
-               trafo = matrix(Tr, ncol = 2, dimnames = DN),
+               trafo = Tr,
                .returnClsName = rtn),
            list(s = scale,
                l = loc,
@@ -415,8 +456,7 @@ f.call <- substitute(L2LocationScaleFamily(loc = l,
                DSymm = distrSymm,
                L2Symm = L2derivSymm,
                L2DSymm = L2derivDistrSymm,
-               Tr = trafo,
-               DN = dimnames(trafo),
+               Tr = Tr0,
                rtn = .returnClsName))
 
     if(is.null(.returnClsName))
@@ -556,6 +596,16 @@ L2LocationUnknownScaleFamily <- function(loc = 0, scale = 1, name,
                    scale <- nuisance(param)
                    PosDefSymmMatrix(FI0/scale^2)}
 
+    if(is.function(trafo))  
+        Tr0 <- trafo
+    else if(is.matrix(trafo)){
+            Tr0 <- trafo
+            if(is.null(dimnames(trafo)))
+               dimnames(trafo) <- list(names(param0),names(param0)) 
+
+         }else{
+            Tr0 <- matrix(trafo, dimnames = list(names(param0),names(param0)) ) 
+         }                    
     f.call <- substitute(L2LocationUnknownScaleFamily(loc = l,
                  scale = s,
                  name = N,
@@ -568,7 +618,7 @@ L2LocationUnknownScaleFamily <- function(loc = 0, scale = 1, name,
                  distrSymm = DSymm,
                  L2derivSymm = L2Symm,
                  L2derivDistrSymm = L2DSymm,
-                 trafo = matrix(Tr, dimnames = list("loc","loc")),
+                 trafo = Tr,                 
                  .returnClsName = rtn),
              list(s = scale,
                  l = loc,
@@ -582,7 +632,7 @@ L2LocationUnknownScaleFamily <- function(loc = 0, scale = 1, name,
                  DSymm = distrSymm,
                  L2Symm = L2derivSymm,
                  L2DSymm = L2derivDistrSymm,
-                 Tr = trafo,
+                 Tr = Tr0,   
                  rtn = .returnClsName))
 
     if(is.null(.returnClsName))
@@ -722,6 +772,17 @@ L2ScaleUnknownLocationFamily <- function(loc = 0, scale = 1, name,
                    scale <- main(param)
                    PosDefSymmMatrix(FI0/scale^2)}
 
+    if(is.function(trafo))  
+        Tr0 <- trafo
+    else if(is.matrix(trafo)){
+            Tr0 <- trafo
+            if(is.null(dimnames(trafo)))
+               dimnames(trafo) <- list(names(param0),names(param0)) 
+
+         }else{
+            Tr0 <- matrix(trafo, dimnames = list(names(param0),names(param0) )) 
+         }                    
+
     f.call <- substitute(L2ScaleUnknownLocationFamily(loc = l,
                  scale = s,
                  name = N,
@@ -734,7 +795,7 @@ L2ScaleUnknownLocationFamily <- function(loc = 0, scale = 1, name,
                  distrSymm = DSymm,
                  L2derivSymm = L2Symm,
                  L2derivDistrSymm = L2DSymm,
-                 trafo = matrix(Tr, dimnames = list("scale","scale")),
+                 trafo = Tr,
                  .returnClsName = rtn),
              list(s = scale,
                  l = loc,
@@ -748,7 +809,7 @@ L2ScaleUnknownLocationFamily <- function(loc = 0, scale = 1, name,
                  DSymm = distrSymm,
                  L2Symm = L2derivSymm,
                  L2DSymm = L2derivDistrSymm,
-                 Tr = trafo,
+                 Tr = Tr0,
                  rtn = .returnClsName))
     if(is.null(.returnClsName))
        .returnClsName <- "L2LocationScaleFamily"

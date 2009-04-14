@@ -1,6 +1,7 @@
 ### move model from one parameter to the next...
 setMethod("modifyModel", signature(model = "L2ParamFamily", param = "ParamFamParameter"),
-          function(model, param, .withCall = TRUE, ...){
+          function(model, param, .withCall = TRUE, .withL2derivDistr = TRUE,
+                   ...){
           M <- model
           theta <- c(main(param),nuisance(param))
           M@distribution <- model@modifyParam(theta)
@@ -19,8 +20,10 @@ setMethod("modifyModel", signature(model = "L2ParamFamily", param = "ParamFamPar
           #did not work
           #lapply(M@L2derivSymm, function(x) assign("x",NonSymmetric()))
           #lapply(M@L2derivDistrSymm, function(x) assign("x",NoSymmetry()))
-          M@L2derivDistr <- imageDistr(RandVar = M@L2deriv,
-                                       distr = M@distribution)
+          if(.withL2derivDistr)
+             M@L2derivDistr <- imageDistr(RandVar = M@L2deriv,
+                                          distr = M@distribution)      
+          
           M1 <- existsPIC(M)
 
           if(paste(M@fam.call[1]) == "L2ParamFamily")
@@ -77,7 +80,7 @@ setMethod("modifyModel", signature(model = "L2LocationFamily",
           function(model, param, ...){
              cl <- model@fam.call
              M <- modifyModel(as(model, "L2ParamFamily"), param = param,
-                              .withCall = FALSE)
+                              .withCall = FALSE, .withL2derivDistr = FALSE)
              loc <- main(param(M))
              M@L2derivDistr <- L2derivDistr(model)
              M@distrSymm <- SphericalSymmetry(SymmCenter = loc)
@@ -107,7 +110,7 @@ setMethod("modifyModel", signature(model = "L2ScaleFamily",
           function(model, param, ...){
              cl <- model@fam.call
              M <- modifyModel(as(model, "L2ParamFamily"), param = param,
-                              .withCall = FALSE)
+                              .withCall = FALSE, .withL2derivDistr = FALSE)
              loc <- median(distribution(M))
              scale <- main(M@param)
              M@distrSymm <- SphericalSymmetry(SymmCenter = loc)
@@ -149,7 +152,7 @@ setMethod("modifyModel", signature(model = "L2LocationScaleFamily",
           function(model, param, ...){
              cl <- model@fam.call
              M <- modifyModel(as(model, "L2ParamFamily"), param = param,
-                              .withCall = FALSE)
+                              .withCall = FALSE, .withL2derivDistr = FALSE)
              param0 <- c(main(param),nuisance(param))
              if(!length(nuisance(param))){
                 loc <- main(param)[1]

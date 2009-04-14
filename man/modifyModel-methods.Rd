@@ -17,7 +17,7 @@
 \usage{
 modifyModel(model, param,...)
 \S4method{modifyModel}{L2ParamFamily,ParamFamParameter}(model,param, 
-                       .withCall = TRUE, ...)
+                       .withCall = TRUE, .withL2derivDistr = TRUE, ...)
 \S4method{modifyModel}{L2LocationFamily,ParamFamParameter}(model,param, ...)
 \S4method{modifyModel}{L2ScaleFamily,ParamFamParameter}(model,param, ...)
 \S4method{modifyModel}{L2LocationScaleFamily,ParamFamParameter}(model,
@@ -29,6 +29,7 @@ modifyModel(model, param,...)
   \item{model}{an object of class \code{L2ParamFamily}  --- the model to move.}
   \item{param}{an object of class \code{ParamFamParameter} --- the parameter to move to.}
   \item{.withCall}{logical: shall slot \code{fam.call} be updated?}
+  \item{.withL2derivDistr}{logical: shall slot \code{L2derivDistr} be updated?}
   \item{\dots}{additional argument(s) for methods; not used so far}
 }
 \value{

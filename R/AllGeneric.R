@@ -67,6 +67,10 @@ if(!isGeneric("trafo")){
 if(!isGeneric("trafo<-")){
     setGeneric("trafo<-", function(object, value) standardGeneric("trafo<-"))
 }
+#new 20.2.09
+if(!isGeneric("trafo.fct")){
+    setGeneric("trafo.fct", function(object) standardGeneric("trafo.fct"))
+}
 if(!isGeneric("modifyParam")){
     setGeneric("modifyParam", function(object) standardGeneric("modifyParam"))
 }

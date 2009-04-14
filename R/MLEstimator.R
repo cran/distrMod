@@ -27,24 +27,25 @@ MLEstimator <- function(x, ParamFamily, startPar = NULL,
 
     ## call to mleCalc
     res0 <- do.call(mleCalc, argList)
+
+    asv <- if("FisherInfo" %in% slotNames(ParamFamily)){
+              function(PFam = ParamFamily, param, ...)
+                                  solve(FisherInfo(PFam, param = param))
+           }else NULL
     
-    ## setting asymptotic variance
-    asv.fct <- function(PFam = ParamFamily, param, ...) 
-                        solve(FisherInfo(PFam, param = param))
+    argList <- list(res0, PFam = ParamFamily, trafo = trafo, 
+                      res.name = "Maximum likelihood estimate",
+                      call = quote(es.call)) 
 
+    if(!is.null(asv))   argList <- c(argList, asvar.fct = asv)
+    if(!is.null(dots))  argList <- c(argList, dots)
+    
     ## digesting the results of mceCalc
-    res <- .process.meCalcRes(res0, PFam = ParamFamily, 
-                              trafo = trafo, 
-                              res.name = "Maximum likelihood estimate", 
-                              call = es.call,                               
-                              asvar.fct = asv.fct, 
-                              ...)
-
+    res <- do.call(what = ".process.meCalcRes", args = argList)
     
     names(res@criterion) <- "negative log-likelihood"
     res@estimate.call <- es.call
     res@name <- "Maximum likelihood estimate"
-
     
     return(res)
 }

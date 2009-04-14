@@ -28,7 +28,8 @@
     theta <- res$estimate
     crit <- res$criterion
     param <- res$param
-    
+
+
     crit.name <- ""
     if(res$crit.name == ""){
        if(!is.null(names(res$criterion))) 
@@ -81,7 +82,8 @@
 
     asvar <- NULL
     if(!missing(asvar.fct))
-       asvar <- asvar.fct(PFam, param, ...)
+       if(!is.null(asvar.fct))
+           asvar <- asvar.fct(PFam, param, ...)
 
     untransformed.estimate <- theta
     untransformed.asvar <- asvar
@@ -94,14 +96,15 @@
            rownames(asvar) <- colnames(asvar) <- c(names(estimate))
           }
     }
-
-    new("MCEstimate", name = est.name, estimate = estimate, criterion = crit,
-         asvar = asvar, Infos = Infos, samplesize = res$samplesize,
-         nuis.idx = nuis.idx, estimate.call = call, trafo = traf0,
-         untransformed.estimate = untransformed.estimate,
-         untransformed.asvar = untransformed.asvar,
-         criterion.fct = res$crit.fct, method = res$method,
-         fixed = fixed(param))
+    res.me <- new("MCEstimate", name = est.name, estimate = estimate, 
+                  criterion = crit, asvar = asvar, Infos = Infos, 
+                  samplesize = res$samplesize, nuis.idx = nuis.idx, 
+                  estimate.call = call, trafo = traf0,
+                  untransformed.estimate = untransformed.estimate,
+                  untransformed.asvar = untransformed.asvar,
+                  criterion.fct = res$crit.fct, method = res$method,
+                  fixed = fixed(param))
+    return(res.me)
 }
 
 ##########################################################################
