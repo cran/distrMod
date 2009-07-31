@@ -10,7 +10,7 @@
 \alias{ExpScaleFamily-class}
 \alias{LnormScaleFamily-class}
 \alias{GammaFamily-class}
-\alias{BetaFamily-class}, 
+\alias{BetaFamily-class}
 \alias{NormLocationScaleFamily-class}
 \alias{CauchyLocationScaleFamily-class}
 

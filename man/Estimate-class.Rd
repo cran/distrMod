@@ -55,6 +55,8 @@
      indices of \code{estimate} belonging to the nuisance part}
     \item{\code{fixed}:}{ object of class \code{"OptionalNumeric"}: 
      the fixed and known part of the parameter}
+    \item{\code{trafo}:}{ object of class \code{"list"}:
+     a list with components \code{fct} and \code{mat} (see below). }
     \item{\code{untransformed.estimate}:}{Object of class \code{"ANY"}:
       untransformed estimate.}
     \item{\code{untransformed.asvar}:}{ object of class \code{"OptionalNumericOrMatrix"}

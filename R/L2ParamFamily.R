@@ -173,14 +173,14 @@ setMethod("FisherInfo", signature(object = "L2ParamFamily", param = "ParamFamPar
 
 ## check centering of L2 derivative and Fisher Information
 setMethod("checkL2deriv", "L2ParamFamily", 
-    function(L2Fam, out = TRUE){ 
+    function(L2Fam, out = TRUE, ...){
         dims <- length(L2Fam@param)
         L2deriv <- as(diag(dims) %*% L2Fam@L2deriv, "EuclRandVariable")
 
-        cent <- E(object = L2Fam, fun = L2deriv)
+        cent <- E(object = L2Fam, fun = L2deriv, ...)
         if(out) cat("precision of centering:\t", cent, "\n")
 
-        consist <- E(object = L2Fam, fun = L2deriv %*% t(L2deriv))
+        consist <- E(object = L2Fam, fun = L2deriv %*% t(L2deriv), ...)
         consist <- consist - as(L2Fam@FisherInfo, "matrix")
         if(out){
             cat("precision of Fisher information:\n")

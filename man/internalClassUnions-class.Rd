@@ -21,7 +21,7 @@
 \details{
 These classes are used internally to make available methods or to allow
 slots of classes to be filled with varying types. In particular
-\itemize{
+\describe{
 \item{\code{"OptionalNumeric"}}{may contain objects of class  \code{"numeric"}
       or \code{"NULL"}; it is used e.g. for slot \code{nuisance} of class
       \code{"ParamFamParameter"}, as it may or may not be present but if so

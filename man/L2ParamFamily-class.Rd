@@ -150,7 +150,7 @@ Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
              col.inner = par("col.main"), cex.inner = 0.8, 
              bmar = par("mar")[1], tmar = par("mar")[3], ...,
              mfColRow = TRUE, to.draw.arg = NULL)
-      } where \itemize{
+      } where \describe{
         \item{x}{object of class \code{"L2ParamFamily"}}
         \item{withSweave}{logical: if \code{TRUE} (for working with \command{Sweave}) 
                           no extra device is opened and height/width are not set}

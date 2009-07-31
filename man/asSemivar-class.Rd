@@ -13,15 +13,19 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{sign}:}{Object of class \code{"numeric"} -- accounts for
-     whether we only consider positive (sign = 1) or negative bias (sign = -1).}
+    \item{\code{type}:}{Object of class \code{"character"}:
+      \dQuote{asymptotic mean square error}. }
+    \item{\code{biastype}:}{Object of class \code{"BiasType"}:
+      symmetric, one-sided or asymmetric }
+    \item{\code{normtype}:}{Object of class \code{"NormType"}:
+      norm in which a multivariate parameter is considered}
   }
 }
 \section{Methods}{
   \describe{
-    \item{sign}{\code{signature(object = "asSemivar")}: 
+    \item{sign}{\code{signature(object = "asSemivar")}:
       accessor function for slot \code{sign}. }
-    \item{sign<-}{\code{signature(object = "asSemivar", value = "numeric")}: 
+    \item{sign<-}{\code{signature(object = "asSemivar", value = "numeric")}:
       replacement function for slot \code{sign}. }
         }
 }

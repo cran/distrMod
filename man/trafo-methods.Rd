@@ -106,7 +106,7 @@ trafo(object) <- value
 
   According to the signature, \emph{method} \code{trafo} will return different
   return value types. For signature
-  \itemize{
+  \describe{
     \item{\code{Estimate,missing}:}{it will return a list with entries
     \code{fct}, the function  \eqn{\tau}{tau}, and \code{mat}, the matrix
     \eqn{\frac{\partial}{\partial \theta}\tau(\theta)}{(d/d theta) (tau(theta))}.

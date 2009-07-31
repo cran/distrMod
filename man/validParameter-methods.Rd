@@ -31,7 +31,7 @@ validParameter(object, \dots)
 
 \details{
 method for signature
-\itemize{
+\describe{
   \item{\code{ParamFamily}}{checks if all parameters are finite by \code{is.finite}
   if their length is between 1 and the joint length of main and nuisance parameter
   of \code{object}, and finally, if a call to \code{modifyParam(object)} with

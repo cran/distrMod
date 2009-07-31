@@ -44,7 +44,7 @@ confint(object, method, \dots)
 \details{
   \code{confint} is a generic function.  Its behavior differs according to
   its arguments.
-  \itemize{
+  \describe{
    \item{signature \code{ANY,missing}:}{the default method;
    uses the S3 generic of package \pkg{stats},
     see \code{\link[stats]{confint}}.}

@@ -43,7 +43,7 @@ just a synonym to \code{distrModoptions}.
   \item{show.details}{degree of detailedness for method \code{show} for
   objects of classes of the \pkg{distrXXX} family of packages. Possible
   values are
-  \itemize{
+  \describe{
   \item{\code{"maximal"}}{all information is shown}
   \item{\code{"minimal"}}{only the most important information is shown}
   \item{\code{"medium"}}{somewhere in the middle; see actual \code{show}-methods
