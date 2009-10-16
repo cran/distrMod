@@ -11,7 +11,7 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{.Data}:}{ Object of class \code{"list"}. A list 
+    \item{\code{.Data}}{ Object of class \code{"list"}. A list 
       of objects of class \code{"FunctionSymmetry"}. }
   }
 }

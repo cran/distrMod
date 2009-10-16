@@ -13,9 +13,9 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{type}:}{Object of class \code{"character"}:
-      dQuote{finite-sample under-/overshoot probability}. }
-    \item{\code{width}:}{Object of class \code{"numeric"}: 
+    \item{\code{type}}{Object of class \code{"character"}:
+      \dQuote{finite-sample under-/overshoot probability}. }
+    \item{\code{width}}{Object of class \code{"numeric"}: 
       half the width of given confidence interval. }
   }
 }

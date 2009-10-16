@@ -11,7 +11,7 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{type}:}{Object of class \code{"character"}:
+    \item{\code{type}}{Object of class \code{"character"}:
       \dQuote{finite-sample bias}. }
   }
 }

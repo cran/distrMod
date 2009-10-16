@@ -11,7 +11,7 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{name}:}{Object of class \code{"character"}.}
+    \item{\code{name}}{Object of class \code{"character"}.}
   }
 }
 \section{Methods}{

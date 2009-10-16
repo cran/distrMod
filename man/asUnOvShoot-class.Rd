@@ -14,11 +14,11 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{type}:}{Object of class \code{"character"}:
-      dQuote{asymptotic under-/overshoot probability}. }
-    \item{\code{width}:}{Object of class \code{"numeric"}: 
+    \item{\code{type}}{Object of class \code{"character"}:
+      \dQuote{asymptotic under-/overshoot probability}. }
+    \item{\code{width}}{Object of class \code{"numeric"}: 
       half the width of given confidence interval. }
-    \item{\code{biastype}:}{Object of class \code{"BiasType"}: 
+    \item{\code{biastype}}{Object of class \code{"BiasType"}: 
       symmetric, one-sided or asymmetric }
   }
 }

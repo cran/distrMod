@@ -60,7 +60,7 @@ confint(object, method, \dots)
 }
 \seealso{
   \code{\link[stats]{confint}},
-  \code{\link[MASS]{confint.glm}} and \code{\link[MASS]{confint.nls}} in
+  \code{\link[MASS:confint]{confint.glm}} and \code{\link[MASS:confint]{confint.nls}} in
   package \pkg{MASS}, \code{\link{Confint-class}}.
 }
 \examples{

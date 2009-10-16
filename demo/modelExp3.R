@@ -3,7 +3,7 @@ options("newDevice"=TRUE)
 
 ## generation of distribution with density ~ e^{-|x|^3
 myD <- AbscontDistribution(d = function(x) exp(-abs(x)^3),
-                           withS = TRUE)
+                           withS = TRUE, Symmetry=SphericalSymmetry(0))
 ## generating some data from this distribution
 ## in a location scale model
 scl.true <- 2; loc.true <- 3

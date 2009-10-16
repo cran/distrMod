@@ -8,9 +8,9 @@
 \section{Objects from the Class}{A virtual Class: No objects may be created from it.}
 \section{Slots}{
   \describe{
-    \item{\code{type}:}{Object of class \code{"character"}:
+    \item{\code{type}}{Object of class \code{"character"}:
       discribes type of symmetry. }
-    \item{\code{SymmCenter}:}{Object of class \code{"OptionalNumeric"}:
+    \item{\code{SymmCenter}}{Object of class \code{"OptionalNumeric"}:
       center of symmetry. }
   }
 }
@@ -26,7 +26,7 @@ Class \code{"Symmetry"}, directly.
 %\references{}
 \author{Matthias Kohl \email{Matthias.Kohl@stamats.de}}
 %\note{}
-\seealso{\code{\link{Symmetry-class}}, \code{\link{OptionalNumeric-class}}}
+\seealso{\code{\link[distr]{Symmetry-class}}, \code{\link[distr:internalClassUnions-class]{OptionalNumeric-class}}}
 %\examples{}
 \concept{symmetry}
 \keyword{classes}

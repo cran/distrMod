@@ -24,7 +24,7 @@ GammaFamily(scale = 1, shape = 1, trafo)
   the Asymptotic Theory of Robustness}. Bayreuth: Dissertation.}
 \author{Matthias Kohl \email{Matthias.Kohl@stamats.de}}
 %\note{}
-\seealso{\code{\link{L2ParamFamily-class}}, \code{\link[distr]{Gamma-class}}}
+\seealso{\code{\link{L2ParamFamily-class}}, \code{\link[distr]{Gammad-class}}}
 \examples{
 (G1 <- GammaFamily())
 FisherInfo(G1)

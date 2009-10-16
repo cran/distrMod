@@ -33,44 +33,44 @@
 }
 \section{Slots}{
    \describe{
-   \item{\code{name}:}{[inherited from class \code{"ProbFamily"}] 
+   \item{\code{name}}{[inherited from class \code{"ProbFamily"}] 
       object of class \code{"character"}: 
       name of the family. }
-    \item{\code{distribution}:}{[inherited from class \code{"ProbFamily"}] 
+    \item{\code{distribution}}{[inherited from class \code{"ProbFamily"}] 
       object of class \code{"Distribution"}:
       member of the family. }
-    \item{\code{distrSymm}:}{[inherited from class \code{"ProbFamily"}] 
+    \item{\code{distrSymm}}{[inherited from class \code{"ProbFamily"}] 
       object of class \code{"DistributionSymmetry"}: 
       symmetry of \code{distribution}. }
-    \item{\code{param}:}{[inherited from class \code{"ParamFamily"}]
+    \item{\code{param}}{[inherited from class \code{"ParamFamily"}]
       object of class \code{"ParamFamParameter"}:
       parameter of the family. }
-    \item{\code{fam.call}:}{[inherited from class \code{"ParamFamily"}]
+    \item{\code{fam.call}}{[inherited from class \code{"ParamFamily"}]
       object of class \code{"call"}:
       call by which parametric family was produced.}
-    \item{\code{makeOKPar}:}{[inherited from class \code{"ParamFamily"}]
+    \item{\code{makeOKPar}}{[inherited from class \code{"ParamFamily"}]
            object of class \code{"function"}:
            has argument \code{param} --- the (total) parameter, 
            returns valid parameter; used if \code{optim} resp. \code{optimize}---
            try to use ``illegal'' parameter values; then \code{makeOKPar} makes
            a valid parameter value out of the illegal one.}
-    \item{\code{startPar}:}{[inherited from class \code{"ParamFamily"}]
+    \item{\code{startPar}}{[inherited from class \code{"ParamFamily"}]
            object of class \code{"function"}:
            has argument \code{x} --- the data, 
            returns starting parameter for \code{optim} resp. \code{optimize}---
            a starting estimator in case parameter is multivariate
            or a search interval in case parameter is univariate.}
-    \item{\code{modifyParam}:}{[inherited from class \code{"ParamFamily"}]
+    \item{\code{modifyParam}}{[inherited from class \code{"ParamFamily"}]
       object of class \code{"function"}:
       mapping from the parameter space (represented by \code{"param"}) 
       to the distribution space (represented by \code{"distribution"}). }
-    \item{\code{props}:}{[inherited from class \code{"ProbFamily"}]
+    \item{\code{props}}{[inherited from class \code{"ProbFamily"}]
       object of class \code{"character"}:
       properties of the family. }
-    \item{\code{L2deriv}:}{
+    \item{\code{L2deriv}}{
       object of class \code{"EuclRandVariable"}:
       L2 derivative of the family. }
-    \item{\code{L2deriv.fct}:}{
+    \item{\code{L2deriv.fct}}{
       object of class \code{"function"}: mapping from 
       the parameter space (argument \code{param} of class 
       \code{"ParamFamParameter"}) to a mapping from observation \code{x} to the  
@@ -78,22 +78,22 @@
       \code{x} to value of the L2derivative; \code{L2deriv.fct} is used by 
       \code{modifyModel} to  move the L2deriv according to a change in the 
       parameter }
-    \item{\code{L2derivSymm}:}{[
+    \item{\code{L2derivSymm}}{[
       object of class \code{"FunSymmList"}:
       symmetry of the maps included in \code{L2deriv}. }
-    \item{\code{L2derivDistr}:}{
+    \item{\code{L2derivDistr}}{
       object of class \code{"UnivarDistrList"}:
       list which includes the distribution of \code{L2deriv}. }
-    \item{\code{L2derivDistrSymm}:}{
+    \item{\code{L2derivDistrSymm}}{
       object of class \code{"DistrSymmList"}:
       symmetry of the distributions included in \code{L2derivDistr}. }
-    \item{\code{FisherInfo.fct}:}{
+    \item{\code{FisherInfo.fct}}{
       object of class \code{"function"}: 
       mapping from the parameter space (argument  \code{param} of class 
       \code{"ParamFamParameter"}) to the set of positive
       semidefinite matrices; \code{FisherInfo.fct} is used by \code{modifyModel} to 
       move the Fisher information according to a change in the parameter } 
-    \item{\code{FisherInfo}:}{
+    \item{\code{FisherInfo}}{
       object of class \code{"PosDefSymmMatrix"}:
       Fisher information of the family. }
 }}
@@ -155,20 +155,20 @@ Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
         \item{withSweave}{logical: if \code{TRUE} (for working with \command{Sweave}) 
                           no extra device is opened and height/width are not set}
         \item{main}{logical: is a main title to be used? or \cr
-                    just as argument \code{main} in \code{\link{plot.default}}.}
+                    just as argument \code{main} in \code{\link[graphics]{plot.default}}.}
         \item{inner}{logical: do panels have their own titles? or \cr
                character vector of / cast to length 'number of plotted 
                panels' with the corresponding panel titles. For further 
                information, see also 
                \code{\link[distr:plot-methods]{plot}} and the 
-               description of argument \code{main} in \code{\link{plot.default}}.} 
+               description of argument \code{main} in \code{\link[graphics]{plot.default}}.} 
         \item{sub}{logical: is a sub-title to be used? or \cr
-                   just as argument \code{sub} in \code{\link{plot.default}}.}
+                   just as argument \code{sub} in \code{\link[graphics]{plot.default}}.}
         \item{tmar}{top margin -- useful for non-standard main title sizes}
         \item{bmar}{bottom margin -- useful for non-standard sub title sizes}
         \item{cex.inner}{magnification to be used for inner titles relative
           to the current setting of \code{cex}; as in 
-          \code{\link[stats]{par}}; can be a vector of length 2; in this
+          \code{\link[graphics]{par}}; can be a vector of length 2; in this
           case the first component is for the distribution panels, the 
           second for the L2-derivative-panels.}
        \item{col.inner}{character or integer code; color for the inner title}              
@@ -187,8 +187,8 @@ Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
                          trafo matrix.
                          }
        \item{\dots}{addtional arguments for \code{plot} --- see 
-               \code{\link[stats]{plot}}, 
-               \code{\link[stats]{plot.default}}, 
+               \code{\link[graphics]{plot}}, 
+               \code{\link[graphics]{plot.default}}, 
                \code{\link[stats]{plot.stepfun}} }
 
       } 

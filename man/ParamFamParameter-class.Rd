@@ -31,14 +31,14 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{main}:}{Object of class \code{"numeric"}: main parameter. }
-    \item{\code{nuisance}:}{Object of class \code{"OptionalNumeric"}:
+    \item{\code{main}}{Object of class \code{"numeric"}: main parameter. }
+    \item{\code{nuisance}}{Object of class \code{"OptionalNumeric"}:
       optional nuisance parameter. }
-    \item{\code{fixed}:}{Object of class \code{"OptionalNumeric"}:
+    \item{\code{fixed}}{Object of class \code{"OptionalNumeric"}:
       optional fixed part of the parameter. }
-    \item{\code{trafo}:}{Object of class \code{"MatrixorFunction"}: 
+    \item{\code{trafo}}{Object of class \code{"MatrixorFunction"}: 
       transformation of the parameter. }
-    \item{\code{name}:}{Object of class \code{"character"}:
+    \item{\code{name}}{Object of class \code{"character"}:
       name of the parameter. }
   }
 }

@@ -6,6 +6,7 @@
 \alias{.CvMMDCovariance}
 \alias{.show.with.sd}
 \alias{.getLogDeriv}
+\alias{.deleteDim}
 
 \title{Internal functions of package distrMod}
 
@@ -16,7 +17,7 @@ These functions are used internally by package ``distrMod''.}
 .inArgs(arg, fct)
 .isUnitMatrix(m)
 .csimpsum(fx)
-.validTrafo(trafo, dimension)
+.validTrafo(trafo, dimension, dimensionwithN)
 .CvMMDCovariance(L2Fam, param, mu = distribution(L2Fam),  
                  withplot = FALSE, withpreIC = FALSE,
                  N = getdistrOption("DefaultNrGridPoints")+1,
@@ -28,6 +29,7 @@ These functions are used internally by package ``distrMod''.}
              lowerTruncQuantile = getdistrExOption("ElowerTruncQuantile"), 
              upperTruncQuantile = getdistrExOption("EupperTruncQuantile"), 
                          IQR.fac = getdistrExOption("IQR.fac"))
+.deleteDim(x)
 }
 
 
@@ -38,7 +40,8 @@ These functions are used internally by package ``distrMod''.}
   \item{est}{an estimator; usually a vector}
   \item{s}{a standard deviation} 
   \item{trafo}{an object of class \code{MatrixorFunction}}
-  \item{dimension}{a numeric}
+  \item{dimension}{a numeric --- length of main part of the parameter}
+  \item{dimensionwithN}{a numeric --- length of main and nuisance part of the parameter}
   \item{L2Fam}{an object of class \code{L2ParamFamily} --- for
   which we want to determine the IC resp. the as. [co]variance of the corresponding
   Minimum CvM estimator}
@@ -66,6 +69,7 @@ These functions are used internally by package ``distrMod''.}
  \item{distr}{an object of class \code{AbscontDistribution}}
   \item{\dots}{further argument to be passed through --- so 
               \code{.CvMMDCovariance} can digest more arguments}
+  \item{x}{a possibly named vector, which may have a \code{dim} attribute}
 }
 
 \details{
@@ -94,6 +98,9 @@ sd's below.
 \code{.getLogDeriv} determines numerically the negative logarithmic derivative of the 
 density of distribution \code{distr}; to this end uses \code{D1ss}, 
 \code{D2ss} from Martin Maechler's package \pkg{sfsmisc}. 
+
+\code{.deleteDim} deletes a possible \code{dim} argument (sets it to \code{NULL})
+but retains all other possible attributes, in particular a \code{name} attribute.
 }
 
 \value{
@@ -107,6 +114,7 @@ derivative of the density}
    the corresponding Minimum CvM estimator or list withcomponents
    \code{preIC} and \code{var} ---see above}
 \item{.show.with.sd}{\code{invisible()}}
+\item{.deleteDim}{vector \code{x} without \code{dim} attribute}
 }
 
 \author{

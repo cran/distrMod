@@ -7,10 +7,10 @@
 \section{Objects from the Class}{A virtual Class: No objects may be created from it.}
 \section{Slots}{
   \describe{
-    \item{\code{type}:}{Object of class \code{"character"}. }
-    \item{\code{biastype}:}{Object of class \code{"BiasType"}: 
+    \item{\code{type}}{Object of class \code{"character"}. }
+    \item{\code{biastype}}{Object of class \code{"BiasType"}: 
       symmetric, one-sided or asymmetric }
-    \item{\code{normtype}:}{Object of class \code{"NormType"}: 
+    \item{\code{normtype}}{Object of class \code{"NormType"}: 
       norm in which a multivariate parameter is considered}
   }
 }

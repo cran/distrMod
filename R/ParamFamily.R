@@ -76,14 +76,38 @@ setMethod("trafo", signature(object = "ParamFamily", param = "missing"),
                                             return(trafo(param0))})
 setMethod("trafo", signature(object = "ParamFamily", param = "ParamFamParameter"), 
    function(object, param){        
+
         param0 <- object@param
+
         if(is.function(param0@trafo)) 
-             return(list(fct = param0@trafo, 
-                         mat = (param0@trafo(main(param)))$mat))
-        else return(list(fct = function(x) {
+             lis <- list(fct = param0@trafo,
+                         mat = (param0@trafo(main(param)))$mat)
+        else lis <- list(fct = function(x) {
                                list(fval = param0@trafo%*%x,
                                     mat  = param0@trafo)}, 
-                         mat = param0@trafo))
+                         mat = param0@trafo)
+        mat <- mat0 <- lis$mat
+
+        main0 <- main(object)
+        ln.m <- length(main0)
+        nms.m <- names(main0)
+
+        nuis0 <- nuisance(object)
+        ln.n <- length(nuis0)
+
+
+        if(ln.n){
+           nms.n <- names(nuis0)
+           nms <- c(nms.m,nms.n)
+           ln <- ln.m + ln.n
+           lmx <- 1:ln.m
+           lnx <- ln.m + (1:ln.n)
+           mat0 <- matrix(0, ln.m, ln, dimnames=list(nms.m,nms))
+           mat0[lmx,lmx] <- mat
+        }
+
+        lis$mat <- mat0
+        return(lis)
    })  
 
 setMethod("trafo.fct", signature(object = "ParamFamily"), 

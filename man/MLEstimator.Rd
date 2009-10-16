@@ -10,7 +10,7 @@
 }
 \usage{
 MLEstimator(x, ParamFamily, startPar = NULL, 
-            Infos, trafo = NULL, penalty = 0, ...)
+            Infos, trafo = NULL, penalty = 1e20, na.rm = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,7 +26,8 @@ MLEstimator(x, ParamFamily, startPar = NULL,
   \item{trafo}{ an object of class \code{MatrixorFunction} -- a transformation
   for the main parameter}
   \item{penalty}{(non-negative) numeric: penalizes non valid parameter-values}
-  \item{\dots}{ further arguments to \code{criterion} or \code{optimize} 
+  \item{na.rm}{logical: if  \code{TRUE}, the estimator is evaluated at \code{complete.cases(x)}.}
+  \item{\dots}{ further arguments to \code{criterion} or \code{optimize}
     or \code{optim}, respectively. }
 }
 \details{

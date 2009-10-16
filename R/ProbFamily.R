@@ -2,7 +2,7 @@
 ## access methods
 setMethod("name", "ProbFamily", function(object) object@name)
 setMethod("distribution", "ProbFamily", function(object) object@distribution)
-setMethod("distrSymm", "ProbFamily", function(object) object@distrSymm)
+setMethod("distrSymm", "ProbFamily", function(object) object@distribution@Symmetry)
 setMethod("props", "ProbFamily", function(object) object@props)
 
 ## replace methods

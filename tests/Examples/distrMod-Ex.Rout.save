@@ -1,0 +1,3938 @@
+
+R version 2.10.0 beta (2009-10-15 r50107)
+Copyright (C) 2009 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> ### * <HEADER>
+> ###
+> attach(NULL, name = "CheckExEnv")
+> assign("nameEx",
++        local({
++ 	   s <- "__{must remake R-ex/*.R}__"
++            function(new) {
++                if(!missing(new)) s <<- new else s
++            }
++        }),
++        pos = "CheckExEnv")
+> ## Add some hooks to label plot pages for base and grid graphics
+> assign("base_plot_hook",
++        function() {
++            pp <- par(c("mfg","mfcol","oma","mar"))
++            if(all(pp$mfg[1:2] == c(1, pp$mfcol[2]))) {
++                outer <- (oma4 <- pp$oma[4]) > 0; mar4 <- pp$mar[4]
++                mtext(sprintf("help(\"%s\")", nameEx()), side = 4,
++                      line = if(outer)max(1, oma4 - 1) else min(1, mar4 - 1),
++                outer = outer, adj = 1, cex = .8, col = "orchid", las=3)
++            }
++        },
++        pos = "CheckExEnv")
+> assign("grid_plot_hook",
++        function() {
++            grid::pushViewport(grid::viewport(width=grid::unit(1, "npc") -
++                               grid::unit(1, "lines"), x=0, just="left"))
++            grid::grid.text(sprintf("help(\"%s\")", nameEx()),
++                            x=grid::unit(1, "npc") + grid::unit(0.5, "lines"),
++                            y=grid::unit(0.8, "npc"), rot=90,
++                            gp=grid::gpar(col="orchid"))
++        },
++        pos = "CheckExEnv")
+> setHook("plot.new",     get("base_plot_hook", pos = "CheckExEnv"))
+> setHook("persp",        get("base_plot_hook", pos = "CheckExEnv"))
+> setHook("grid.newpage", get("grid_plot_hook", pos = "CheckExEnv"))
+> assign("cleanEx",
++        function(env = .GlobalEnv) {
++ 	   rm(list = ls(envir = env, all.names = TRUE), envir = env)
++            RNGkind("default", "default")
++ 	   set.seed(1)
++    	   options(warn = 1)
++ 	   .CheckExEnv <- as.environment("CheckExEnv")
++ 	   delayedAssign("T", stop("T used instead of TRUE"),
++ 		  assign.env = .CheckExEnv)
++ 	   delayedAssign("F", stop("F used instead of FALSE"),
++ 		  assign.env = .CheckExEnv)
++ 	   sch <- search()
++ 	   newitems <- sch[! sch %in% .oldSearch]
++ 	   for(item in rev(newitems))
++                eval(substitute(detach(item), list(item=item)))
++ 	   missitems <- .oldSearch[! .oldSearch %in% sch]
++ 	   if(length(missitems))
++ 	       warning("items ", paste(missitems, collapse=", "),
++ 		       " have been removed from the search path")
++        },
++        pos = "CheckExEnv")
+> assign("ptime", proc.time(), pos = "CheckExEnv")
+> ## at least one package changes these via ps.options(), so do this
+> ## before loading the package.
+> ## Use postscript as incomplete files may be viewable, unlike PDF.
+> ## Choose a size that is close to on-screen devices, fix paper
+> grDevices::ps.options(width = 7, height = 7, paper = "a4", reset = TRUE)
+> grDevices::postscript("distrMod-Ex.ps")
+> 
+> assign("par.postscript", graphics::par(no.readonly = TRUE), pos = "CheckExEnv")
+> options(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"))
+> options(warn = 1)
+> library('distrMod')
+Loading required package: startupmsg
+:startupmsg>  Utilities for start-up messages (version 0.7)
+:startupmsg> 
+:startupmsg>  For more information see ?"startupmsg",
+:startupmsg>  NEWS("startupmsg")
+
+Loading required package: distr
+Loading required package: sfsmisc
+Loading required package: SweaveListingUtils
+:SweaveListingUtils>  Utilities for Sweave together with
+:SweaveListingUtils>  TeX listings package (version 0.4)
+:SweaveListingUtils> 
+:SweaveListingUtils>  Some functions from package 'base'
+:SweaveListingUtils>  are intentionally masked ---see
+:SweaveListingUtils>  SweaveListingMASK().
+:SweaveListingUtils> 
+:SweaveListingUtils>  Note that global options are
+:SweaveListingUtils>  controlled by
+:SweaveListingUtils>  SweaveListingoptions() ---c.f.
+:SweaveListingUtils>  ?"SweaveListingoptions".
+:SweaveListingUtils> 
+:SweaveListingUtils>  For more information see
+:SweaveListingUtils>  ?"SweaveListingUtils",
+:SweaveListingUtils>  NEWS("SweaveListingUtils")
+:SweaveListingUtils>  There is a vignette to this
+:SweaveListingUtils>  package; try
+:SweaveListingUtils>  vignette("ExampleSweaveListingUtils").
+
+
+Attaching package: 'SweaveListingUtils'
+
+
+	The following object(s) are masked from package:base :
+
+	 library,
+	 require 
+
+:distr>  Object orientated implementation of distributions (version
+:distr>  2.2)
+:distr> 
+:distr>  Attention: Arithmetics on distribution objects are
+:distr>  understood as operations on corresponding random variables
+:distr>  (r.v.s); see distrARITH().
+:distr> 
+:distr>  Some functions from package 'stats' are intentionally masked
+:distr>  ---see distrMASK().
+:distr> 
+:distr>  Note that global options are controlled by distroptions()
+:distr>  ---c.f. ?"distroptions".
+:distr> 
+:distr>  For more information see ?"distr", NEWS("distr"), as well as
+:distr>    http://distr.r-forge.r-project.org/
+:distr>  Package "distrDoc" provides a vignette to this package as
+:distr>  well as to several extension packages; try
+:distr>  vignette("distr").
+
+
+Attaching package: 'distr'
+
+
+	The following object(s) are masked from package:stats :
+
+	 df,
+	 qqplot,
+	 sd 
+
+Loading required package: distrEx
+Loading required package: evd
+Loading required package: actuar
+
+Attaching package: 'actuar'
+
+
+	The following object(s) are masked from package:grDevices :
+
+	 cm 
+
+:distrEx>  Extensions of package distr (version 2.2)
+:distrEx> 
+:distrEx>  Note: Packages "e1071", "moments", "fBasics" should be
+:distrEx>  attached /before/ package "distrEx". See distrExMASK().
+:distrEx> 
+:distrEx>  For more information see ?"distrEx", NEWS("distrEx"), as
+:distrEx>  well as
+:distrEx>    http://distr.r-forge.r-project.org/
+:distrEx>  Package "distrDoc" provides a vignette to this package
+:distrEx>  as well as to several related packages; try
+:distrEx>  vignette("distr").
+
+
+Attaching package: 'distrEx'
+
+
+	The following object(s) are masked from package:stats :
+
+	 IQR,
+	 mad,
+	 median,
+	 var 
+
+Loading required package: RandVar
+:RandVar>  Implementation of random variables (version 0.7)
+:RandVar> 
+:RandVar>  For more information see ?"RandVar", NEWS("RandVar"), as
+:RandVar>  well as
+:RandVar>    http://robast.r-forge.r-project.org/
+:RandVar>  This package also includes a vignette; try
+:RandVar>  vignette("RandVar").
+
+Loading required package: MASS
+Loading required package: stats4
+:distrMod>  Object orientated implementation of probability models
+:distrMod>  (version 2.2)
+:distrMod> 
+:distrMod>  Some functions from pkg's 'base' and 'stats' are
+:distrMod>  intentionally masked ---see distrModMASK().
+:distrMod> 
+:distrMod>  Note that global options are controlled by
+:distrMod>  distrModoptions() ---c.f. ?"distrModoptions".
+:distrMod> 
+:distrMod>  For more information see ?"distrMod",
+:distrMod>  NEWS("distrMod"), as well as
+:distrMod>    http://distr.r-forge.r-project.org/
+:distrMod>  Package "distrDoc" provides a vignette to this package
+:distrMod>  as well as to several related packages; try
+:distrMod>  vignette("distr").
+
+
+Attaching package: 'distrMod'
+
+
+	The following object(s) are masked from package:stats4 :
+
+	 confint 
+
+
+	The following object(s) are masked from package:stats :
+
+	 confint 
+
+> 
+> assign(".oldSearch", search(), pos = 'CheckExEnv')
+> assign(".oldNS", loadedNamespaces(), pos = 'CheckExEnv')
+> cleanEx(); nameEx("BetaFamily")
+> ### * BetaFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: BetaFamily
+> ### Title: Generating function for Beta families
+> ### Aliases: BetaFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> (B1 <- BetaFamily())
+An object of class "BetaFamily"
+### name:	Beta family
+
+### distribution:	Distribution Object of Class: Beta
+ shape1: 1
+ shape2: 1
+ ncp: 0
+
+### param:	An object of class "ParamFamParameter"
+name:	shape1 and shape2
+shape1:	1
+shape2:	1
+trafo:
+       shape1 shape2
+shape1      1      0
+shape2      0      1
+
+### props:
+[1] "The Beta family is invariant in the following sense"
+[2] "if (x_i)~Beta(s1,s2) then (1-x_i)~Beta(s2,s1)"      
+> FisherInfo(B1)
+An object of class “PosSemDefSymmMatrix”
+           shape1     shape2
+shape1  1.0000000 -0.6449341
+shape2 -0.6449341  1.0000000
+> checkL2deriv(B1)
+precision of centering:	 3.96327e-05 3.963591e-05 
+precision of Fisher information:
+              shape1        shape2
+shape1 -1.851068e-05  1.648326e-06
+shape2  1.648326e-06 -1.851068e-05
+$maximum.deviation
+[1] 3.963591e-05
+
+> 
+> 
+> 
+> cleanEx(); nameEx("BiasType-class")
+> ### * BiasType-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: BiasType-class
+> ### Title: Bias Type
+> ### Aliases: BiasType-class name,BiasType-method name<-,BiasType-method
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> aB <- positiveBias()
+> name(aB)
+[1] "positive Bias"
+> 
+> 
+> 
+> cleanEx(); nameEx("BinomFamily")
+> ### * BinomFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: BinomFamily
+> ### Title: Generating function for Binomial families
+> ### Aliases: BinomFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> (B1 <- BinomFamily(size = 25, prob = 0.25))
+An object of class "BinomFamily"
+### name:	Binomial family
+
+### distribution:	Distribution Object of Class: Binom
+ size: 25
+ prob: 0.25
+
+### param:	An object of class "ParamFamParameter"
+name:	probability of success
+prob:	0.25
+fixed part of param.:
+	size:	25
+trafo:
+     prob
+prob    1
+
+### props:
+[1] "The Binomial family is symmetric with respect to prob = 0.5;"
+[2] "i.e., d(Binom(size, prob))(k)=d(Binom(size,1-prob))(size-k)" 
+> plot(B1)
+> FisherInfo(B1)
+An object of class “PosSemDefSymmMatrix”
+         prob
+prob 133.3333
+> checkL2deriv(B1)
+precision of centering:	 -6.965857e-16 
+precision of Fisher information:
+             prob
+prob 2.842171e-14
+$maximum.deviation
+[1] 2.842171e-14
+
+> 
+> 
+> 
+> cleanEx(); nameEx("CauchyLocationScaleFamily")
+> ### * CauchyLocationScaleFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: CauchyLocationScaleFamily
+> ### Title: Generating function for Cauchy location and scale families
+> ### Aliases: CauchyLocationScaleFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> (C1 <- CauchyLocationScaleFamily())
+An object of class "CauchyLocationScaleFamily"
+### name:	Cauchy Location and scale family
+
+### distribution:	Distribution Object of Class: Cauchy
+ location: 0
+ scale: 1
+
+### param:	An object of class "ParamFamParameter"
+name:	location and scale
+loc:	0
+scale:	1
+trafo:
+      loc scale
+loc     1     0
+scale   0     1
+
+### props:
+[1] "The Cauchy Location and scale family is invariant under"  
+[2] "the group of transformations 'g(x) = scale*x + loc'"      
+[3] "with location parameter 'loc' and scale parameter 'scale'"
+> plot(C1)
+> FisherInfo(C1)
+An object of class “PosDefSymmMatrix”
+      loc scale
+loc   0.5   0.0
+scale 0.0   0.5
+> ### need smaller integration range:
+> distrExoptions("ElowerTruncQuantile"=1e-4,"EupperTruncQuantile"=1e-4)
+> checkL2deriv(C1)
+precision of centering:	 0 -0.02119711 
+precision of Fisher information:
+                loc       scale
+loc   -3.137524e-05  0.00000000
+scale  0.000000e+00 -0.02118143
+$maximum.deviation
+[1] 0.02119711
+
+> distrExoptions("ElowerTruncQuantile"=1e-7,"EupperTruncQuantile"=1e-7)
+> 
+> 
+> 
+> cleanEx(); nameEx("Confint-class")
+> ### * Confint-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: Confint-class
+> ### Title: Confint-class
+> ### Aliases: Confint-class type,Confint-method call.estimate
+> ###   call.estimate,Confint-method confint,Confint,missing-method
+> ###   name.estimate name.estimate,Confint-method trafo.estimate
+> ###   trafo.estimate,Confint-method samplesize.estimate
+> ###   samplesize.estimate,Confint-method completecases.estimate
+> ###   completecases.estimate,Confint-method nuisance.estimate
+> ###   nuisance.estimate,Confint-method fixed.estimate
+> ###   fixed.estimate,Confint-method show,Confint-method
+> ###   print,Confint-method
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> ## some transformation
+> mtrafo <- function(x){
++      nms0 <- c("scale","shape")
++      nms <- c("shape","rate")
++      fval0 <- c(x[2], 1/x[1])
++      names(fval0) <- nms
++      mat0 <- matrix( c(0, -1/x[1]^2, 1, 0), nrow = 2, ncol = 2,
++                      dimnames = list(nms,nms0))                          
++      list(fval = fval0, mat = mat0)}
+> 
+> x <- rgamma(50, scale = 0.5, shape = 3)
+> 
+> ## parametric family of probability measures
+> G <- GammaFamily(scale = 1, shape = 2, trafo = mtrafo)
+> ## MLE
+> res <- MLEstimator(x = x, ParamFamily = G)
+> ci <- confint(res)
+> print(ci, digits = 4, show.details="maximal")
+A[n] asymptotic (CLT-based) confidence interval:
+      2.5 % 97.5 %
+shape 2.530  5.591
+rate  1.751  4.097
+Type of estimator: Maximum likelihood estimate
+samplesize:   50
+Call by which estimate was produced:
+MLEstimator(x = x, ParamFamily = G)
+Transformation of main parameter by which estimate was produced:
+function (x) 
+{
+    nms0 <- c("scale", "shape")
+    nms <- c("shape", "rate")
+    fval0 <- c(x[2], 1/x[1])
+    names(fval0) <- nms
+    mat0 <- matrix(c(0, -1/x[1]^2, 1, 0), nrow = 2, ncol = 2, 
+        dimnames = list(nms, nms0))
+    list(fval = fval0, mat = mat0)
+}
+Trafo / derivative matrix at which estimate was produced:
+      scale shape
+shape  0.00     1
+rate  -8.55     0
+> print(ci, digits = 4, show.details="medium")
+A[n] asymptotic (CLT-based) confidence interval:
+      2.5 % 97.5 %
+shape 2.530  5.591
+rate  1.751  4.097
+Type of estimator: Maximum likelihood estimate
+samplesize:   50
+Call by which estimate was produced:
+MLEstimator(x = x, ParamFamily = G)
+> print(ci, digits = 4, show.details="minimal")
+A[n] asymptotic (CLT-based) confidence interval:
+      2.5 % 97.5 %
+shape 2.530  5.591
+rate  1.751  4.097
+> 
+> 
+> 
+> cleanEx(); nameEx("Estimate-class")
+> ### * Estimate-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: Estimate-class
+> ### Title: Estimate-class.
+> ### Aliases: Estimate-class name,Estimate-method name<-,Estimate-method
+> ###   estimate estimate,Estimate-method estimate.call
+> ###   estimate.call,Estimate-method Infos Infos,Estimate-method samplesize
+> ###   samplesize,Estimate-method completecases
+> ###   completecases,Estimate-method asvar asvar,Estimate-method
+> ###   fixed,Estimate-method asvar<- asvar<-,Estimate-method
+> ###   nuisance,Estimate-method main,Estimate-method Infos<-
+> ###   Infos<-,Estimate-method addInfo<- addInfo<-,Estimate-method
+> ###   show,Estimate-method print,Estimate-method untransformed.estimate
+> ###   untransformed.estimate,Estimate-method untransformed.asvar
+> ###   untransformed.asvar,Estimate-method
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> x <- rnorm(100)
+> Estimator(x, estimator = mean, name = "mean")
+Evaluations of mean:
+--------------------
+An object of class “Estimate” 
+generated by call
+  Estimator(x = x, estimator = mean, name = "mean")
+samplesize:   100
+estimate:
+named numeric(0)
+> 
+> x1 <- x; x1[sample(1:100,10)] <- NA
+> myEst1 <- Estimator(x1, estimator = mean, name = "mean")
+> samplesize(myEst1)
+[1] 90
+> samplesize(myEst1, onlycomplete = FALSE)
+[1] 100
+> 
+> 
+> 
+> cleanEx(); nameEx("Estimator")
+> ### * Estimator
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: Estimator
+> ### Title: Function to compute estimates
+> ### Aliases: Estimator
+> ### Keywords: univar
+> 
+> ### ** Examples
+> 
+> x <- rnorm(100)
+> Estimator(x, estimator = mean, name = "mean")
+Evaluations of mean:
+--------------------
+An object of class “Estimate” 
+generated by call
+  Estimator(x = x, estimator = mean, name = "mean")
+samplesize:   100
+estimate:
+named numeric(0)
+> 
+> X <- matrix(rnorm(1000), nrow = 10)
+> Estimator(X, estimator = rowMeans, name = "mean")
+Evaluations of mean:
+--------------------
+An object of class “Estimate” 
+generated by call
+  Estimator(x = X, estimator = rowMeans, name = "mean")
+samplesize:   100
+estimate:
+named numeric(0)
+> 
+> 
+> 
+> cleanEx(); nameEx("EvenSymmetric-class")
+> ### * EvenSymmetric-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: EvenSymmetric-class
+> ### Title: Class for Even Functions
+> ### Aliases: EvenSymmetric-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("EvenSymmetric")
+type of symmetry:	even function
+center of symmetry:
+numeric(0)
+> 
+> 
+> 
+> cleanEx(); nameEx("EvenSymmetric")
+> ### * EvenSymmetric
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: EvenSymmetric
+> ### Title: Generating function for EvenSymmetric-class
+> ### Aliases: EvenSymmetric
+> ### Keywords: math
+> 
+> ### ** Examples
+> 
+> EvenSymmetric()
+type of symmetry:	even function
+center of symmetry:
+[1] 0
+> 
+> ## The function is currently defined as
+> function(SymmCenter = 0){ 
++     new("EvenSymmetric", SymmCenter = SymmCenter) 
++ }
+function (SymmCenter = 0) 
+{
+    new("EvenSymmetric", SymmCenter = SymmCenter)
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("ExpScaleFamily")
+> ### * ExpScaleFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: ExpScaleFamily
+> ### Title: Generating function for exponential scale families
+> ### Aliases: ExpScaleFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> (E1 <- ExpScaleFamily())
+An object of class "ExpScaleFamily"
+### name:	Exponential scale family
+
+### distribution:	Distribution Object of Class: Exp
+ rate: 1
+Warning in show(x) :
+  arithmetics on distributions are understood as operations on r.v.'s
+see 'distrARITH()'; for switching off this warning see '?distroptions'
+
+### param:	An object of class "ParamFamParameter"
+name:	scale
+scale:	1
+trafo:
+      scale
+scale     1
+
+### props:
+[1] "The Exponential scale family is invariant under"
+[2] "the group of transformations 'g(y) = scale*y'"  
+[3] "with scale parameter 'scale'"                   
+> plot(E1)
+> Map(L2deriv(E1)[[1]])
+[[1]]
+function (x) 
+{
+    ((x - 0)/1 * LogDeriv((x - 0)/1) - 1)/1
+}
+<environment: 0x7f7e928>
+
+> checkL2deriv(E1)
+precision of centering:	 -1.511810e-06 
+precision of Fisher information:
+             scale
+scale -2.61793e-05
+$maximum.deviation
+[1] 2.61793e-05
+
+> 
+> 
+> 
+> cleanEx(); nameEx("FunSymmList-class")
+> ### * FunSymmList-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: FunSymmList-class
+> ### Title: List of Symmetries for a List of Functions
+> ### Aliases: FunSymmList-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("FunSymmList", list(NonSymmetric(), EvenSymmetric(SymmCenter = 1), 
++                         OddSymmetric(SymmCenter = 2)))
+An object of class “FunSymmList”
+[[1]]
+type of symmetry:	non-symmetric function
+NULL
+
+[[2]]
+type of symmetry:	even function
+center of symmetry:
+[1] 1
+
+[[3]]
+type of symmetry:	odd function
+center of symmetry:
+[1] 2
+
+> 
+> 
+> 
+> cleanEx(); nameEx("FunSymmList")
+> ### * FunSymmList
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: FunSymmList
+> ### Title: Generating function for FunSymmList-class
+> ### Aliases: FunSymmList
+> ### Keywords: math
+> 
+> ### ** Examples
+> 
+> FunSymmList(NonSymmetric(), EvenSymmetric(SymmCenter = 1), 
++             OddSymmetric(SymmCenter = 2))
+An object of class “FunSymmList”
+[[1]]
+type of symmetry:	non-symmetric function
+NULL
+
+[[2]]
+type of symmetry:	even function
+center of symmetry:
+[1] 1
+
+[[3]]
+type of symmetry:	odd function
+center of symmetry:
+[1] 2
+
+> 
+> ## The function is currently defined as
+> function (...){
++     new("FunSymmList", list(...))
++ }
+function (...) 
+{
+    new("FunSymmList", list(...))
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("GammaFamily")
+> ### * GammaFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: GammaFamily
+> ### Title: Generating function for Gamma families
+> ### Aliases: GammaFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> (G1 <- GammaFamily())
+An object of class "GammaFamily"
+### name:	Gamma family
+
+### distribution:	Distribution Object of Class: Gammad
+ shape: 1
+ scale: 1
+
+### param:	An object of class "ParamFamParameter"
+name:	scale and shape
+scale:	1
+shape:	1
+trafo:
+      scale shape
+scale     1     0
+shape     0     1
+
+### props:
+[1] "The Gamma family is scale invariant via the parametrization"
+[2] "'(nu,shape)=(log(scale),shape)'"                            
+> FisherInfo(G1)
+An object of class “PosSemDefSymmMatrix”
+      scale    shape
+scale     1 1.000000
+shape     1 1.644934
+> checkL2deriv(G1)
+precision of centering:	 -1.511810e-06 1.312514e-06 
+precision of Fisher information:
+              scale         shape
+scale -2.617930e-05 -7.165188e-06
+shape -7.165188e-06 -2.862712e-05
+$maximum.deviation
+[1] 2.862712e-05
+
+> 
+> 
+> 
+> cleanEx(); nameEx("GumbelLocationFamily")
+> ### * GumbelLocationFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: GumbelLocationFamily
+> ### Title: Generating function for Gumbel location families
+> ### Aliases: GumbelLocationFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> (G1 <- GumbelLocationFamily())
+An object of class "GumbelLocationFamily"
+### name:	Gumbel location family
+
+### distribution:	Distribution Object of Class: Gumbel
+ loc: 0
+ scale: 1
+
+### param:	An object of class "ParamFamParameter"
+name:	loc
+loc:	0
+trafo:
+    loc
+loc   1
+
+### props:
+[1] "The Gumbel location family is invariant under"
+[2] "the group of transformations 'g(x) = x + loc'"
+[3] "with location parameter 'loc'"                
+> plot(G1)
+> Map(L2deriv(G1)[[1]])
+[[1]]
+function (x) 
+{
+    LogDeriv(x - 0)
+}
+<environment: 0x85ba170>
+
+> checkL2deriv(G1)
+precision of centering:	 1.511810e-06 
+precision of Fisher information:
+             loc
+loc -2.61793e-05
+$maximum.deviation
+[1] 2.61793e-05
+
+> 
+> 
+> 
+> cleanEx(); nameEx("InfoNorm")
+> ### * InfoNorm
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: InfoNorm
+> ### Title: Generating function for InfoNorm-class
+> ### Aliases: InfoNorm
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> InfoNorm()
+An object of class “InfoNorm”
+Slot "QuadForm":
+An object of class “PosSemDefSymmMatrix”
+     [,1]
+[1,]    1
+
+Slot "name":
+[1] "Information matrix Norm"
+
+Slot "fct":
+function (x) 
+QuadFormNorm(x, A = A)
+<environment: 0x7e98768>
+
+> 
+> ## The function is currently defined as
+> function(){ new("InfoNorm") }
+function () 
+{
+    new("InfoNorm")
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("L2GroupFamily-class")
+> ### * L2GroupFamily-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: L2GroupParamFamily-class
+> ### Title: L2 differentiable parametric group family
+> ### Aliases: L2GroupParamFamily-class LogDeriv
+> ###   LogDeriv,L2GroupParamFamily-method LogDeriv<-
+> ###   LogDeriv<-,L2GroupParamFamily-method
+> ### Keywords: classes models
+> 
+> ### ** Examples
+> 
+> F1 <- new("L2GroupParamFamily")
+> plot(F1)
+> 
+> 
+> 
+> cleanEx(); nameEx("L2LocationFamily-class")
+> ### * L2LocationFamily-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: L2LocationFamily-class
+> ### Title: L2 differentiable parametric group family
+> ### Aliases: L2LocationFamily-class
+> ### Keywords: classes models
+> 
+> ### ** Examples
+> 
+> F1 <- new("L2LocationFamily")
+> plot(F1)
+> 
+> 
+> 
+> cleanEx(); nameEx("L2LocationFamily")
+> ### * L2LocationFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: L2LocationFamily
+> ### Title: Generating function for L2LocationFamily-class
+> ### Aliases: L2LocationFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> F1 <- L2LocationFamily()
+> plot(F1)
+> 
+> 
+> 
+> cleanEx(); nameEx("L2LocationScaleFamily-class")
+> ### * L2LocationScaleFamily-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: L2LocationScaleFamily-class
+> ### Title: L2 differentiable parametric group family
+> ### Aliases: L2LocationScaleFamily-class
+> ### Keywords: classes models
+> 
+> ### ** Examples
+> 
+> F1 <- new("L2LocationScaleFamily")
+> plot(F1)
+> 
+> 
+> 
+> cleanEx(); nameEx("L2LocationScaleFamily")
+> ### * L2LocationScaleFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: L2LocationScaleFamily
+> ### Title: Generating function for L2LocationScaleFamily-class
+> ### Aliases: L2LocationScaleFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> F1 <- L2LocationScaleFamily()
+> plot(F1)
+> 
+> 
+> 
+> cleanEx(); nameEx("L2LocationUnknownScaleFamily")
+> ### * L2LocationUnknownScaleFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: L2LocationUnknownScaleFamily
+> ### Title: Generating function for L2LocationScaleFamily-class in nuisance
+> ###   situation
+> ### Aliases: L2LocationUnknownScaleFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> F1 <- L2LocationUnknownScaleFamily()
+> plot(F1)
+> 
+> 
+> 
+> cleanEx(); nameEx("L2ParamFamily-class")
+> ### * L2ParamFamily-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: L2ParamFamily-class
+> ### Title: L2 differentiable parametric family
+> ### Aliases: plot plot-methods L2ParamFamily-class FisherInfo
+> ###   FisherInfo,L2ParamFamily,missing-method
+> ###   FisherInfo,L2ParamFamily,ParamFamParameter-method L2deriv
+> ###   L2deriv,L2ParamFamily,missing-method
+> ###   L2deriv,L2ParamFamily,ParamFamParameter-method L2derivSymm
+> ###   L2derivSymm,L2ParamFamily-method L2derivDistr
+> ###   L2derivDistr,L2ParamFamily-method L2derivDistrSymm
+> ###   L2derivDistrSymm,L2ParamFamily-method
+> ###   checkL2deriv,L2ParamFamily-method
+> ###   E,L2ParamFamily,EuclRandVariable,missing-method
+> ###   E,L2ParamFamily,EuclRandMatrix,missing-method
+> ###   E,L2ParamFamily,EuclRandVarList,missing-method
+> ###   plot,L2ParamFamily,missing-method
+> ### Keywords: classes models
+> 
+> ### ** Examples
+> 
+> F1 <- new("L2ParamFamily")
+> plot(F1)
+> 
+> ## selection of subpanels for plotting
+> F2 <- L2LocationScaleFamily()
+> layout(matrix(c(1,2,3,3), nrow=2, byrow=TRUE))
+> plot(F2,mfColRow = FALSE,
++      to.draw.arg=c("p","q","loc"))
+> plot(F2,mfColRow = FALSE, inner=list("empirical cdf","pseudo-inverse",
++      "L2-deriv, loc.part"), to.draw.arg=c("p","q","loc"))
+> 
+> 
+> 
+> cleanEx(); nameEx("L2ParamFamily")
+> ### * L2ParamFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: L2ParamFamily
+> ### Title: Generating function for L2ParamFamily-class
+> ### Aliases: L2ParamFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> F1 <- L2ParamFamily()
+> plot(F1)
+> 
+> 
+> 
+> cleanEx(); nameEx("L2ScaleFamily-class")
+> ### * L2ScaleFamily-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: L2ScaleFamily-class
+> ### Title: L2 differentiable parametric group family
+> ### Aliases: L2ScaleFamily-class
+> ### Keywords: classes models
+> 
+> ### ** Examples
+> 
+> F1 <- new("L2ScaleFamily")
+> plot(F1)
+> 
+> 
+> 
+> cleanEx(); nameEx("L2ScaleFamily")
+> ### * L2ScaleFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: L2ScaleFamily
+> ### Title: Generating function for L2ScaleFamily-class
+> ### Aliases: L2ScaleFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> F1 <- L2ScaleFamily()
+> plot(F1)
+> 
+> 
+> 
+> cleanEx(); nameEx("L2ScaleUnknownLocationFamily")
+> ### * L2ScaleUnknownLocationFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: L2ScaleUnknownLocationFamily
+> ### Title: Generating function for L2LocationScaleFamily-class in nuisance
+> ###   situation
+> ### Aliases: L2ScaleUnknownLocationFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> F1 <- L2ScaleUnknownLocationFamily()
+> plot(F1)
+> 
+> 
+> 
+> cleanEx(); nameEx("LnormScaleFamily")
+> ### * LnormScaleFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: LnormScaleFamily
+> ### Title: Generating function for lognormal scale families
+> ### Aliases: LnormScaleFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> (L1 <- LnormScaleFamily())
+An object of class "LnormScaleFamily"
+### name:	lognormal scale family
+
+### distribution:	Distribution Object of Class: Lnorm
+ meanlog: 0
+ sdlog: 1
+Warning in show(x) :
+  arithmetics on distributions are understood as operations on r.v.'s
+see 'distrARITH()'; for switching off this warning see '?distroptions'
+
+### param:	An object of class "ParamFamParameter"
+name:	scale
+meanlog:	1
+fixed part of param.:
+	:	0
+trafo:
+      scale
+scale     1
+
+### props:
+[1] "The lognormal scale family is invariant under"
+[2] "the group of transformations 'g(y) = scale*y'"
+[3] "with scale parameter 'scale'"                 
+> plot(L1)
+> Map(L2deriv(L1)[[1]])
+[[1]]
+function (x) 
+{
+    ((x - 0)/1 * LogDeriv((x - 0)/1) - 1)/1
+}
+<environment: 0x8275218>
+
+> checkL2deriv(L1)
+precision of centering:	 -0.003003394 
+precision of Fisher information:
+            meanlog
+meanlog -0.01027919
+$maximum.deviation
+[1] 0.01027919
+
+> 
+> 
+> 
+> cleanEx(); nameEx("MCEstimate-class")
+> ### * MCEstimate-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: MCEstimate-class
+> ### Title: MCEstimate-class.
+> ### Aliases: MCEstimate-class criterion criterion,MCEstimate-method
+> ###   criterion.fct criterion.fct,MCEstimate-method
+> ###   startPar,MCEstimate-method method method,MCEstimate-method optimwarn
+> ###   optimwarn,MCEstimate-method criterion<- criterion<-,MCEstimate-method
+> ###   coerce,MCEstimate,mle-method show,MCEstimate-method
+> ###   profile,MCEstimate-method
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> ## (empirical) Data
+> x <- rgamma(50, scale = 0.5, shape = 3)
+> 
+> ## parametric family of probability measures
+> G <- GammaFamily(scale = 1, shape = 2)
+> 
+> MDEstimator(x, G)
+Evaluations of Minimum Kolmogorov distance estimate:
+----------------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MDEstimator(x = x, ParamFamily = G)
+samplesize:   50
+estimate:
+    scale     shape 
+0.3398645 4.2654569 
+Criterion:
+Kolmogorov distance 
+         0.06350364 
+> (m <- MLEstimator(x, G))
+Evaluations of Maximum likelihood estimate:
+-------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MLEstimator(x = x, ParamFamily = G)
+samplesize:   50
+estimate:
+     scale        shape   
+  0.34200800   4.06028564 
+ (0.07002713) (0.78099026)
+asymptotic (co)variance (multiplied with samplesize):
+           scale     shape
+scale  0.2451899 -2.568863
+shape -2.5688629 30.497289
+Criterion:
+negative log-likelihood 
+                47.9651 
+> m.mle <- as(m,"mle")
+> par(mfrow=c(1,2))
+> plot(profile(m))
+> 
+> 
+> 
+> graphics::par(get("par.postscript", pos = 'CheckExEnv'))
+> cleanEx(); nameEx("MCEstimator")
+> ### * MCEstimator
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: MCEstimator
+> ### Title: Function to compute minimum criterion estimates
+> ### Aliases: MCEstimator
+> ### Keywords: univar
+> 
+> ### ** Examples
+> 
+> ## (empirical) Data
+> x <- rgamma(50, scale = 0.5, shape = 3)
+> 
+> ## parametric family of probability measures
+> G <- GammaFamily(scale = 1, shape = 2)
+> 
+> ## Maximum Likelihood estimator
+> ## Note: you can directly use function MLEstimator!
+> negLoglikelihood <- function(x, Distribution){
++     res <- -sum(log(Distribution@d(x)))
++     names(res) <- "Negative Log-Likelihood"
++     return(res)
++ }
+> MCEstimator(x = x, ParamFamily = G, criterion = negLoglikelihood)
+Evaluations of Minimum criterion estimate:
+------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MCEstimator(x = x, ParamFamily = G, criterion = negLoglikelihood)
+samplesize:   50
+estimate:
+     scale        shape   
+  0.34200800   4.06028564 
+ (0.07002713) (0.78099026)
+asymptotic (co)variance (multiplied with samplesize):
+           scale     shape
+scale  0.2451899 -2.568863
+shape -2.5688629 30.497289
+Criterion:
+        
+47.9651 
+> 
+> ## Kolmogorov(-Smirnov) minimum distance estimator
+> ## Note: you can also use function MDEstimator!
+> MCEstimator(x = x, ParamFamily = G, criterion = KolmogorovDist, 
++             crit.name = "Kolmogorov distance")
+Evaluations of Minimum Kolmogorov distance estimate:
+----------------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MCEstimator(x = x, ParamFamily = G, criterion = KolmogorovDist, 
+    crit.name = "Kolmogorov distance")
+samplesize:   50
+estimate:
+     scale        shape   
+  0.33986453   4.26545692 
+ (0.06950044) (0.82190816)
+asymptotic (co)variance (multiplied with samplesize):
+           scale     shape
+scale  0.2415156 -2.691268
+shape -2.6912675 33.776651
+Criterion:
+Kolmogorov distance 
+         0.06350364 
+> 
+> ## Total variation minimum distance estimator
+> ## Note: you can also use function MDEstimator!
+> ## discretize Gamma distribution
+> MCEstimator(x = x, ParamFamily = G, criterion = TotalVarDist, 
++             crit.name = "Total variation distance")
+Evaluations of Minimum Total variation distance estimate:
+---------------------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MCEstimator(x = x, ParamFamily = G, criterion = TotalVarDist, 
+    crit.name = "Total variation distance")
+samplesize:   50
+estimate:
+     scale        shape   
+  0.28296871   5.01973059 
+ (0.05765312) (0.97241994)
+asymptotic (co)variance (multiplied with samplesize):
+           scale     shape
+scale  0.1661941 -2.665236
+shape -2.6652363 47.280027
+Criterion:
+Total variation distance 
+               0.4866141 
+> 
+> ## or smooth empirical distribution (takes some time!)
+> #MCEstimator(x = x, ParamFamily = G, criterion = TotalVarDist, 
+> #            asis.smooth.discretize = "smooth", crit.name = "Total variation distance")
+> 
+> ## Hellinger minimum distance estimator
+> ## Note: you can also use function MDEstimator!
+> ## discretize Gamma distribution
+> distroptions(DistrResolution = 1e-8)
+> MCEstimator(x = x, ParamFamily = G, criterion = HellingerDist, 
++             crit.name = "Hellinger Distance", startPar = c(1,2))
+Evaluations of Minimum Hellinger Distance estimate:
+---------------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MCEstimator(x = x, ParamFamily = G, criterion = HellingerDist, 
+    crit.name = "Hellinger Distance", startPar = c(1, 2))
+samplesize:   50
+estimate:
+     scale       shape  
+  1.0574423   1.6836445 
+ (0.2257873) (0.3091343)
+asymptotic (co)variance (multiplied with samplesize):
+          scale     shape
+scale  2.548996 -3.001032
+shape -3.001032  4.778201
+Criterion:
+Hellinger Distance 
+         0.3782642 
+> distroptions(DistrResolution = 1e-6)
+> 
+> ## or smooth empirical distribution (takes some time!)
+> #MCEstimator(x = x, ParamFamily = G, criterion = HellingerDist, 
+> #            asis.smooth.discretize = "smooth", crit.name = "Hellinger distance")
+> 
+> 
+> 
+> cleanEx(); nameEx("MDEstimator")
+> ### * MDEstimator
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: MDEstimator
+> ### Title: Function to compute minimum distance estimates
+> ### Aliases: MDEstimator
+> ### Keywords: univar robust
+> 
+> ### ** Examples
+> 
+> ## (empirical) Data
+> x <- rgamma(50, scale = 0.5, shape = 3)
+> 
+> ## parametric family of probability measures
+> G <- GammaFamily(scale = 1, shape = 2)
+> 
+> ## Kolmogorov(-Smirnov) minimum distance estimator
+> MDEstimator(x = x, ParamFamily = G, distance = KolmogorovDist)
+Evaluations of Minimum Kolmogorov distance estimate:
+----------------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MDEstimator(x = x, ParamFamily = G, distance = KolmogorovDist)
+samplesize:   50
+estimate:
+    scale     shape 
+0.3398645 4.2654569 
+Criterion:
+Kolmogorov distance 
+         0.06350364 
+> 
+> ## von Mises minimum distance estimator with default mu
+> MDEstimator(x = x, ParamFamily = G, distance = CvMDist)
+Evaluations of Minimum CvM distance estimate:
+---------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MDEstimator(x = x, ParamFamily = G, distance = CvMDist)
+samplesize:   50
+estimate:
+    scale     shape 
+0.3296938 4.2907460 
+Criterion:
+CvM distance 
+  0.02872404 
+> 
+> ## von Mises minimum distance estimator with default mu
+> MDEstimator(x = x, ParamFamily = G, distance = CvMDist,
++             asvar.fct = distrMod:::.CvMMDCovariance)
+Evaluations of Minimum CvM distance estimate:
+---------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MDEstimator(x = x, ParamFamily = G, distance = CvMDist, asvar.fct = distrMod:::.CvMMDCovariance)
+samplesize:   50
+estimate:
+     scale        shape   
+  0.32969378   4.29074603 
+ (0.08369777) (1.03063291)
+asymptotic (co)variance (multiplied with samplesize):
+           scale     shape
+scale  0.3502659 -4.007671
+shape -4.0076714 53.110210
+Criterion:
+CvM distance 
+  0.02872404 
+> #*** variance routine is still in testing phase so not yet
+> #*** exported to namespace
+> ## von Mises minimum distance estimator with mu = N(0,1)
+> MDEstimator(x = x, ParamFamily = G, distance = CvMDist, mu = Norm())
+Evaluations of Minimum CvM distance estimate:
+---------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MDEstimator(x = x, ParamFamily = G, distance = CvMDist, mu = Norm())
+samplesize:   50
+estimate:
+    scale     shape 
+0.3543892 4.0587606 
+Criterion:
+CvM distance 
+  0.01586171 
+> 
+> ## Total variation minimum distance estimator
+> ## gamma distributions are discretized
+> MDEstimator(x = x, ParamFamily = G, distance = TotalVarDist)
+Evaluations of Minimum total variation distance estimate:
+---------------------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MDEstimator(x = x, ParamFamily = G, distance = TotalVarDist)
+samplesize:   50
+estimate:
+    scale     shape 
+0.2829687 5.0197306 
+Criterion:
+total variation distance 
+               0.4866141 
+> ## or smoothing of emprical distribution (takes some time!)
+> #MDEstimator(x = x, ParamFamily = G, distance = TotalVarDist, asis.smooth.discretize = "smooth")
+> 
+> ## Hellinger minimum distance estimator
+> ## gamma distributions are discretized
+> distroptions(DistrResolution = 1e-10)
+> MDEstimator(x = x, ParamFamily = G, distance = HellingerDist, startPar = c(1,2))
+Evaluations of Minimum Hellinger distance estimate:
+---------------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MDEstimator(x = x, ParamFamily = G, distance = HellingerDist, 
+    startPar = c(1, 2))
+samplesize:   50
+estimate:
+   scale    shape 
+1.057442 1.683644 
+Criterion:
+Hellinger distance 
+         0.3782642 
+> distroptions(DistrResolution = 1e-6) # default
+> ## or smoothing of emprical distribution (takes some time!)
+> #MDEstimator(x = x, ParamFamily = G, distance = HellingerDist, asis.smooth.discretize = "smooth")
+> 
+> 
+> 
+> cleanEx(); nameEx("MLEstimator")
+> ### * MLEstimator
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: MLEstimator
+> ### Title: Function to compute maximum likelihood estimates
+> ### Aliases: MLEstimator
+> ### Keywords: univar
+> 
+> ### ** Examples
+> 
+> #############################
+> ## 1. Binomial data
+> #############################
+> ## (empirical) data
+> x <- rbinom(100, size=25, prob=.25)
+> 
+> ## ML-estimate
+> MLEstimator(x, BinomFamily(size = 25))
+Evaluations of Maximum likelihood estimate:
+-------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MLEstimator(x = x, ParamFamily = BinomFamily(size = 25))
+samplesize:   100
+estimate:
+              
+  0.254000000 
+ (0.008705952)
+fixed part of the parameter:
+size 
+  25 
+asymptotic (co)variance (multiplied with samplesize):
+[1] 0.00757936
+Criterion:
+negative log-likelihood 
+               207.2445 
+> 
+> 
+> #############################
+> ## 2. Poisson data
+> #############################
+> ## Example: Rutherford-Geiger (1910); cf. Feller~(1968), Section VI.7 (a)
+> x <- c(rep(0, 57), rep(1, 203), rep(2, 383), rep(3, 525), rep(4, 532), 
++        rep(5, 408), rep(6, 273), rep(7, 139), rep(8, 45), rep(9, 27), 
++        rep(10, 10), rep(11, 4), rep(12, 0), rep(13, 1), rep(14, 1))
+> 
+> ## ML-estimate
+> MLEstimator(x, PoisFamily())
+Evaluations of Maximum likelihood estimate:
+-------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MLEstimator(x = x, ParamFamily = PoisFamily())
+samplesize:   2608
+estimate:
+             
+  3.87154908 
+ (0.03852908)
+asymptotic (co)variance (multiplied with samplesize):
+[1] 3.871549
+Criterion:
+negative log-likelihood 
+               5352.105 
+> 
+> 
+> #############################
+> ## 3. Normal (Gaussian) location and scale
+> #############################
+> ## (empirical) data
+> x <- rnorm(100)
+> 
+> ## ML-estimate
+> MLEstimator(x, NormLocationScaleFamily())
+Evaluations of Maximum likelihood estimate:
+-------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MLEstimator(x = x, ParamFamily = NormLocationScaleFamily())
+samplesize:   100
+estimate:
+      mean           sd     
+  -0.01757949    0.93530600 
+ ( 0.09353060) ( 0.06613612)
+asymptotic (co)variance (multiplied with samplesize):
+          mean        sd
+mean 0.8747973 0.0000000
+sd   0.0000000 0.4373987
+Criterion:
+negative log-likelihood 
+               135.2057 
+> ## compare:
+> c(mean(x),sd(x))
+[1] -0.01757949  0.94001789
+> 
+> 
+> #############################
+> ## 4. Gamma model
+> #############################
+> ## (empirical) data
+> x <- rgamma(50, scale = 0.5, shape = 3)
+> 
+> ## parametric family of probability measures
+> G <- GammaFamily(scale = 1, shape = 2)
+> 
+> ## Maximum likelihood estimator
+> (res <- MLEstimator(x = x, ParamFamily = G))
+Evaluations of Maximum likelihood estimate:
+-------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MLEstimator(x = x, ParamFamily = G)
+samplesize:   50
+estimate:
+     scale       shape  
+  0.5360537   3.0117887 
+ (0.1108070) (0.5721441)
+asymptotic (co)variance (multiplied with samplesize):
+           scale     shape
+scale  0.6139092 -2.913162
+shape -2.9131624 16.367446
+Criterion:
+negative log-likelihood 
+               61.32426 
+> 
+> ## Asymptotic (CLT-based) confidence interval
+> confint(res)
+A[n] asymptotic (CLT-based) confidence interval:
+         2.5 %    97.5 %
+scale 0.318876 0.7532313
+shape 1.890407 4.1331707
+Type of estimator: Maximum likelihood estimate
+samplesize:   50
+Call by which estimate was produced:
+MLEstimator(x = x, ParamFamily = G)
+> 
+> ## some profiling
+> par(mfrow=c(1,2))
+> plot(profile(res))
+> par(mfrow=c(1,1))
+> 
+> ## implementation of ML-estimator of package MASS
+> require(MASS)
+> (res1 <- fitdistr(x, "gamma"))
+     shape       rate   
+  3.0117832   1.8655645 
+ (0.5721423) (0.3856279)
+> 
+> ## comparison
+> ## shape
+> estimate(res)[2]
+   shape 
+3.011789 
+> ## rate
+> 1/estimate(res)[1]
+   scale 
+1.865485 
+> 
+> ## minor differences due to the fact that by default, fitdistr uses
+> ## BFGS, while we use Nelder-Mead instead
+> 
+> ## log-likelihood
+> res1$loglik
+[1] -61.32426
+> ## negative log-likelihood
+> criterion(res)
+negative log-likelihood 
+               61.32426 
+> 
+> 
+> ## explicitely transforming to
+> ## MASS parametrization:
+> mtrafo <- function(x){
++      nms0 <- names(c(main(param(G)),nuisance(param(G))))
++      nms <- c("shape","rate")
++      fval0 <- c(x[2], 1/x[1])
++      names(fval0) <- nms
++      mat0 <- matrix( c(0, -1/x[1]^2, 1, 0), nrow = 2, ncol = 2,
++                      dimnames = list(nms,nms0))                          
++      list(fval = fval0, mat = mat0)}
+> 
+> G2 <- G
+> trafo(G2) <- mtrafo
+> res2 <- MLEstimator(x = x, ParamFamily = G2)
+> 
+> old <- getdistrModOption("show.details")
+> distrModoptions("show.details" = "minimal")
+> res1
+     shape       rate   
+  3.0117832   1.8655645 
+ (0.5721423) (0.3856279)
+> res2
+Evaluations of Maximum likelihood estimate:
+-------------------------------------------
+     shape       rate   
+  3.0117887   1.8654848 
+ (0.5721441) (0.3856120)
+> 
+> ## some profiling
+> par(mfrow=c(1,2))
+> plot(profile(res2))
+> par(mfrow=c(1,1))
+> 
+> #############################
+> ## 5. Cauchy Location Scale model
+> #############################
+> (C <- CauchyLocationScaleFamily())
+An object of class "CauchyLocationScaleFamily"
+### name:	Cauchy Location and scale family
+
+### distribution:	Distribution Object of Class: Cauchy
+ location: 0
+ scale: 1
+
+### param:	An object of class "ParamFamParameter"
+name:	location and scale
+loc:	0
+scale:	1
+
+### props:
+[1] "The Cauchy Location and scale family is invariant under"  
+[2] "the group of transformations 'g(x) = scale*x + loc'"      
+[3] "with location parameter 'loc' and scale parameter 'scale'"
+> loc.true <- 1
+> scl.true <- 2
+> 
+> ## (empirical) data
+> x <- rcauchy(50, location = loc.true, scale = scl.true)
+> 
+> ## Maximum likelihood estimator
+> (res <- MLEstimator(x = x, ParamFamily = C))
+Evaluations of Maximum likelihood estimate:
+-------------------------------------------
+      loc        scale  
+  1.2124856   1.6358162 
+ (0.3271632) (0.3271632)
+> ## Asymptotic (CLT-based) confidence interval
+> confint(res)
+A[n] asymptotic (CLT-based) confidence interval:
+          2.5 %   97.5 %
+loc   0.5712574 1.853714
+scale 0.9945880 2.277044
+> 
+> 
+> 
+> 
+> graphics::par(get("par.postscript", pos = 'CheckExEnv'))
+> cleanEx(); nameEx("NonSymmetric-class")
+> ### * NonSymmetric-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: NonSymmetric-class
+> ### Title: Class for Non-symmetric Functions
+> ### Aliases: NonSymmetric-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("NonSymmetric")
+type of symmetry:	non-symmetric function
+NULL
+> 
+> 
+> 
+> cleanEx(); nameEx("NonSymmetric")
+> ### * NonSymmetric
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: NonSymmetric
+> ### Title: Generating function for NonSymmetric-class
+> ### Aliases: NonSymmetric
+> ### Keywords: math
+> 
+> ### ** Examples
+> 
+> NonSymmetric()
+type of symmetry:	non-symmetric function
+NULL
+> 
+> ## The function is currently defined as
+> function(){ new("NonSymmetric") }
+function () 
+{
+    new("NonSymmetric")
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("NormLocationFamily")
+> ### * NormLocationFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: NormLocationFamily
+> ### Title: Generating function for normal location families
+> ### Aliases: NormLocationFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> (N1 <- NormLocationFamily())
+An object of class "NormLocationFamily"
+### name:	normal location family
+
+### distribution:	Distribution Object of Class: Norm
+ mean: 0
+ sd: 1
+Warning in show(x) :
+  arithmetics on distributions are understood as operations on r.v.'s
+see 'distrARITH()'; for switching off this warning see '?distroptions'
+
+### param:	An object of class "ParamFamParameter"
+name:	loc
+mean:	0
+
+### props:
+[1] "The normal location family is invariant under"
+[2] "the group of transformations 'g(x) = x + loc'"
+[3] "with location parameter 'loc'"                
+> plot(N1)
+> L2derivDistr(N1)
+An object of class "UnivarDistrList"
+ [[1]] Distribution Object of Class: Norm
+       :mean: 0
+       :sd: 1
+> 
+> 
+> 
+> cleanEx(); nameEx("NormLocationScaleFamily")
+> ### * NormLocationScaleFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: NormLocationScaleFamily
+> ### Title: Generating function for normal location and scale families
+> ### Aliases: NormLocationScaleFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> (N1 <- NormLocationScaleFamily())
+An object of class "NormLocationScaleFamily"
+### name:	normal location and scale family
+
+### distribution:	Distribution Object of Class: Norm
+ mean: 0
+ sd: 1
+Warning in show(x) :
+  arithmetics on distributions are understood as operations on r.v.'s
+see 'distrARITH()'; for switching off this warning see '?distroptions'
+
+### param:	An object of class "ParamFamParameter"
+name:	location and scale
+mean:	0
+sd:	1
+
+### props:
+[1] "The normal location and scale family is invariant under"  
+[2] "the group of transformations 'g(x) = scale*x + loc'"      
+[3] "with location parameter 'loc' and scale parameter 'scale'"
+> plot(N1)
+> FisherInfo(N1)
+An object of class “PosDefSymmMatrix”
+     mean sd
+mean    1  0
+sd      0  2
+> checkL2deriv(N1)
+precision of centering:	 0 -5.594001e-06 
+precision of Fisher information:
+              mean            sd
+mean -5.794001e-06  0.0000000000
+sd    0.000000e+00 -0.0001572173
+$maximum.deviation
+[1] 0.0001572173
+
+> 
+> 
+> 
+> cleanEx(); nameEx("NormLocationUnknownScaleFamily")
+> ### * NormLocationUnknownScaleFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: NormLocationUnknownScaleFamily
+> ### Title: Generating function for normal location families with unknown
+> ###   scale as nuisance
+> ### Aliases: NormLocationUnknownScaleFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> (N1 <- NormLocationUnknownScaleFamily())
+An object of class "L2LocationScaleFamily"
+### name:	normal location family with unknown scale (as nuisance)
+
+### distribution:	Distribution Object of Class: Norm
+ mean: 0
+ sd: 1
+Warning in show(x) :
+  arithmetics on distributions are understood as operations on r.v.'s
+see 'distrARITH()'; for switching off this warning see '?distroptions'
+
+### param:	An object of class "ParamFamParameter"
+name:	location and scale
+mean:	0
+nuisance:
+sd:	1
+
+### props:
+[1] "The normal location family with unknown scale (as nuisance) is invariant under"
+[2] "the group of transformations 'g(x) = scale*x + loc'"                           
+[3] "with location parameter 'loc' and scale parameter 'scale'"                     
+> plot(N1)
+> FisherInfo(N1)
+An object of class “PosDefSymmMatrix”
+     mean sd
+mean    1  0
+sd      0  2
+> checkL2deriv(N1)
+precision of centering:	 0 -5.594001e-06 
+precision of Fisher information:
+              mean            sd
+mean -5.794001e-06  0.0000000000
+sd    0.000000e+00 -0.0001572173
+$maximum.deviation
+[1] 0.0001572173
+
+> 
+> 
+> 
+> cleanEx(); nameEx("NormScaleFamily")
+> ### * NormScaleFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: NormScaleFamily
+> ### Title: Generating function for normal scale families
+> ### Aliases: NormScaleFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> (N1 <- NormScaleFamily())
+An object of class "NormScaleFamily"
+### name:	normal scale family
+
+### distribution:	Distribution Object of Class: Norm
+ mean: 0
+ sd: 1
+Warning in show(x) :
+  arithmetics on distributions are understood as operations on r.v.'s
+see 'distrARITH()'; for switching off this warning see '?distroptions'
+
+### param:	An object of class "ParamFamParameter"
+name:	scale
+sd:	1
+fixed part of param.:
+	mean:	0
+
+### props:
+[1] "The normal scale family is invariant under"   
+[2] "the group of transformations 'g(y) = scale*y'"
+[3] "with scale parameter 'scale'"                 
+> plot(N1)
+> FisherInfo(N1)
+An object of class “PosDefSymmMatrix”
+   sd
+sd  2
+> checkL2deriv(N1)
+precision of centering:	 -5.594001e-06 
+precision of Fisher information:
+              sd
+sd -0.0001572173
+$maximum.deviation
+[1] 0.0001572173
+
+> 
+> 
+> 
+> cleanEx(); nameEx("NormScaleUnknownLocationFamily")
+> ### * NormScaleUnknownLocationFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: NormScaleUnknownLocationFamily
+> ### Title: Generating function for normal scale families with unknown
+> ###   location as nuisance
+> ### Aliases: NormScaleUnknownLocationFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> (N1 <- NormScaleUnknownLocationFamily())
+An object of class "L2LocationScaleFamily"
+### name:	normal scale family with unknown location (as nuisance)
+
+### distribution:	Distribution Object of Class: Norm
+ mean: 0
+ sd: 1
+Warning in show(x) :
+  arithmetics on distributions are understood as operations on r.v.'s
+see 'distrARITH()'; for switching off this warning see '?distroptions'
+
+### param:	An object of class "ParamFamParameter"
+name:	scale and location
+sd:	1
+nuisance:
+mean:	0
+
+### props:
+[1] "The normal scale family with unknown location (as nuisance) is invariant under"
+[2] "the group of transformations 'g(x) = scale*x + loc'"                           
+[3] "with location parameter 'loc' and scale parameter 'scale'"                     
+> plot(N1)
+> FisherInfo(N1)
+An object of class “PosDefSymmMatrix”
+     sd mean
+sd    1    0
+mean  0    2
+> checkL2deriv(N1)
+precision of centering:	 0 -5.594001e-06 
+precision of Fisher information:
+                sd          mean
+sd   -5.794001e-06  0.0000000000
+mean  0.000000e+00 -0.0001572173
+$maximum.deviation
+[1] 0.0001572173
+
+> 
+> 
+> 
+> cleanEx(); nameEx("NormType-class")
+> ### * NormType-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: NormType-class
+> ### Title: Norm Type
+> ### Aliases: NormType-class name,NormType-method name<-,NormType-method fct
+> ###   fct<- fct,NormType-method fct<-,NormType-method
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> EuclNorm <- NormType("EuclideanNorm",EuclideanNorm)
+> fct(EuclNorm)
+function (x) 
+{
+    if (is.vector(x)) 
+        return(abs(x))
+    else return(sqrt(colSums(x^2)))
+}
+<environment: namespace:distrMod>
+> name(EuclNorm)
+[1] "EuclideanNorm"
+> 
+> 
+> 
+> cleanEx(); nameEx("NormType")
+> ### * NormType
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: NormType
+> ### Title: Generating function for NormType-class
+> ### Aliases: NormType
+> ### Keywords: math
+> 
+> ### ** Examples
+> 
+> NormType()
+An object of class “NormType”
+Slot "name":
+[1] "EuclideanNorm"
+
+Slot "fct":
+function (x) 
+{
+    if (is.vector(x)) 
+        return(abs(x))
+    else return(sqrt(colSums(x^2)))
+}
+<environment: namespace:distrMod>
+
+> 
+> 
+> 
+> cleanEx(); nameEx("OddSymmetric-class")
+> ### * OddSymmetric-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: OddSymmetric-class
+> ### Title: Class for Odd Functions
+> ### Aliases: OddSymmetric-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("OddSymmetric")
+type of symmetry:	odd function
+center of symmetry:
+numeric(0)
+> 
+> 
+> 
+> cleanEx(); nameEx("OddSymmetric")
+> ### * OddSymmetric
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: OddSymmetric
+> ### Title: Generating function for OddSymmetric-class
+> ### Aliases: OddSymmetric
+> ### Keywords: math
+> 
+> ### ** Examples
+> 
+> OddSymmetric()
+type of symmetry:	odd function
+center of symmetry:
+[1] 0
+> 
+> ## The function is currently defined as
+> function(SymmCenter = 0){ 
++     new("OddSymmetric", SymmCenter = SymmCenter) 
++ }
+function (SymmCenter = 0) 
+{
+    new("OddSymmetric", SymmCenter = SymmCenter)
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("ParamFamParameter-class")
+> ### * ParamFamParameter-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: ParamFamParameter-class
+> ### Title: Parameter of a parametric family of probability measures
+> ### Aliases: ParamFamParameter-class length,ParamFamParameter-method
+> ###   dimension,ParamFamParameter-method main main,ParamFamParameter-method
+> ###   main<- main<-,ParamFamParameter-method nuisance
+> ###   nuisance,ParamFamParameter-method nuisance<-
+> ###   nuisance<-,ParamFamParameter-method fixed
+> ###   fixed,ParamFamParameter-method fixed<-
+> ###   fixed<-,ParamFamParameter-method show,ParamFamParameter-method
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("ParamFamParameter")
+An object of class "ParamFamParameter"
+name:	parameter of a parametric family of probability measures
+> 
+> 
+> 
+> cleanEx(); nameEx("ParamFamParameter")
+> ### * ParamFamParameter
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: ParamFamParameter
+> ### Title: Generating function for ParamFamParameter-class
+> ### Aliases: ParamFamParameter
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> ParamFamParameter(main = 0, nuisance = 1, fixed = 2,
++                   trafo = function(x) list(fval = sin(x), 
++                                             mat = matrix(cos(x),1,1))
++                   )                          
+An object of class "ParamFamParameter"
+name:	parameter of a parametric family of probability measures
+main:	0
+nuisance:	1
+fixed part of param.:	2
+> 
+> 
+> 
+> 
+> cleanEx(); nameEx("ParamFamily-class")
+> ### * ParamFamily-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: ParamFamily-class
+> ### Title: Parametric family of probability measures.
+> ### Aliases: ParamFamily-class main,ParamFamily-method
+> ###   nuisance,ParamFamily-method fixed,ParamFamily-method
+> ###   param,ParamFamily-method modifyParam modifyParam,ParamFamily-method
+> ###   fam.call fam.call,ParamFamily-method startPar
+> ###   startPar,ParamFamily-method makeOKPar makeOKPar,ParamFamily-method
+> ###   plot,ParamFamily,missing-method show,ParamFamily-method
+> ### Keywords: classes models
+> 
+> ### ** Examples
+> 
+> F1 <- new("ParamFamily") # prototype
+> plot(F1)
+> 
+> 
+> 
+> cleanEx(); nameEx("ParamFamily")
+> ### * ParamFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: ParamFamily
+> ### Title: Generating function for ParamFamily-class
+> ### Aliases: ParamFamily
+> ### Keywords: distribution models
+> 
+> ### ** Examples
+> 
+> 
+> ## "default" (normal location)
+> F1 <- ParamFamily(modifyParam = function(theta){ Norm(mean = theta) })
+> plot(F1)
+> 
+> ################################
+> ## Some examples:
+> ################################
+> ## 1. Normal location family
+> theta <- 0
+> names(theta) <- "mean"
+> NL <- ParamFamily(name = "Normal location family",
++           param = ParamFamParameter(name = "location parameter", main = theta),
++           distribution = Norm(mean = 0, sd = 1), ## sd known!
++           startPar = function(x,...) c(min(x),max(x)),
++           distrSymm <- SphericalSymmetry(SymmCenter = 0),
++           modifyParam = function(theta){ Norm(mean = theta, sd = 1) },
++           props = paste(c("The normal location family is invariant under",
++                     "the group of transformations 'g(x) = x + mean'",
++                     "with location parameter 'mean'"), collapse = " "))
+> NL
+An object of class "ParamFamily"
+### name:	Normal location family
+
+### distribution:	Distribution Object of Class: Norm
+ mean: 0
+ sd: 1
+
+### param:	An object of class "ParamFamParameter"
+name:	location parameter
+mean:	0
+
+### props:
+[1] "The normal location family is invariant under the group of transformations 'g(x) = x + mean' with location parameter 'mean'"
+> 
+> ## 2. Normal scale family
+> theta <- 1
+> names(theta) <- "sd"
+> NS <- ParamFamily(name = "Normal scale family",
++           param = ParamFamParameter(name = "scale parameter", main = theta),
++           distribution = Norm(mean = 0, sd = 1), ## mean known!
++           startPar = function(x,...) c(0,-min(x)+max(x)),
++           distrSymm <- SphericalSymmetry(SymmCenter = 0),
++           modifyParam = function(theta){ Norm(mean = 0, sd = theta) },
++           props = paste(c("The normal scale family is invariant under",
++                     "the group of transformations 'g(y) = sd*y'",
++                     "with scale parameter 'sd'"), collapse = " "))
+> NS
+An object of class "ParamFamily"
+### name:	Normal scale family
+
+### distribution:	Distribution Object of Class: Norm
+ mean: 0
+ sd: 1
+
+### param:	An object of class "ParamFamParameter"
+name:	scale parameter
+sd:	1
+
+### props:
+[1] "The normal scale family is invariant under the group of transformations 'g(y) = sd*y' with scale parameter 'sd'"
+> 
+> ## 3. Normal location and scale family
+> theta <- c(0, 1)
+> names(theta) <- c("mean", "sd")
+> NLS <- ParamFamily(name = "Normal location and scale family",
++           param = ParamFamParameter(name = "location and scale parameter",
++                                     main = theta),
++           distribution = Norm(mean = 0, sd = 1),
++           startPar = function(x,...) c(median(x),mad(x)),
++           makeOKPar = function(param) {param[2]<-abs(param[2]); return(param)},
++           distrSymm <- SphericalSymmetry(SymmCenter = 0),
++           modifyParam = function(theta){
++                             Norm(mean = theta[1], sd = theta[2])
++                         },
++           props = paste(c("The normal location and scale family is",
++                     "invariant under the group of transformations",
++                     "'g(x) = sd*x + mean' with location parameter",
++                     "'mean' and scale parameter 'sd'"),
++                     collapse = " "))
+> NLS
+An object of class "ParamFamily"
+### name:	Normal location and scale family
+
+### distribution:	Distribution Object of Class: Norm
+ mean: 0
+ sd: 1
+
+### param:	An object of class "ParamFamParameter"
+name:	location and scale parameter
+mean:	0
+sd:	1
+
+### props:
+[1] "The normal location and scale family is invariant under the group of transformations 'g(x) = sd*x + mean' with location parameter 'mean' and scale parameter 'sd'"
+> 
+> ## 4. Binomial family
+> theta <- 0.3
+> names(theta) <- "prob"
+> B <- ParamFamily(name = "Binomial family",
++          param = ParamFamParameter(name = "probability of success", 
++                                    main = theta),
++          startPar = function(x,...) c(0,1),
++          distribution = Binom(size = 15, prob = 0.3), ## size known!
++          modifyParam = function(theta){ Binom(size = 15, prob = theta) },
++          props = paste(c("The Binomial family is symmetric with respect",
++                    "to prob = 0.5; i.e.,",
++                    "d(Binom(size, prob))(k)=d(Binom(size,1-prob))(size-k)"),
++                    collapse = " "))
+> B
+An object of class "ParamFamily"
+### name:	Binomial family
+
+### distribution:	Distribution Object of Class: Binom
+ size: 15
+ prob: 0.3
+
+### param:	An object of class "ParamFamParameter"
+name:	probability of success
+prob:	0.3
+
+### props:
+[1] "The Binomial family is symmetric with respect to prob = 0.5; i.e., d(Binom(size, prob))(k)=d(Binom(size,1-prob))(size-k)"
+> 
+> ## 5. Poisson family
+> theta <- 7
+> names(theta) <- "lambda"
+> P <- ParamFamily(name = "Poisson family",
++           param = ParamFamParameter(name = "positive mean", main = theta),
++           startPar = function(x,...) c(0,max(x)),
++           distribution = Pois(lambda = 7),
++           modifyParam = function(theta){ Pois(lambda = theta) })
+> P
+An object of class "ParamFamily"
+### name:	Poisson family
+
+### distribution:	Distribution Object of Class: Pois
+ lambda: 7
+
+### param:	An object of class "ParamFamParameter"
+name:	positive mean
+lambda:	7
+> 
+> ## 6. Gumbel location family
+> theta <- 0
+> names(theta) <- "loc"
+> GL <- ParamFamily(name = "Gumbel location family",
++           param = ParamFamParameter(name = "location parameter", main = theta),
++           startPar = function(x,...) c(min(x),max(x)),
++           distribution = Gumbel(loc = 0, scale = 1), ## scale known!
++           modifyParam = function(theta){ Gumbel(loc = theta, scale = 1) },
++           props = paste(c("The Gumbel location family is invariant under",
++                     "the group of transformations 'g(x) = x + loc'",
++                     "with location parameter 'loc'"), collapse = " "))
+> GL
+An object of class "ParamFamily"
+### name:	Gumbel location family
+
+### distribution:	Distribution Object of Class: Gumbel
+ loc: 0
+ scale: 1
+
+### param:	An object of class "ParamFamParameter"
+name:	location parameter
+loc:	0
+
+### props:
+[1] "The Gumbel location family is invariant under the group of transformations 'g(x) = x + loc' with location parameter 'loc'"
+> 
+> ## 7. Exponential scale family
+> theta <- 2
+> names(theta) <- "scale"
+> ES <- ParamFamily(name = "Exponential scale family",
++           param = ParamFamParameter(name = "scale parameter", main = theta),
++           startPar = function(x,...) c(0,max(x)-min(x)),
++           distribution = Exp(rate = 1/2),
++           modifyParam = function(theta){ Exp(rate = 1/theta) },
++           props = paste(c("The Exponential scale family is invariant under",
++                     "the group of transformations 'g(y) = scale*y'",
++                     "with scale parameter 'scale = 1/rate'"),
++                     collapse = " " ))
+> ES
+An object of class "ParamFamily"
+### name:	Exponential scale family
+
+### distribution:	Distribution Object of Class: Exp
+ rate: 0.5
+
+### param:	An object of class "ParamFamParameter"
+name:	scale parameter
+scale:	2
+
+### props:
+[1] "The Exponential scale family is invariant under the group of transformations 'g(y) = scale*y' with scale parameter 'scale = 1/rate'"
+> 
+> ## 8. Lognormal scale family
+> theta <- 2
+> names(theta) <- "scale"
+> LS <- ParamFamily(name = "Lognormal scale family",
++           param = ParamFamParameter(name = "scale parameter", main = theta),
++           startPar = function(x,...) c(0,max(x)-min(x)),
++           distribution = Lnorm(meanlog = log(2), sdlog = 2),## sdlog known!
++           modifyParam = function(theta){ 
++                             Lnorm(meanlog = log(theta), sdlog = 2) 
++                         },
++           props = paste(c("The Lognormal scale family is invariant under",
++                     "the group of transformations 'g(y) = scale*y'",
++                     "with scale parameter 'scale = exp(meanlog)'"),
++                     collapse = " "))
+> LS
+An object of class "ParamFamily"
+### name:	Lognormal scale family
+
+### distribution:	Distribution Object of Class: Lnorm
+ meanlog: 0.693147180559945
+ sdlog: 2
+
+### param:	An object of class "ParamFamParameter"
+name:	scale parameter
+scale:	2
+
+### props:
+[1] "The Lognormal scale family is invariant under the group of transformations 'g(y) = scale*y' with scale parameter 'scale = exp(meanlog)'"
+> 
+> ## 9. Gamma family
+> theta <- c(1, 2)
+> names(theta) <- c("scale", "shape")
+> G <- ParamFamily(name = "Gamma family",
++         param = ParamFamParameter(name = "scale and shape", main = theta),
++         startPar = function(x,...) {E <- mean(x); V <- var(X); c(V/E,E^2/V)},
++         makeOKPar = function(param) abs(param),
++         distribution = Gammad(scale = 1, shape = 2),
++         modifyParam = function(theta){ 
++                           Gammad(scale = theta[1], shape = theta[2]) 
++                       },
++         props = paste(c("The Gamma family is scale invariant via the",
++                   "parametrization '(nu,shape)=(log(scale),shape)'"),
++                   collapse = " "))
+> G
+An object of class "ParamFamily"
+### name:	Gamma family
+
+### distribution:	Distribution Object of Class: Gammad
+ shape: 2
+ scale: 1
+
+### param:	An object of class "ParamFamParameter"
+name:	scale and shape
+scale:	1
+shape:	2
+
+### props:
+[1] "The Gamma family is scale invariant via the parametrization '(nu,shape)=(log(scale),shape)'"
+> 
+> 
+> 
+> cleanEx(); nameEx("PoisFamily")
+> ### * PoisFamily
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: PoisFamily
+> ### Title: Generating function for Poisson families
+> ### Aliases: PoisFamily
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> (P1 <- PoisFamily(lambda = 4.5))
+An object of class "PoisFamily"
+### name:	Poisson family
+
+### distribution:	Distribution Object of Class: Pois
+ lambda: 4.5
+
+### param:	An object of class "ParamFamParameter"
+name:	positive mean
+lambda:	4.5
+> plot(P1)
+> FisherInfo(P1)
+An object of class “PosSemDefSymmMatrix”
+          lambda
+lambda 0.2222222
+> checkL2deriv(P1)
+precision of centering:	 -9.934798e-07 
+precision of Fisher information:
+              lambda
+lambda -3.268427e-06
+$maximum.deviation
+[1] 3.268427e-06
+
+> 
+> 
+> 
+> cleanEx(); nameEx("QFNorm")
+> ### * QFNorm
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: QFNorm
+> ### Title: Generating function for QFNorm-class
+> ### Aliases: QFNorm
+> ### Keywords: math
+> 
+> ### ** Examples
+> 
+> QFNorm()
+An object of class “QFNorm”
+Slot "QuadForm":
+An object of class “PosSemDefSymmMatrix”
+     [,1]
+[1,]    1
+
+Slot "name":
+[1] "norm based on quadratic form"
+
+Slot "fct":
+function (x) 
+QuadFormNorm(x, A = A0)
+<environment: 0x58c2278>
+
+> 
+> ## The function is currently defined as
+> function(){ new("QFNorm") }
+function () 
+{
+    new("QFNorm")
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("SelfNorm")
+> ### * SelfNorm
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: SelfNorm
+> ### Title: Generating function for SelfNorm-class
+> ### Aliases: SelfNorm
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> SelfNorm()
+An object of class “SelfNorm”
+Slot "QuadForm":
+An object of class “PosSemDefSymmMatrix”
+     [,1]
+[1,]    1
+
+Slot "name":
+[1] "Information matrix Norm"
+
+Slot "fct":
+function (x) 
+QuadFormNorm(x, A = A)
+<environment: 0x4d56b78>
+
+> 
+> ## The function is currently defined as
+> function(){ new("SelfNorm") }
+function () 
+{
+    new("SelfNorm")
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("asBias-class")
+> ### * asBias-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: asBias-class
+> ### Title: Standardized Asymptotic Bias
+> ### Aliases: asBias-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("asBias")
+An object of class “asBias” 
+risk type:	 asymptotic bias 
+> 
+> 
+> 
+> cleanEx(); nameEx("asBias")
+> ### * asBias
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: asBias
+> ### Title: Generating function for asBias-class
+> ### Aliases: asBias
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> asBias()
+An object of class “asBias” 
+risk type:	 asymptotic bias 
+> 
+> ## The function is currently defined as
+> function(biastype = symmetricBias(), normtype = NormType()){ 
++      new("asBias",biastype = biastype, normtype = normtype) }
+function (biastype = symmetricBias(), normtype = NormType()) 
+{
+    new("asBias", biastype = biastype, normtype = normtype)
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("asCov-class")
+> ### * asCov-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: asCov-class
+> ### Title: Asymptotic covariance
+> ### Aliases: asCov-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("asCov")
+An object of class “asCov” 
+risk type:	 asymptotic covariance 
+> 
+> 
+> 
+> cleanEx(); nameEx("asCov")
+> ### * asCov
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: asCov
+> ### Title: Generating function for asCov-class
+> ### Aliases: asCov
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> asCov()
+An object of class “asCov” 
+risk type:	 asymptotic covariance 
+> 
+> ## The function is currently defined as
+> function(){ new("asCov") }
+function () 
+{
+    new("asCov")
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("asHampel-class")
+> ### * asHampel-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: asHampel-class
+> ### Title: Asymptotic Hampel risk
+> ### Aliases: asHampel-class bound bound,asHampel-method
+> ###   show,asHampel-method
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("asHampel")
+An object of class “asHampel” 
+risk type:	 trace of asymptotic covariance for given bias bound 
+bound:	 Inf 
+> 
+> 
+> 
+> cleanEx(); nameEx("asHampel")
+> ### * asHampel
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: asHampel
+> ### Title: Generating function for asHampel-class
+> ### Aliases: asHampel
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> asHampel()
+An object of class “asHampel” 
+risk type:	 trace of asymptotic covariance for given bias bound 
+bound:	 Inf 
+> 
+> ## The function is currently defined as
+> function(bound = Inf, biastype = symmetricBias(), normtype = NormType()){ 
++     new("asHampel", bound = bound, biastype = biastype, normtype = normtype) }
+function (bound = Inf, biastype = symmetricBias(), normtype = NormType()) 
+{
+    new("asHampel", bound = bound, biastype = biastype, normtype = normtype)
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("asMSE-class")
+> ### * asMSE-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: asMSE-class
+> ### Title: Asymptotic mean square error
+> ### Aliases: asMSE-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("asMSE")
+An object of class “asMSE” 
+risk type:	 asymptotic mean square error 
+> 
+> 
+> 
+> cleanEx(); nameEx("asMSE")
+> ### * asMSE
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: asMSE
+> ### Title: Generating function for asMSE-class
+> ### Aliases: asMSE
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> asMSE()
+An object of class “asMSE” 
+risk type:	 asymptotic mean square error 
+> 
+> ## The function is currently defined as
+> function(biastype = symmetricBias(), normtype = NormType()){ 
++          new("asMSE", biastype = biastype, normtype = normtype) }
+function (biastype = symmetricBias(), normtype = NormType()) 
+{
+    new("asMSE", biastype = biastype, normtype = normtype)
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("asSemivar-class")
+> ### * asSemivar-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: asSemivar-class
+> ### Title: Semivariance Risk Type
+> ### Aliases: asSemivar-class sign,asSemivar-method sign<-,asSemivar-method
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> asSemivar()
+An object of class “asSemivar” 
+risk type:	 asymptotic Semivariance 
+> 
+> 
+> 
+> cleanEx(); nameEx("asSemivar")
+> ### * asSemivar
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: asSemivar
+> ### Title: Generating function for asSemivar-class
+> ### Aliases: asSemivar
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> asSemivar()
+An object of class “asSemivar” 
+risk type:	 asymptotic Semivariance 
+> 
+> 
+> 
+> 
+> cleanEx(); nameEx("asUnOvShoot-class")
+> ### * asUnOvShoot-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: asUnOvShoot-class
+> ### Title: Asymptotic under-/overshoot probability
+> ### Aliases: asUnOvShoot-class width width,asUnOvShoot-method
+> ###   show,asUnOvShoot-method
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("asUnOvShoot")
+An object of class “asUnOvShoot” 
+risk type:	 asymptotic under-/overshoot probability 
+width:	  
+> 
+> 
+> 
+> cleanEx(); nameEx("asUnOvShoot")
+> ### * asUnOvShoot
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: asUnOvShoot
+> ### Title: Generating function for asUnOvShoot-class
+> ### Aliases: asUnOvShoot
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> asUnOvShoot()
+An object of class “asUnOvShoot” 
+risk type:	 asymptotic under-/overshoot probability 
+width:	 1.96 
+> 
+> ## The function is currently defined as
+> function(width = 1.960, biastype = symmetricBias()){ 
++      new("asUnOvShoot", width = width, biastype = biastype) }
+function (width = 1.96, biastype = symmetricBias()) 
+{
+    new("asUnOvShoot", width = width, biastype = biastype)
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("asymmetricBias-class")
+> ### * asymmetricBias-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: asymmetricBias-class
+> ### Title: asymmetric Bias Type
+> ### Aliases: asymmetricBias-class nu,asymmetricBias-method
+> ###   nu<-,asymmetricBias-method nu nu<-
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> asymmetricBias()
+An object of class “asymmetricBias”
+Slot "nu":
+[1] 1 1
+
+Slot "name":
+[1] "asymmetric Bias"
+
+> ## The function is currently defined as
+> function(){ new("asymmetricBias", name = "asymmetric Bias", nu = c(1,1)) }
+function () 
+{
+    new("asymmetricBias", name = "asymmetric Bias", nu = c(1, 
+        1))
+}
+> 
+> aB <- asymmetricBias()
+> nu(aB)
+[1] 1 1
+> try(nu(aB) <- -2) ## error
+Error in `nu<-`(`*tmp*`, value = -2) : 
+  Left value has to be in (0,1]x(0,1] with maximum 1
+> nu(aB) <- c(0.3,1)
+> 
+> 
+> 
+> cleanEx(); nameEx("asymmetricBias")
+> ### * asymmetricBias
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: asymmetricBias
+> ### Title: Generating function for asymmetricBias-class
+> ### Aliases: asymmetricBias
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> asymmetricBias()
+An object of class “asymmetricBias”
+Slot "nu":
+[1] 1 1
+
+Slot "name":
+[1] "asymmetric Bias"
+
+> 
+> ## The function is currently defined as
+> function(){ new("asymmetricBias", name = "asymmetric Bias", nu = c(1,1)) }
+function () 
+{
+    new("asymmetricBias", name = "asymmetric Bias", nu = c(1, 
+        1))
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("checkL2deriv")
+> ### * checkL2deriv
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: checkL2deriv
+> ### Title: Generic function for checking L2-derivatives
+> ### Aliases: checkL2deriv
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> F1 <- new("L2ParamFamily")
+> checkL2deriv(F1)
+precision of centering:	 0 
+precision of Fisher information:
+              [,1]
+[1,] -5.794001e-06
+$maximum.deviation
+[1] 5.794001e-06
+
+> 
+> 
+> 
+> cleanEx(); nameEx("confint-methods")
+> ### * confint-methods
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: confint-methods
+> ### Title: Methods for function confint in Package `distrMod'
+> ### Aliases: confint-methods confint confint,ANY,missing-method
+> ###   confint,Estimate,missing-method confint,mle,missing-method
+> ###   confint,profile.mle,missing-method
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> ## for signature ANY examples confer stats::confint
+> ## (empirical) Data
+> x <- rgamma(50, scale = 0.5, shape = 3)
+> 
+> ## parametric family of probability measures
+> G <- GammaFamily(scale = 1, shape = 2)
+> 
+> ## Maximum likelihood estimator
+> res <- MLEstimator(x = x, ParamFamily = G)
+> confint(res)
+A[n] asymptotic (CLT-based) confidence interval:
+          2.5 %    97.5 %
+scale 0.2047574 0.4792587
+shape 2.5295729 5.5909984
+> 
+> ### for comparison:
+> require(MASS)
+> (res1 <- fitdistr(x, "gamma"))
+     shape       rate   
+  4.0607656   2.9242972 
+ (0.7810853) (0.5987559)
+> ## add a convenient (albeit wrong)
+> ## S3-method for vcov:
+> ## --- wrong as in general cov-matrix
+> ##     will not be diagonal
+> ## but for conf-interval this does
+> ## not matter...
+> vcov.fitdistr <- function(object, ...){
++      v<-diag(object$sd^2)
++      rownames(v) <- colnames(v) <- names(object$estimate) 
++      v}
+> 
+> ## explicitely transforming to
+> ## MASS parametrization:
+> mtrafo <- function(x){
++      nms0 <- names(c(main(param(G)),nuisance(param(G))))
++      nms <- c("shape","rate")
++      fval0 <- c(x[2], 1/x[1])
++      names(fval0) <- nms
++      mat0 <- matrix( c(0, -1/x[1]^2, 1, 0), nrow = 2, ncol = 2,
++                      dimnames = list(nms,nms0))                          
++      list(fval = fval0, mat = mat0)}
+> 
+> G2 <- G
+> trafo(G2) <- mtrafo
+> res2 <- MLEstimator(x = x, ParamFamily = G2)
+> 
+> old<-getdistrModOption("show.details")
+> distrModoptions("show.details" = "minimal")
+> res
+Evaluations of Maximum likelihood estimate:
+-------------------------------------------
+     scale        shape   
+  0.34200800   4.06028564 
+ (0.07002713) (0.78099026)
+> res1
+     shape       rate   
+  4.0607656   2.9242972 
+ (0.7810853) (0.5987559)
+> res2
+Evaluations of Maximum likelihood estimate:
+-------------------------------------------
+     shape       rate   
+  4.0602856   2.9239082 
+ (0.7809903) (0.5986786)
+> confint(res)
+A[n] asymptotic (CLT-based) confidence interval:
+          2.5 %    97.5 %
+scale 0.2047574 0.4792587
+shape 2.5295729 5.5909984
+> confint(res1)
+         2.5 %   97.5 %
+shape 2.529866 5.591665
+rate  1.750757 4.097837
+> confint(res2)
+A[n] asymptotic (CLT-based) confidence interval:
+         2.5 %   97.5 %
+shape 2.529573 5.590998
+rate  1.750520 4.097297
+> confint(res,level=0.99)
+A[n] asymptotic (CLT-based) confidence interval:
+          0.5 %    99.5 %
+scale 0.1616301 0.5223859
+shape 2.0485880 6.0719832
+> distrModoptions("show.details" = old)
+>  
+> 
+> 
+> 
+> cleanEx(); nameEx("distrModMASK")
+> ### * distrModMASK
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: distrModMASK
+> ### Title: Masking of/by other functions in package "distrMod"
+> ### Aliases: distrModMASK MASKING
+> ### Keywords: programming distribution documentation
+> 
+> ### ** Examples
+> 
+> distrModMASK()
+######################################################################
+#  On masking of and by other functions in package "distrMod"       
+######################################################################
+
+Attention:
+
+*** intentional masking: ***
+
+To be able to use the same symbol for objects of S4-classes 'Estimate',
+we intentionally mask the following function[s] --- however this/these 
+function[s] may still be used in exactly the same way as before 
+masking:
+
++confint()    (package "stats")
+ 
+ 
+
+> 
+> 
+> 
+> cleanEx(); nameEx("distrModOptions")
+> ### * distrModOptions
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: distrModOptions
+> ### Title: Function to change the global variables of the package
+> ###   `distrMod'
+> ### Aliases: distrModOptions getdistrModOption distrModoptions show.details
+> ### Keywords: misc distribution
+> 
+> ### ** Examples
+> 
+> distrModoptions()
+$show.details
+[1] "minimal"
+
+> distrModoptions("show.details")
+$show.details
+[1] "minimal"
+
+> distrModoptions("show.details" = "maximal")
+> distrModOptions("show.details" = "minimal")
+> # or
+> getdistrModOption("show.details")
+[1] "minimal"
+> 
+> 
+> 
+> cleanEx(); nameEx("fiBias-class")
+> ### * fiBias-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fiBias-class
+> ### Title: Finite-sample Bias
+> ### Aliases: fiBias-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("fiBias")
+An object of class “fiBias” 
+risk type:	 finite-sample bias 
+> 
+> 
+> 
+> cleanEx(); nameEx("fiBias")
+> ### * fiBias
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fiBias
+> ### Title: Generating function for fiBias-class
+> ### Aliases: fiBias
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> fiBias()
+An object of class “fiBias” 
+risk type:	 finite-sample bias 
+> 
+> ## The function is currently defined as
+> function(){ new("fiBias") }
+function () 
+{
+    new("fiBias")
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("fiCov-class")
+> ### * fiCov-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fiCov-class
+> ### Title: Finite-sample covariance
+> ### Aliases: fiCov-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("fiCov")
+An object of class “fiCov” 
+risk type:	 finite-sample covariance 
+> 
+> 
+> 
+> cleanEx(); nameEx("fiCov")
+> ### * fiCov
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fiCov
+> ### Title: Generating function for fiCov-class
+> ### Aliases: fiCov
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> fiCov()
+An object of class “fiCov” 
+risk type:	 finite-sample covariance 
+> 
+> ## The function is currently defined as
+> function(){ new("fiCov") }
+function () 
+{
+    new("fiCov")
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("fiHampel-class")
+> ### * fiHampel-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fiHampel-class
+> ### Title: Finite-sample Hampel risk
+> ### Aliases: fiHampel-class bound,fiHampel-method show,fiHampel-method
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("fiHampel")
+An object of class “fiHampel” 
+risk type:	 finite-sample variance for given bias bound 
+bound:	 Inf 
+> 
+> 
+> 
+> cleanEx(); nameEx("fiHampel")
+> ### * fiHampel
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fiHampel
+> ### Title: Generating function for fiHampel-class
+> ### Aliases: fiHampel
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> fiHampel()
+An object of class “fiHampel” 
+risk type:	 finite-sample variance for given bias bound 
+bound:	 Inf 
+> 
+> ## The function is currently defined as
+> function(bound = Inf){ new("fiHampel", bound = bound) }
+function (bound = Inf) 
+{
+    new("fiHampel", bound = bound)
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("fiMSE-class")
+> ### * fiMSE-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fiMSE-class
+> ### Title: Finite-sample mean square error
+> ### Aliases: fiMSE-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("fiMSE")
+An object of class “fiMSE” 
+risk type:	 finite-sample mean square error 
+> 
+> 
+> 
+> cleanEx(); nameEx("fiMSE")
+> ### * fiMSE
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fiMSE
+> ### Title: Generating function for fiMSE-class
+> ### Aliases: fiMSE
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> fiMSE()
+An object of class “fiMSE” 
+risk type:	 finite-sample mean square error 
+> 
+> ## The function is currently defined as
+> function(){ new("fiMSE") }
+function () 
+{
+    new("fiMSE")
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("fiUnOvShoot-class")
+> ### * fiUnOvShoot-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fiUnOvShoot-class
+> ### Title: Finite-sample under-/overshoot probability
+> ### Aliases: fiUnOvShoot-class width,fiUnOvShoot-method
+> ###   show,fiUnOvShoot-method
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("fiUnOvShoot")
+An object of class “fiUnOvShoot” 
+risk type:	 finite-sample under-/overshoot probability 
+width:	  
+> 
+> 
+> 
+> cleanEx(); nameEx("fiUnOvShoot")
+> ### * fiUnOvShoot
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fiUnOvShoot
+> ### Title: Generating function for fiUnOvShoot-class
+> ### Aliases: fiUnOvShoot
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> fiUnOvShoot()
+An object of class “fiUnOvShoot” 
+risk type:	 finite-sample under-/overshoot probability 
+width:	 1.96 
+> 
+> ## The function is currently defined as
+> function(width = 1.960){ new("fiUnOvShoot", width = width) }
+function (width = 1.96) 
+{
+    new("fiUnOvShoot", width = width)
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("isKerAinKerB")
+> ### * isKerAinKerB
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: isKerAinKerB
+> ### Title: isKerAinKerB
+> ### Aliases: isKerAinKerB
+> ### Keywords: algebra array
+> 
+> ### ** Examples
+> 
+> ma <- cbind(1,1,c(1,1,7))
+> D <- t(ma %*% c(0,1,-1))
+> isKerAinKerB(D,ma)
+[1] FALSE
+> isKerAinKerB(ma,D)
+[1] TRUE
+> 
+> 
+> 
+> cleanEx(); nameEx("negativeBias")
+> ### * negativeBias
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: negativeBias
+> ### Title: Generating function for onesidedBias-class
+> ### Aliases: negativeBias
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> negativeBias()
+An object of class “onesidedBias”
+Slot "sign":
+[1] -1
+
+Slot "name":
+[1] "negative Bias"
+
+> 
+> ## The function is currently defined as
+> function(){ new("onesidedBias", name = "negative Bias", sign = -1) }
+function () 
+{
+    new("onesidedBias", name = "negative Bias", sign = -1)
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("norms")
+> ### * norms
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: norm
+> ### Title: Norm functions
+> ### Aliases: EuclideanNorm QuadFormNorm
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> mm <- matrix(rnorm(20),2,10)
+> EuclideanNorm(mm)
+ [1] 0.6528164 1.8008876 0.8841627 0.8847092 0.6517563 1.5612367 2.3001816
+ [8] 1.1258280 0.9439751 1.0134708
+> QuadFormNorm(mm, A = PosSemDefSymmMatrix(matrix(c(3,1,1,1),2,2)))
+ [1] 0.9904392 1.4048565 0.6768996 1.4062882 0.8579981 2.8613179 2.9689119
+ [8] 1.9228451 0.9279285 1.8306775
+> 
+> 
+> 
+> cleanEx(); nameEx("onesidedBias-class")
+> ### * onesidedBias-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: onesidedBias-class
+> ### Title: onesided Bias Type
+> ### Aliases: onesidedBias-class sign sign<- sign,onesidedBias-method
+> ###   sign<-,onesidedBias-method
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> positiveBias()
+An object of class “onesidedBias”
+Slot "sign":
+[1] 1
+
+Slot "name":
+[1] "positive Bias"
+
+> ## The function is currently defined as
+> function(){ new("onesidedBias", name = "positive Bias", sign = 1) }
+function () 
+{
+    new("onesidedBias", name = "positive Bias", sign = 1)
+}
+> 
+> negativeBias()
+An object of class “onesidedBias”
+Slot "sign":
+[1] -1
+
+Slot "name":
+[1] "negative Bias"
+
+> ## The function is currently defined as
+> function(){ new("onesidedBias", name = "negative Bias", sign = -1) }
+function () 
+{
+    new("onesidedBias", name = "negative Bias", sign = -1)
+}
+> 
+> pB <- positiveBias()
+> sign(pB)
+[1] 1
+> try(sign(pB) <- -2) ## error
+Error in `sign<-`(`*tmp*`, value = -2) : Left value has to be +-1
+> sign(pB) <- -1
+> 
+> 
+> 
+> cleanEx(); nameEx("positiveBias")
+> ### * positiveBias
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: positiveBias
+> ### Title: Generating function for onesidedBias-class
+> ### Aliases: positiveBias
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> positiveBias()
+An object of class “onesidedBias”
+Slot "sign":
+[1] 1
+
+Slot "name":
+[1] "positive Bias"
+
+> 
+> ## The function is currently defined as
+> function(){ new("onesidedBias", name = "positive Bias", sign = 1) }
+function () 
+{
+    new("onesidedBias", name = "positive Bias", sign = 1)
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("print-methods")
+> ### * print-methods
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: print-methods
+> ### Title: Common `print' Methods for S4 classes in Package `distrMod'
+> ### Aliases: print-methods print,ShowDetails-method
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> ## set options to maximal detailedness
+> show.old <- getdistrModOption("show.details")
+> distrModoptions("show.details" = "maximal")
+> ## define a model
+> NS <- NormLocationScaleFamily(mean=2, sd=3)
+> ## generate data out of this situation
+> x <- r(distribution(NS))(30)
+> 
+> ## want to estimate mu/sigma, sigma^2
+> ## -> new trafo slot:
+> trafo(NS) <- function(param){
++   mu <- param["mean"]
++   sd <- param["sd"]
++   fval <- c(mu/sd, sd^2)
++   nfval <- c("mu/sig", "sig^2")
++   names(fval) <- nfval
++   mat <- matrix(c(1/sd,0,-mu/sd^2,2*sd),2,2)
++   dimnames(mat) <- list(nfval,c("mean","sd"))
++   return(list(fval=fval, mat=mat))
++ }
+> print(param(NS))
+An object of class "ParamFamParameter"
+name:	location and scale
+mean:	2
+sd:	3
+trafo:
+function (param) 
+{
+    mu <- param["mean"]
+    sd <- param["sd"]
+    fval <- c(mu/sd, sd^2)
+    nfval <- c("mu/sig", "sig^2")
+    names(fval) <- nfval
+    mat <- matrix(c(1/sd, 0, -mu/sd^2, 2 * sd), 2, 2)
+    dimnames(mat) <- list(nfval, c("mean", "sd"))
+    return(list(fval = fval, mat = mat))
+}
+> print(param(NS), show.details = "minimal")
+An object of class "ParamFamParameter"
+name:	location and scale
+mean:	2
+sd:	3
+> print(param(NS), show.details = "medium")
+An object of class "ParamFamParameter"
+name:	location and scale
+mean:	2
+sd:	3
+slot trafo is a non-trivial function
+> ## Maximum likelihood estimator
+> res <- MLEstimator(x = x, ParamFamily = NS)
+> print(res) #equivalent to 'show(res)' or 'res'
+Evaluations of Maximum likelihood estimate:
+-------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MLEstimator(x = x, ParamFamily = NS)
+samplesize:   30
+estimate:
+    mu/sig       sig^2  
+  0.8244932   7.4297939 
+ (0.2113366) (1.9183645)
+asymptotic (co)variance (multiplied with samplesize):
+          mu/sig      sig^2
+mu/sig  1.339895  -6.125814
+sig^2  -6.125814 110.403676
+untransformed estimate:
+     mean         sd    
+  2.2473745   2.7257648 
+ (0.4976543) (0.3518947)
+asymptotic (co)variance of untransformed estimate (multiplied with samplesize):
+         mean       sd
+mean 7.429794 0.000000
+sd   0.000000 3.714897
+Transformation of main parameter:
+function (param) 
+{
+    mu <- param["mean"]
+    sd <- param["sd"]
+    fval <- c(mu/sd, sd^2)
+    nfval <- c("mu/sig", "sig^2")
+    names(fval) <- nfval
+    mat <- matrix(c(1/sd, 0, -mu/sd^2, 2 * sd), 2, 2)
+    dimnames(mat) <- list(nfval, c("mean", "sd"))
+    return(list(fval = fval, mat = mat))
+}
+Trafo / derivative matrix:
+            mean         sd
+mu/sig 0.3668695 -0.3024814
+sig^2  0.0000000  5.4515297
+Criterion:
+negative log-likelihood 
+               72.65063 
+> print(res, digits = 4)
+Evaluations of Maximum likelihood estimate:
+-------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MLEstimator(x = x, ParamFamily = NS)
+samplesize:   30
+estimate:
+   mu/sig    sig^2 
+  0.8245    7.4298 
+ (0.2113)  (1.9184)
+asymptotic (co)variance (multiplied with samplesize):
+       mu/sig   sig^2
+mu/sig  1.340  -6.126
+sig^2  -6.126 110.404
+untransformed estimate:
+    mean      sd  
+  2.2474   2.7258 
+ (0.4977) (0.3519)
+asymptotic (co)variance of untransformed estimate (multiplied with samplesize):
+     mean    sd
+mean 7.43 0.000
+sd   0.00 3.715
+Transformation of main parameter:
+function (param) 
+{
+    mu <- param["mean"]
+    sd <- param["sd"]
+    fval <- c(mu/sd, sd^2)
+    nfval <- c("mu/sig", "sig^2")
+    names(fval) <- nfval
+    mat <- matrix(c(1/sd, 0, -mu/sd^2, 2 * sd), 2, 2)
+    dimnames(mat) <- list(nfval, c("mean", "sd"))
+    return(list(fval = fval, mat = mat))
+}
+Trafo / derivative matrix:
+         mean      sd
+mu/sig 0.3669 -0.3025
+sig^2  0.0000  5.4515
+Criterion:
+negative log-likelihood 
+                  72.65 
+> print(res, show.details = "minimal")
+Evaluations of Maximum likelihood estimate:
+-------------------------------------------
+    mu/sig       sig^2  
+  0.8244932   7.4297939 
+ (0.2113366) (1.9183645)
+> print(res, show.details = "medium")
+Evaluations of Maximum likelihood estimate:
+-------------------------------------------
+An object of class “Estimate” 
+generated by call
+  MLEstimator(x = x, ParamFamily = NS)
+samplesize:   30
+estimate:
+    mu/sig       sig^2  
+  0.8244932   7.4297939 
+ (0.2113366) (1.9183645)
+asymptotic (co)variance (multiplied with samplesize):
+          mu/sig      sig^2
+mu/sig  1.339895  -6.125814
+sig^2  -6.125814 110.403676
+Criterion:
+negative log-likelihood 
+               72.65063 
+> distrModoptions("show.details" = show.old)
+> 
+> 
+> 
+> cleanEx(); nameEx("qqplot")
+> ### * qqplot
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: qqplot
+> ### Title: Methods for Function qqplot in Package `distrMod'
+> ### Aliases: qqplot qqplot-methods qqplot,ANY,ProbFamily-method
+> ###   qqplot,ANY,UnivariateDistribution-method
+> ### Keywords: hplot distribution
+> 
+> ### ** Examples
+> 
+> qqplot(r(Norm(15,sqrt(30)))(40), Chisq(df=15))
+$x
+ [1]  2.869589  4.103872  6.944357  7.457534 10.423074 10.506110 11.568771
+ [8] 11.597325 12.381064 12.726981 12.840385 13.327319 14.146673 14.437008
+[15] 14.675127 14.692570 14.705298 14.753888 14.911322 15.408409 16.005856
+[22] 16.804788 17.123365 17.135259 17.289160 17.669759 18.153684 18.252932
+[29] 18.394925 19.043971 19.180086 19.283937 19.498014 20.033446 20.169604
+[36] 21.025087 21.161500 22.441794 23.280366 23.737713
+
+$y
+ [1]  5.456913  6.818180  7.637289  8.270052  8.804812  9.278699  9.711238
+ [8] 10.114131 10.495045 10.859344 11.210980 11.552993 11.887815 12.217460
+[15] 12.543650 12.867908 13.191621 13.516092 13.842583 14.172349 14.506674
+[22] 14.846908 15.194499 15.551043 15.918333 16.298428 16.693737 17.107140
+[29] 17.542150 18.003150 18.495741 19.027288 19.607791 20.251382 20.979051
+[36] 21.824094 22.844394 24.155466 26.050039 29.843102
+
+> qqplot(r(Norm(15,sqrt(30)))(40), NormLocationFamily())
+$x
+ [1]  6.655081  8.007817  8.292520 10.010677 11.414692 11.435989 11.517928
+ [8] 11.602112 11.860096 11.885273 12.028495 12.407078 12.471468 12.848502
+[15] 13.247327 13.333916 13.471233 13.864129 14.028721 14.259596 15.230678
+[22] 15.865559 16.462960 16.823644 17.026676 17.104270 17.706781 18.058956
+[29] 18.253177 18.835228 18.925569 19.985230 20.822838 21.355787 21.452648
+[36] 21.615764 22.844933 23.691445 24.213658 24.679831
+
+$y
+ [1] -2.24140273 -1.78046434 -1.53412054 -1.35631175 -1.21333962 -1.09162037
+ [7] -0.98423496 -0.88714656 -0.79777685 -0.71436744 -0.63565701 -0.56070303
+[13] -0.48877641 -0.41929575 -0.35178434 -0.28584087 -0.22111871 -0.15731068
+[19] -0.09413741 -0.03133798  0.03133798  0.09413741  0.15731068  0.22111871
+[25]  0.28584087  0.35178434  0.41929575  0.48877641  0.56070303  0.63565701
+[31]  0.71436744  0.79777685  0.88714656  0.98423496  1.09162037  1.21333962
+[37]  1.35631175  1.53412054  1.78046434  2.24140273
+
+> 
+> 
+> 
+> cleanEx(); nameEx("symmetricBias-class")
+> ### * symmetricBias-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: symmetricBias-class
+> ### Title: symmetric Bias Type
+> ### Aliases: symmetricBias-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> symmetricBias()
+An object of class “symmetricBias”
+Slot "name":
+[1] "symmetric Bias"
+
+> ## The function is currently defined as
+> function(){ new("symmetricBias", name = "symmetric Bias") }
+function () 
+{
+    new("symmetricBias", name = "symmetric Bias")
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("symmetricBias")
+> ### * symmetricBias
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: symmetricBias
+> ### Title: Generating function for symmetricBias-class
+> ### Aliases: symmetricBias
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> symmetricBias()
+An object of class “symmetricBias”
+Slot "name":
+[1] "symmetric Bias"
+
+> 
+> ## The function is currently defined as
+> function(){ new("symmetricBias", name = "symmetric Bias") }
+function () 
+{
+    new("symmetricBias", name = "symmetric Bias")
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("trAsCov-class")
+> ### * trAsCov-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: trAsCov-class
+> ### Title: Trace of asymptotic covariance
+> ### Aliases: trAsCov-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("trAsCov")
+An object of class “trAsCov” 
+risk type:	 trace of asymptotic covariance 
+> 
+> 
+> 
+> cleanEx(); nameEx("trAsCov")
+> ### * trAsCov
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: trAsCov
+> ### Title: Generating function for trAsCov-class
+> ### Aliases: trAsCov
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> trAsCov()
+An object of class “trAsCov” 
+risk type:	 trace of asymptotic covariance 
+> 
+> ## The function is currently defined as
+> function(){ new("trAsCov") }
+function () 
+{
+    new("trAsCov")
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("trFiCov-class")
+> ### * trFiCov-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: trFiCov-class
+> ### Title: Trace of finite-sample covariance
+> ### Aliases: trFiCov-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> new("trFiCov")
+An object of class “trFiCov” 
+risk type:	 trace of finite-sample covariance 
+> 
+> 
+> 
+> cleanEx(); nameEx("trFiCov")
+> ### * trFiCov
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: trFiCov
+> ### Title: Generating function for trFiCov-class
+> ### Aliases: trFiCov
+> ### Keywords: robust
+> 
+> ### ** Examples
+> 
+> trFiCov()
+An object of class “trFiCov” 
+risk type:	 trace of finite-sample covariance 
+> 
+> ## The function is currently defined as
+> function(){ new("trFiCov") }
+function () 
+{
+    new("trFiCov")
+}
+> 
+> 
+> 
+> cleanEx(); nameEx("trafo-methods")
+> ### * trafo-methods
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: trafo-methods
+> ### Title: Methods for function trafo in Package `distrMod'
+> ### Aliases: trafo-methods trafo trafo,Estimate,missing-method
+> ###   trafo,Estimate,ParamFamParameter-method
+> ###   trafo,ParamFamParameter,missing-method
+> ###   trafo,ParamFamily,missing-method
+> ###   trafo,ParamFamily,ParamFamParameter-method trafo.fct
+> ###   trafo.fct-methods trafo.fct,ParamFamily-method trafo<-
+> ###   trafo<-,ParamFamParameter-method trafo<-,ParamFamily-method
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> ## Gaussian location and scale
+> NS <- NormLocationScaleFamily(mean=2, sd=3)
+> ## generate data out of this situation
+> x <- r(distribution(NS))(30)
+> 
+> ## want to estimate mu/sigma, sigma^2
+> ## -> new trafo slot:
+> trafo(NS) <- function(param){
++   mu <- param["mean"]
++   sd <- param["sd"]
++   fval <- c(mu/sd, sd^2)
++   nfval <- c("mu/sig", "sig^2")
++   names(fval) <- nfval
++   mat <- matrix(c(1/sd,0,-mu/sd^2,2*sd),2,2)
++   dimnames(mat) <- list(nfval,c("mean","sd"))
++   return(list(fval=fval, mat=mat))
++ }
+> 
+> ## Maximum likelihood estimator
+> (res <- MLEstimator(x = x, ParamFamily = NS))
+Evaluations of Maximum likelihood estimate:
+-------------------------------------------
+    mu/sig       sig^2  
+  0.8244932   7.4297939 
+ (0.2113366) (1.9183645)
+> ## confidence interval
+>  confint(res)
+A[n] asymptotic (CLT-based) confidence interval:
+           2.5 %    97.5 %
+mu/sig 0.4102811  1.238705
+sig^2  3.6698685 11.189719
+> 
+> 
+> 
+> 
+> cleanEx(); nameEx("trafoEst")
+> ### * trafoEst
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: trafoEst
+> ### Title: Function trafoEst in Package `distrMod'
+> ### Aliases: trafoEst
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> ## Gaussian location and scale
+> NS <- NormLocationScaleFamily(mean=2, sd=3)
+> ## generate data out of this situation
+> x <- r(distribution(NS))(30)
+> 
+> ## want to estimate mu/sigma, sigma^2
+> ## -> without new trafo slot:
+> mtrafo <- function(param){
++   mu <- param["mean"]
++   sd <- param["sd"]
++   fval <- c(mu/sd, sd^2)
++   nfval <- c("mu/sig", "sig^2")
++   names(fval) <- nfval
++   mat <- matrix(c(1/sd,0,-mu/sd^2,2*sd),2,2)
++   dimnames(mat) <- list(nfval,c("mean","sd"))
++   return(list(fval=fval, mat=mat))
++ }
+> 
+> ## Maximum likelihood estimator in the original problem
+> res0 <- MLEstimator(x = x, ParamFamily = NS)
+> ## transformation
+> res <- trafoEst(mtrafo, res0)
+> ## confidence interval
+>  confint(res)
+A[n] asymptotic (CLT-based) confidence interval:
+           2.5 %    97.5 %
+mu/sig 0.4102811  1.238705
+sig^2  3.6698685 11.189719
+> 
+> 
+> 
+> cleanEx(); nameEx("validParameter-methods")
+> ### * validParameter-methods
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: validParameter-methods
+> ### Title: Methods for function validParameter in Package `distrMod'
+> ### Aliases: validParameter-methods validParameter
+> ###   validParameter,ParamFamily-method validParameter,L2ScaleFamily-method
+> ###   validParameter,L2LocationFamily-method
+> ###   validParameter,L2LocationScaleFamily-method
+> ###   validParameter,BinomFamily-method validParameter,PoisFamily-method
+> ###   validParameter,GammaFamily-method
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+>  NS <- NormLocationScaleFamily()
+>  validParameter(NS, c(scale=0.1, loc=2))
+scale 
+ TRUE 
+>  validParameter(NS, c(scale=-0.1, loc=2))
+scale 
+FALSE 
+>  validParameter(NS, c(scale=0, loc=2))
+scale 
+FALSE 
+>  validParameter(NS, c(mean=2, sd=2))
+  sd 
+TRUE 
+> 
+> 
+> 
+> ### * <FOOTER>
+> ###
+> cat("Time elapsed: ", proc.time() - get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  67.536 0.192 68.103 0.004 0.004 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')

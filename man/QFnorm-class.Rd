@@ -16,9 +16,9 @@ normally one would use the generating functions \code{QFNorm},
 
 \section{Slots}{
   \describe{
-    \item{\code{name}:}{Object of class \code{"character"}.}
-    \item{\code{fct}:}{Object of class \code{"function"}.}
-    \item{\code{QuadForm}:}{Object of class \code{"PosSemDefSymmMatrix"}.}
+    \item{\code{name}}{Object of class \code{"character"}.}
+    \item{\code{fct}}{Object of class \code{"function"}.}
+    \item{\code{QuadForm}}{Object of class \code{"PosSemDefSymmMatrix"}.}
   }
 }
 \section{Extends}{

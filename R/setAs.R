@@ -57,7 +57,9 @@ setAs("MCEstimate", "mle", def = function(from){
                             list(crit.f = crit.f0,
                                  startPar = start.f0))
       to@coef <- from@estimate
-      to@fullcoef <- c(from@estimate,from@fixed)
+      fe <- if(is.null(from@untransformed.estimate))
+               from@estimate else from@untransformed.estimate
+      to@fullcoef <- c(fe,from@fixed)
       to@vcov <- if(!is.null(from@asvar)) 
                  from@asvar/from@samplesize else matrix(NA,1,1)
       to@min <- from@criterion
@@ -67,9 +69,10 @@ setAs("MCEstimate", "mle", def = function(from){
 to})
 
 setMethod("profile", "MCEstimate",
-          function (fitted, which = 1:p, maxsteps = 100,
+          function (fitted, which = 1:length(fitted@estimate), maxsteps = 100,
                     alpha = 0.01, zmax = sqrt(qchisq(1 - alpha, 1L)),
                     del = zmax/5, trace = FALSE, ...){
-m.mle <- as(fitted,"mle") 
-profile(m.mle)
+m.mle <- as(fitted,"mle")
+profile(m.mle, which=which, maxsteps=maxsteps, alpha=alpha, zmax=zmax,
+del=del, trace=trace, ...)
 })

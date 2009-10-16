@@ -11,9 +11,9 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{type}:}{Object of class \code{"character"}:
+    \item{\code{type}}{Object of class \code{"character"}:
       contains \dQuote{even function} }
-    \item{\code{SymmCenter}:}{Object of class \code{"numeric"}:
+    \item{\code{SymmCenter}}{Object of class \code{"numeric"}:
       center of symmetry }
   }
 }

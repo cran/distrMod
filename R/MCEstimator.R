@@ -3,13 +3,15 @@
 ###############################################################################
 MCEstimator <- function(x, ParamFamily, criterion, crit.name, 
                         startPar = NULL, 
-                        Infos, trafo = NULL, penalty = 0, validity.check = TRUE,
-                        asvar.fct, ...){
+                        Infos, trafo = NULL, penalty = 1e20, validity.check = TRUE,
+                        asvar.fct, na.rm = TRUE, ...){
 
     ## preparation: getting the matched call
     es.call <- match.call()
     dots <- match.call(expand.dots = FALSE)$"..."
 
+    completecases <- complete.cases(x)
+    if(na.rm) x <- na.omit(x)
 
     ## some checking
     if(!is.numeric(x))
@@ -47,6 +49,7 @@ MCEstimator <- function(x, ParamFamily, criterion, crit.name,
     
     ## digesting the results of mceCalc
     res <- do.call(.process.meCalcRes, argList)
-
+    res@completecases <- completecases
+    
     return(res)
 }

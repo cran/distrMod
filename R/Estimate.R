@@ -6,9 +6,18 @@ setMethod("name", "Estimate", function(object) object@name)
 setReplaceMethod("name", "Estimate", 
                   function(object, value) {object@name <- value; object})
 
-setMethod("estimate", "Estimate", function(object) object@estimate)
+setMethod("estimate", "Estimate", function(object){
+           es <- object@estimate
+#           dim(es) <- NULL
+#           names(es) <- names(object@estimate)
+           es})
 setMethod("untransformed.estimate", "Estimate", 
-           function(object) object@untransformed.estimate)
+           function(object){
+           u.es <- object@untransformed.estimate
+#           dim(u.es) <- NULL
+#           names(u.es) <- names(object@untransformed.estimate)
+           u.es
+           })
 setMethod("estimate.call", "Estimate", function(object) object@estimate.call)
 
 setMethod("trafo", signature(object = "Estimate", param = "missing"), 
@@ -18,7 +27,7 @@ setMethod("trafo", signature(object = "Estimate", param = "ParamFamParameter"),
    function(object, param){
         if(is.function(trafo(param))) 
              return(list(fct = trafo(param), 
-                         mat = (trafo(param)(object@untransformed.estimate))$mat))
+                         mat = (trafo(param)(untransformed.estimate(object)))$mat))
         else return(list(fct = function(x) trafo(param)%*%x, 
                          mat = trafo(param)))
            
@@ -48,11 +57,16 @@ setMethod("addInfo<-", "Estimate",
         object 
     })
 
-setMethod("samplesize", "Estimate", function(object) object@samplesize)
-setMethod("asvar", "Estimate", function(object) object@asvar)
+setMethod("samplesize", "Estimate", function(object, onlycompletecases = TRUE)
+  	    object@samplesize+(1-onlycompletecases)*sum(object@completecases==FALSE))
+setMethod("completecases", "Estimate", function(object) object@completecases)
+setMethod("asvar", "Estimate", function(object)
+                if(!is.null(object@asvar))
+                    as.matrix(object@asvar))
 
 setReplaceMethod("asvar", "Estimate", 
                   function(object, value){ 
+          value <- as.matrix(value)
           mat <- trafo(object)$mat
           if(.isUnitMatrix(mat)){
              object@asvar <- value
@@ -63,25 +77,22 @@ setReplaceMethod("asvar", "Estimate",
           object})
 
 setMethod("untransformed.asvar", "Estimate", function(object) 
-           object@untransformed.asvar)
-
-setMethod("criterion", "MCEstimate", function(object) object@criterion)
-setMethod("criterion.fct", "MCEstimate", function(object) object@criterion.fct)
-setMethod("method", "MCEstimate", function(object) object@method)
-
-setReplaceMethod("criterion", "MCEstimate", 
-                  function(object, value) {object@criterion <- value; object})
+           if(!is.null(object@untransformed.asvar))
+               as.matrix(object@untransformed.asvar)
+           else NULL    )
 
 
 setMethod("nuisance", "Estimate", function(object) { 
       if(is.null(object@nuis.idx))
          return(NULL)
-      else return (object@estimate[object@nuis.idx])    
+      if(!is.null(untransformed.estimate))
+         return (untransformed.estimate(object)[object@nuis.idx])
+      return (estimate(object)[object@nuis.idx])
       })
 setMethod("main", "Estimate", function(object) { 
       if(is.null(object@nuis.idx))
-         return(object@estimate)
-      else return (object@estimate[-object@nuis.idx])    
+         return(estimate(object))
+      else return (estimate(object)[-object@nuis.idx])
       })
 
 

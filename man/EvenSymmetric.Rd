@@ -12,7 +12,7 @@
 %\references{}
 \author{Matthias Kohl \email{Matthias.Kohl@stamats.de}}
 %\note{}
-\seealso{\code{\link{EvenSymmetric-class}}, \code{\link{DistributionSymmetry-class}}}
+\seealso{\code{\link{EvenSymmetric-class}}, \code{\link{FunctionSymmetry-class}}}
 \examples{
 EvenSymmetric()
 

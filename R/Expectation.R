@@ -2,24 +2,24 @@
 setMethod("E", signature(object = "L2ParamFamily", 
                          fun = "EuclRandVariable", 
                          cond = "missing"),
-    function(object, fun, useApply = TRUE){
-        return(E(object = object@distribution, fun = fun, useApply = useApply))
+    function(object, fun, useApply = TRUE, ...){
+        return(E(object = object@distribution, fun = fun, useApply = useApply, ...))
     })
 setMethod("E", signature(object = "L2ParamFamily", 
                          fun = "EuclRandMatrix", 
                          cond = "missing"),
-    function(object, fun, useApply = TRUE){
+    function(object, fun, useApply = TRUE, ...){
         matrix(E(object = object, fun = as(fun, "EuclRandVariable"), 
-                 useApply = useApply), nrow = nrow(fun))
+                 useApply = useApply, ...), nrow = nrow(fun))
     })
 setMethod("E", signature(object = "L2ParamFamily", 
                          fun = "EuclRandVarList", 
                          cond = "missing"),
-    function(object, fun, useApply = TRUE){
+    function(object, fun, useApply = TRUE, ...){
         nrvalues <- length(fun)
         res <- vector("list", nrvalues)
         for(i in 1:nrvalues) res[[i]] <- E(object = object, fun = fun[[i]], 
-                                           useApply = useApply)
+                                           useApply = useApply, ...)
 
         return(res)
     })

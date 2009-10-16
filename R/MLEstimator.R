@@ -5,12 +5,14 @@
 
 ## Maximum-Likelihood estimator
 MLEstimator <- function(x, ParamFamily, startPar = NULL, 
-                        Infos, trafo = NULL, penalty = 0, ...){
+                        Infos, trafo = NULL, penalty = 1e20, na.rm = TRUE, ...){
 
     ## preparation: getting the matched call
     es.call <- match.call()
     dots <- match.call(expand.dots = FALSE)$"..."
 
+    completecases <- complete.cases(x)
+    if(na.rm) x <- na.omit(x)
 
     ## some checking
     if(!is.numeric(x))
@@ -46,6 +48,7 @@ MLEstimator <- function(x, ParamFamily, startPar = NULL,
     names(res@criterion) <- "negative log-likelihood"
     res@estimate.call <- es.call
     res@name <- "Maximum likelihood estimate"
+    res@completecases <- completecases
     
     return(res)
 }

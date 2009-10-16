@@ -1,7 +1,6 @@
 \name{InternalClassUnions}
 \docType{class}
 \alias{InternalClassUnions}
-\alias{OptionalNumeric-class}
 \alias{OptionalNumericOrMatrix-class}
 \alias{MatrixorFunction-class}
 \alias{ShowDetails-class}
@@ -22,10 +21,6 @@
 These classes are used internally to make available methods or to allow
 slots of classes to be filled with varying types. In particular
 \describe{
-\item{\code{"OptionalNumeric"}}{may contain objects of class  \code{"numeric"}
-      or \code{"NULL"}; it is used e.g. for slot \code{nuisance} of class
-      \code{"ParamFamParameter"}, as it may or may not be present but if so
-      it has to be numeric.}
 \item{\code{"OptionalNumericOrMatrix"}}{may contain objects of class  
       \code{"OptionalNumeric"} or \code{"matrix"}; it is used e.g. for 
        slot \code{asvar} of class \code{"Estimate"}, as it may or may not be 
@@ -34,7 +29,7 @@ slots of classes to be filled with varying types. In particular
       \code{"OptionalFunction"} or \code{"matrix"}; it is used e.g. for 
        slot \code{trafo} of class \code{"ParamFamParameter"}, as it may or may not be 
        present and if it is present, it has to either be a function or a matrix,
-       see \code{link{trafo-methods}}.}
+       see \code{\link{trafo-methods}}.}
 \item{\code{"ShowDetails"}}{may contain objects of class  
       \code{"Estimate"}, \code{"MCEstimate"}, \code{"Confint"}, \code{"PosSemDefSymmMatrix"}
        \code{"ParamFamily"}, or \code{"ParamFamParameter"}; used to provide 
@@ -65,7 +60,7 @@ slots of classes to be filled with varying types. In particular
 \code{\link{MCEstimate-class}},
 \code{\link{Estimate-class}},
 \code{\link{Confint-class}},
-\code{\link{PosSemDefSymmMatrix-class}},
+\code{\link[distr:PosDefSymmMatrix-class]{PosSemDefSymmMatrix-class}},
 \code{\link{L2GroupParamFamily-class}},
 \code{\link{L2LocationFamily-class}},
 \code{\link{L2ScaleFamily-class}},

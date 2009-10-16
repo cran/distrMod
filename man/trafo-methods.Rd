@@ -20,7 +20,7 @@
   versions.
  }
 \usage{
-trafo(object, param)
+trafo(object, param, ...)
 \S4method{trafo}{Estimate,missing}(object,param)
 \S4method{trafo}{ParamFamParameter,missing}(object,param)
 \S4method{trafo}{ParamFamily,missing}(object,param)
@@ -41,7 +41,7 @@ trafo(object) <- value
   (the function value, see below)
   and \code{mat} (a matrix --- with the same dimensions consistency
   conditions as above).}
-  \item{\dots}{additional argument(s) for methods.}
+  \item{\dots}{additional argument(s) for methods; not used so far.}
 }
 \value{
   The return value depends on the signature.

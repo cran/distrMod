@@ -9,14 +9,14 @@ in functions \code{\link{mceCalc}} and \code{\link{mleCalc}}}
 
 \usage{
 meRes(x, estimate, criterion.value, param, crit.fct, method = "explicit solution",
-      crit.name = "Maximum Likelihood", Infos)
-get.criterion.fct(theta, Data, ParamFam, criterion, fun, ...)
+      crit.name = "Maximum Likelihood", Infos, warns = "", startPar = NULL)
+get.criterion.fct(theta, Data, ParamFam, criterion.ff, fun, ...)
 \S4method{samplesize}{numeric}(object)
 }
 \arguments{
   \item{x}{numeric; the data at which to evaluate the estimate}
   \item{estimate}{numeric; the estimate} 
-  \item{criterion.value}{numeric; the value of the criterium} 
+  \item{criterion.value}{numeric; the value of the criterion}
   \item{param}{object of class \code{ParamFamParameter}; the parameter value} 
   \item{crit.fct}{a function to fill slot \code{minuslogl} when an object of 
       class \code{MCEstimate} is coerced to class \code{mle} 
@@ -27,16 +27,18 @@ get.criterion.fct(theta, Data, ParamFam, criterion, fun, ...)
   \item{crit.name}{character; name of the criterion} 
   \item{Infos}{optional matrix of characters in two columns; 
                information to be attached to the estimate} 
+  \item{warns}{collected warnings in optimization}
   \item{samplesize}{numeric; the sample size at which the estimator 
                     was evaluated}
   \item{theta}{the parameter value as named numeric vector}
   \item{Data}{numeric; the data at which to evaluate the MCE}
   \item{ParamFam}{an object of class \code{ParamFamily}; 
               the parametric family at which to evaluate the MCE}
-  \item{criterion}{the criterion function used in the MCE}
+  \item{criterion.ff}{the criterion function used in the MCE}
   \item{fun}{wrapper to the criterion function used in the MCE
    (with certain checking whether parameter value is permitted and possibly
     penalizing if not; see code to , for example.)}
+  \item{startPar}{value of argument \code{StartPar} --- starting parameter used.}
   \item{\dots}{further arguments to be passed 
                to \code{optim} / \code{optimize}} 
   \item{object}{numeric; the data at which to evaluate the estimate}

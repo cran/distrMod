@@ -1,4 +1,12 @@
-.getLogDeriv <- function(distr, 
+.deleteDim <- function(x){
+     attribs <- attributes(x)
+     attribs$dim <- NULL
+     attribs$dimnames <- NULL
+     attributes(x) <- attribs
+     x
+     }
+
+.getLogDeriv <- function(distr,
              lowerTruncQuantile = getdistrExOption("ElowerTruncQuantile"), 
              upperTruncQuantile = getdistrExOption("EupperTruncQuantile"), 
                          IQR.fac = getdistrExOption("IQR.fac")){
@@ -34,18 +42,21 @@
 }
 
 .show.with.sd <- function(est, s){
+#        est <- as.numeric(est); dim(est) <- NULL
+#        s <- as.numeric(s); dim(s) <- NULL
+        if(is.null(names(est))) names(est) <- rep("", length.out=length(est))
   ### code borrowed from print.fitdistr in  package MASS by B.D. Ripley
         digits <- getOption("digits")
         ans <- format(base::rbind(est, s), digits=digits)
-        ans[1, ] <- sapply(ans[1, ], function(x) paste("", x))
-        ans[2, ] <- sapply(ans[2, ], function(x) paste("(", x, ")", sep=""))
+        ans[1L, ] <- sapply(ans[1L, ], function(x) paste("", x))
+        ans[2L, ] <- sapply(ans[2L, ], function(x) paste("(", x, ")", sep=""))
      ## only used for digits
         dn <- dimnames(ans)
-        dn[[1]] <- rep("", 2)
-        dn[[2]] <- paste(substring("      ", 1, 
-                       (nchar(ans[2,]) - nchar(dn[[2]])) %/% 2), dn[[2]])
-        dn[[2]] <- paste(dn[[2]], substring("      ", 1, 
-                       (nchar(ans[2,]) - nchar(dn[[2]])) %/% 2))
+        dn[[1L]] <- rep("", 2L)
+        dn[[2L]] <- paste(substring("      ", 1L,
+                       (nchar(ans[2L,]) - nchar(dn[[2L]])) %/% 2), dn[[2L]])
+        dn[[2L]] <- paste(dn[[2L]], substring("      ", 1L,
+                       (nchar(ans[2L,]) - nchar(dn[[2L]])) %/% 2))
         dimnames(ans) <- dn
         print(ans, quote = FALSE)
         return(invisible())
@@ -59,21 +70,23 @@
               isTRUE(all.equal(m, diag(m.row), check.attributes = FALSE))
               }
 
-.validTrafo <- function(trafo, dimension){
+.validTrafo <- function(trafo, dimension, dimensionwithN){
 ##checks whether trafo is valid
+  ret <- FALSE
   if(!is.function(trafo)){
-    if(ncol(trafo) != dimension)
+    if((ncol(trafo) != dimension) && (ncol(trafo) != dimensionwithN))
         stop("invalid transformation:\n", 
              "number of columns of 'trafo' not equal to ", 
              "dimension of the parameter")
-    if(nrow(trafo) > dimension)
-        stop("invalid transformation:\n",
-             "number of rows of 'trafo' larger than ", 
-             "dimension of the parameter")
+#    if(nrow(trafo) > dimension)
+#        stop("invalid transformation:\n",
+#             "number of rows of 'trafo' larger than ",
+#             "dimension of the parameter")
     if(any(!is.finite(trafo)))
         stop("infinite or missing values in 'trafo'")
+    ret <- (ncol(trafo) == dimensionwithN)
     }
-  return(invisible())
+  return(ret)
 }
 
 ##caching:

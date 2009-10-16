@@ -36,9 +36,10 @@ L2ParamFamily <- function(name, distribution = Norm(), distrSymm,
             stop("slot 'SymmCenter' of 'distrSymm' has wrong dimension")
     }
     fct <- L2deriv.fct(param)
-    L2deriv <- if(!is.list(fct))
-       EuclRandVarList(RealRandVariable(list(fct), Domain = Reals())) else
-       EuclRandVarList(RealRandVariable(fct, Domain = Reals()))
+    L2deriv0 <- if(!is.list(fct))
+       RealRandVariable(list(fct), Domain = Reals()) else
+       RealRandVariable(fct, Domain = Reals())
+    L2deriv <- EuclRandVarList(L2deriv0)
     if(missing(L2derivSymm)){
         nrvalues <- numberOfMaps(L2deriv)
         L <- vector("list", nrvalues)
@@ -76,9 +77,8 @@ L2ParamFamily <- function(name, distribution = Norm(), distrSymm,
         stop("dimension of 'L2deriv' != dimension of parameters")
 
     if(missing(FisherInfo)){
-        L2 <- as(diag(dims) %*% L2deriv, "EuclRandVariable")
-        FisherInfo <- PosSemDefSymmMatrix(E(object = distribution,
-                                            fun = L2 %*% t(L2)))
+                FI0 <- E(object = distribution, fun = L2deriv0 %*% t(L2deriv0 ))
+        FisherInfo <- PosSemDefSymmMatrix(FI0)
     }else{
         FisherInfo <- PosSemDefSymmMatrix(FisherInfo)
     }
@@ -88,10 +88,9 @@ L2ParamFamily <- function(name, distribution = Norm(), distrSymm,
     if(missing(FisherInfo.fct))
         FisherInfo.fct <- function(param){
         fct <- L2deriv.fct(param)
-        L2deriv <- if(!is.list(fct))
-           EuclRandVarList(RealRandVariable(list(fct), Domain = Reals())) else
-           EuclRandVarList(RealRandVariable(fct, Domain = Reals()))
-        L2 <- as(diag(dims) %*% L2deriv, "EuclRandVariable")
+        L2 <- if(!is.list(fct))
+           RealRandVariable(list(fct), Domain = Reals()) else
+           RealRandVariable(fct, Domain = Reals())
         return(PosSemDefSymmMatrix(E(object = distribution,
                                      fun = L2 %*% t(L2))))
         }
@@ -173,14 +172,14 @@ setMethod("FisherInfo", signature(object = "L2ParamFamily", param = "ParamFamPar
 
 ## check centering of L2 derivative and Fisher Information
 setMethod("checkL2deriv", "L2ParamFamily", 
-    function(L2Fam, out = TRUE, ...){
+    function(L2Fam, out = TRUE){ 
         dims <- length(L2Fam@param)
         L2deriv <- as(diag(dims) %*% L2Fam@L2deriv, "EuclRandVariable")
 
-        cent <- E(object = L2Fam, fun = L2deriv, ...)
+        cent <- E(object = L2Fam, fun = L2deriv)
         if(out) cat("precision of centering:\t", cent, "\n")
 
-        consist <- E(object = L2Fam, fun = L2deriv %*% t(L2deriv), ...)
+        consist <- E(object = L2Fam, fun = L2deriv %*% t(L2deriv))
         consist <- consist - as(L2Fam@FisherInfo, "matrix")
         if(out){
             cat("precision of Fisher information:\n")

@@ -8,7 +8,7 @@
 }
 \usage{
 Estimator(x, estimator, name, Infos, asvar = NULL, nuis.idx,
-          trafo = NULL, fixed = NULL, asvar.fct, ...)
+          trafo = NULL, fixed = NULL, asvar.fct, na.rm = TRUE, ...)
 }
 \arguments{
   \item{x}{ (empirical) data }
@@ -27,6 +27,7 @@ Estimator(x, estimator, name, Infos, asvar = NULL, nuis.idx,
     and \code{param} (the parameter value as object of class 
     \code{ParamFamParameter}); arguments are called by name; \code{asvar.fct}
      may also process further arguments passed through the \code{\dots} argument}              
+  \item{na.rm}{logical: if  \code{TRUE}, the estimator is evaluated at \code{complete.cases(x)}.}
   \item{\dots}{ further arguments to \code{estimator}. }
 }
 \details{

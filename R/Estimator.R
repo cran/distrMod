@@ -2,7 +2,7 @@
 ## Function to compute estimates
 ###############################################################################
 Estimator <- function(x, estimator, name, Infos, asvar = NULL, nuis.idx,
-                      trafo = NULL, fixed = NULL, asvar.fct, ...){
+                      trafo = NULL, fixed = NULL, asvar.fct, na.rm = TRUE, ...){
 
     name.est <- paste(deparse(substitute(estimator)),sep="",collapse="")     
     es.call <- match.call()
@@ -16,6 +16,9 @@ Estimator <- function(x, estimator, name, Infos, asvar = NULL, nuis.idx,
         Infos <- matrix(c(rep("MCEstimator", length(Infos)), Infos), ncol = 2)
         colnames(Infos) <- c("method", "message")
     }
+
+    completecases <- complete.cases(x)
+    if(na.rm) x <- na.omit(x)
 
     samplesize <- if(is.null(dim(x))) length(x) else dim(x)[2]
 
@@ -79,6 +82,7 @@ Estimator <- function(x, estimator, name, Infos, asvar = NULL, nuis.idx,
     }
 
 
+    res@completecases <- completecases
     return(res)
 }
 

@@ -13,13 +13,15 @@ setMethod("samplesize", signature="numeric", function(object){
 
 meRes <- function(x, estimate, criterion.value, param, crit.fct,
                   method = "explicit solution",
-                  crit.name = "Maximum Likelihood", Infos)
-        return(list(estimate = estimate, criterion = criterion.value, 
+                  crit.name = "Maximum Likelihood", Infos, warns = "",
+                  startPar = NULL)
+        return(list(estimate = estimate, criterion = criterion.value,
                     param = param, crit.fct = crit.fct, method = method, 
                     crit.name = crit.name, Infos = Infos, 
-                    samplesize = samplesize(x)))
+                    samplesize = samplesize(x), warns = warns,
+                    startPar = startPar))
 
-get.criterion.fct <- function(theta, Data, ParamFam, criterion, fun, ...){
+get.criterion.fct <- function(theta, Data, ParamFam, criterion.ff, fun, ...){
 
     ### function to produce a function criterion.fct for profiling /
     ##  filling slot 'minuslogl' in object coerced to class mle:
@@ -48,7 +50,7 @@ get.criterion.fct <- function(theta, Data, ParamFam, criterion, fun, ...){
                 th0 <- c(unlist(th0))
                 do.call(fun, c(list(theta = th0, Data = Data,
                                     ParamFamily = ParamFam,
-                                    criterion = criterion) ,
+                                    criterion = criterion.ff) ,
                         dots))
                 }
     crit.lst[l+1] <- as.list(ft)[1]
@@ -62,7 +64,7 @@ get.criterion.fct <- function(theta, Data, ParamFam, criterion, fun, ...){
 
 
 setMethod("mleCalc", signature(x = "numeric", PFam = "ParamFamily"),
-           function(x, PFam, startPar = NULL, penalty = 0, Infos  = NULL, ...){
+           function(x, PFam, startPar = NULL, penalty = 1e20, Infos  = NULL, ...){
 
            res <- mceCalc(x = x, PFam = PFam, 
                           criterion = .negLoglikelihood, startPar = startPar, 
@@ -77,42 +79,76 @@ setMethod("mleCalc", signature(x = "numeric", PFam = "ParamFamily"),
 ################################################################################
 
 setMethod("mceCalc", signature(x = "numeric", PFam = "ParamFamily"),
-           function(x, PFam, criterion, startPar = NULL, penalty = 0, 
-           crit.name = "", Infos = NULL, ...){
+           function(x, PFam, criterion, startPar = NULL, penalty = 1e20,
+           crit.name = "", Infos = NULL, withthetaPar = FALSE, ...){
+
 
        if(is.null(startPar)) startPar <- startPar(PFam)(x,...)
 
         lmx <- length(main(PFam))
         lnx <- length(nuisance(PFam))
         fixed <- fixed(PFam)
-   
-       fun <- function(theta, Data, ParamFamily, criterion, ...){
+
+       allwarns <<- character(0)
+       fun <- function(theta, Data, ParamFamily, criterionF, ...){
                vP <- validParameter(ParamFamily, theta)
-               if(!vP) theta <- makeOKPar(ParamFamily)(theta)
-               if(lnx)
-                  names(theta) <- c(names(main(ParamFamily)),
-                                    names(nuisance(ParamFamily)))
-               else  names(theta) <- names(main(ParamFamily))
-               crit <- criterion(Data, ParamFamily@modifyParam(theta), ...)
-               critP <- crit + penalty * (1-vP)
+               dots <- list(...)
+               dots$trafo <- NULL
+               dots$penalty <- NULL
+               dots$withBiasC <- NULL
+               if(is.function(penalty)) penalty <- penalty(theta)
+               if(!vP) crit0 <- penalty
+               else{
+                  if(lnx)
+                     names(theta) <- c(names(main(ParamFamily)),
+                                       names(nuisance(ParamFamily)))
+                  else  names(theta) <- names(main(ParamFamily))
+                  distr.new <- try(ParamFamily@modifyParam(theta), silent = TRUE)
+                  argList <- c(list(Data, distr.new), dots)
+                  if(withthetaPar) argList <- c(argList, list(thetaPar = theta))
+                  if(is(distr.new,"try.error")){
+                      crit0 <- penalty
+                      warn0 <- paste("Parameter transformation at theta = ",
+                                    paste(round(theta,3),collapse=","),
+                                   " threw an error;\n",  "returning starting par;\n",
+                                   sep="")
+                      allwarns <<- c(allwarns,warn0)
+                      warning(warn0)
+                  }else{crit0 <- try(do.call(what = criterionF, args = argList),
+                                     silent = TRUE)
+                        if(is(crit0, "try-error")){
+                            crit0 <- penalty
+                            warn1 <- paste("Criterion evaluation at theta = ",
+                                    paste(round(theta,3),collapse=","),
+                                   " threw an error;\n",  "returning starting par;\n",
+                                   sep="")
+                         allwarns <<- c(allwarns,warn1)
+                         warning(warn1)
+                         }
+                  }
+               }
+               critP <- crit0 + penalty * (1-vP)
                return(critP)}
 
     if(length(param(PFam)) == 1){
         res <- optimize(f = fun, interval = startPar, Data = x,
-                      ParamFamily = PFam, criterion = criterion, ...)
+                      ParamFamily = PFam, criterionF = criterion, ...)
         theta <- res$minimum
         names(theta) <- names(main(PFam))
         crit <- res$objectiv
         method <- "optimize"
     }else{
         if(is(startPar,"Estimate")) startPar <- untransformed.estimate(startPar)
-        res <- optim(par = startPar, fn = fun, Data = x, ParamFamily = PFam,
-                     criterion = criterion, ...)
+        res <- optim(par = startPar, fn = fun, Data = x,
+                   ParamFamily = PFam, criterionF = criterion, ...)
         theta <- as.numeric(res$par)
         names(theta) <- c(names(main(PFam)),names(nuisance(PFam)))
         method <- "optim"
         crit <- res$value
     }
+
+    vP <- validParameter(PFam, theta)
+    if(!vP) theta <- makeOKPar(PFam)(theta)
 
     idx <-      if(lnx) lmx + 1:lnx else 1:(lmx+lnx)
     nuis.idx <- if(lnx) idx else NULL
@@ -122,11 +158,23 @@ setMethod("mceCalc", signature(x = "numeric", PFam = "ParamFamily"),
                                nuisance = nuis,
                                fixed = fixed)    
 
+    fun2 <- function(theta, Data, ParamFamily, criterion, ...){
+               vP <- validParameter(ParamFamily, theta)
+               if(!vP) theta <- makeOKPar(ParamFamily)(theta)
+               if(lnx)
+                     names(theta) <- c(names(main(ParamFamily)),
+                                       names(nuisance(ParamFamily)))
+               else  names(theta) <- names(main(ParamFamily))
+               distr.new <- ParamFamily@modifyParam(theta)
+               crit1 <- criterion(Data, distr.new, ...)
+               return(crit1)}
+
     crit.fct <- get.criterion.fct(theta, Data = x, ParamFam = PFam, 
-                                   criterion, fun, ...)
+                                   criterion.ff = criterion, fun2, ...)
     
     return(meRes(x, theta, crit, param, crit.fct, method = method,
-                 crit.name = crit.name, Infos = Infos)) 
+                 crit.name = crit.name, Infos = Infos, warns= allwarns,
+                 startPar = startPar))
            })
 
 ################################################################################

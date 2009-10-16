@@ -13,11 +13,11 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{type}:}{Object of class \code{"character"}:
+    \item{\code{type}}{Object of class \code{"character"}: 
       \dQuote{asymptotic mean square error}. }
-    \item{\code{biastype}:}{Object of class \code{"BiasType"}:
+    \item{\code{biastype}}{Object of class \code{"BiasType"}: 
       symmetric, one-sided or asymmetric }
-    \item{\code{normtype}:}{Object of class \code{"NormType"}:
+    \item{\code{normtype}}{Object of class \code{"NormType"}: 
       norm in which a multivariate parameter is considered}
   }
 }
@@ -29,10 +29,13 @@
       replacement function for slot \code{sign}. }
         }
 }
+
 \section{Extends}{
 Class \code{"asGRisk"}, directly.\cr
+Class \code{"asRiskwithBias"}, by class \code{"asGRisk"}.\cr
+Class \code{"asRisk"}, by class \code{"asRiskwithBias"}.\cr
+Class \code{"RiskType"}, by class \code{"asGRisk"}.
 }
-
 \references{
   Ruckdeschel, P. (2005) Optimally One-Sided Bounded Influence Curves.
   Mathematical Methods in Statistics \emph{14}(1), 105-131.
@@ -42,7 +45,7 @@ Class \code{"asGRisk"}, directly.\cr
 }
 \author{Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
 %\note{}
-\seealso{\code{\link{BiasType-class}}}
+\seealso{\code{\link{asGRisk-class}}, \code{\link{asMSE}}}
 \examples{
 asSemivar()
 }

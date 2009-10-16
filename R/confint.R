@@ -20,7 +20,7 @@ setMethod("confint", signature(object="Estimate", method="missing"),
         return(NULL) }
 
 
-    sd0 <- sqrt(diag(object@asvar)/object@samplesize)
+    sd0 <- sqrt(diag(as.matrix(object@asvar))/object@samplesize)
     names(sd0) <- names(object@estimate)
 
 ### code borrowed from confint.default from package stats

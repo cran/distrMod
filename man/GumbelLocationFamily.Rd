@@ -25,7 +25,7 @@ GumbelLocationFamily(loc = 0, scale = 1, trafo)
 }
 \author{Matthias Kohl \email{Matthias.Kohl@stamats.de}}
 %\note{}
-\seealso{\code{\link{L2ParamFamily-class}}, \code{\link[distrEx]{Gumbel-class}}}
+\seealso{\code{\link{L2ParamFamily-class}}, \code{\link[distrEx:Gumbel-class]{Gumbel-class}}}
 \examples{
 (G1 <- GumbelLocationFamily())
 plot(G1)

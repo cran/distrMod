@@ -15,8 +15,8 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{name}:}{Object of class \code{"character"}.}
-    \item{\code{nu}:}{Object of class \code{"numeric"}; 
+    \item{\code{name}}{Object of class \code{"character"}.}
+    \item{\code{nu}}{Object of class \code{"numeric"}; 
                       to be in (0,1] x (0,1] with maximum 1; weights for 
                       negative and positive bias, respectively}
   }

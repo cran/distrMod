@@ -14,8 +14,8 @@
 the generating function \code{\link{NormType}}}
 \section{Slots}{
   \describe{
-    \item{\code{name}:}{Object of class \code{"character"}.}
-    \item{\code{fct}:}{Object of class \code{"function"} --- the norm to be evaluated.}
+    \item{\code{name}}{Object of class \code{"character"}.}
+    \item{\code{fct}}{Object of class \code{"function"} --- the norm to be evaluated.}
   }
 }
 \section{Methods}{

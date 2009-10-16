@@ -16,11 +16,11 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{type}:}{Object of class \code{"character"}: 
+    \item{\code{type}}{Object of class \code{"character"}: 
       \dQuote{trace of asymptotic covariance for given bias bound}. }
-    \item{\code{bound}:}{Object of class \code{"numeric"}: 
+    \item{\code{bound}}{Object of class \code{"numeric"}: 
       given positive bias bound. }
-    \item{\code{biastype}:}{Object of class \code{"BiasType"}: 
+    \item{\code{biastype}}{Object of class \code{"BiasType"}: 
       symmetric, one-sided or asymmetric }
   }
 }

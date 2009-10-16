@@ -4,8 +4,8 @@
 \title{ Function trafoEst in Package `distrMod' }
 \description{
   \code{trafoEst} takes a \eqn{\tau}{tau} like function (compare 
-  \link[trafo-methods]{help to trafo-methods} and transforms
-  an existing estimator by means of this transformation
+  \code{\link{trafo-methods}}) and transforms an existing estimator by means 
+  of this transformation.
  }
 \usage{
 trafoEst(fct, estimator)

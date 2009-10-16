@@ -67,7 +67,7 @@ setMethod("modifyModel", signature(model = "L2ParamFamily", param = "ParamFamPar
              w <- which(call.n %in% par.names)
              if(length(w))
                 fam.call <- fam.call[-w]
-             fam.call <-  as.call(c(unlist(as.list(fam.call)),theta))
+             fam.call <-  as.call(c(as.list(fam.call),theta))
           }
 
           M@fam.call <- fam.call

@@ -2,6 +2,124 @@
 #  News: to package distrMod 
 ######################################################################
 
+(first two numbers of package versions do not necessarily reflect 
+ package-individual development, but rather are chosen for the 
+ distrXXX family as a whole in order to ease updating "depends" 
+ information)
+
+##############
+v 2.2
+##############
+
+user-visible CHANGES:
+
++ Estimators:
+  * AllShow: deleted tab in nuisance and fixed part when parts are named.
+  * in mceCalc penalty now allows for functions 
+  * Estimator(), MCEstimator(), MLEstimator(), MDEstimator() gain argument na.rm; 
+    if true estimators are evaluated at complete.cases(x)
+  * MCEstimate-class gains slot startPar; corresponding accessor functions;
++ unified treatment of NAs: 
+  * class Estimate gains slot completecases, 
+  * class Confint gains slot completecases.estimate,
+  * there is accessor function completecases[.estimate]
+  * slot samplesize only counts complete cases
+  * accessor functions samplesize[.estimate] gains argument onlycompletecases;
+    if TRUE returns slot samplesize[.estimate] as is, otherwise adds
+    sum(completecases[.estimate](object)) to it
+  * internally all Estimator functions work with data na.omit(x) instead of x
+
++ Models:
+  * checkL2deriv gains ... argument to pass on accuracy arguments to E()
+
++ plotting:
+  * new diagnostic function qqplot to check the quality of a model fit
+    + special methods for first argument "ANY" (the data) and for second argument 
+      of class "UnivariateDistribution", "ProbFamily",
+    + comes with corresponding (pointwise/simultaneous) confidence intervals
+    + flexible labelling of data points
+    
+
+GENERAL ENHANCEMENTS:
+
++ added tests/Examples folder with file distrMod-Ex.Rout.save to have
+  some automatic testing
++ added field "Encoding: latin1" to all DESCRIPTION files in order to avoid problems 
+  with e.g. Windows locale when svn replaces $LastChangedDate
++ added TOBEDONE (sic!) files for each package (by accident also in trunc; these are empty so far)
+
+INTERNALLY:
+
++ moved Distribution symmetry classes and corresponding methods/functions from distrMod to distr 
+  * in distrMod remove slots from class ProbFamily and L2ParamFamily
+    -distrSymm (information is already in slot distr)
+    -L2derivSymm (information will be in Random Variable L2deriv)
+    -L2derivDistrSymm (information will be in DistrList L2derivDistr)
++ changed behaviour of mceCalc() and consequently of MCEstimator(), MDEstimator(), MLEstimator():
+  Instead of mapping unallowed parameter values into allowed ones by makeOKPar(), thereby pretending
+  to optim/optimize that the unallowed parameters give reasonable criterion values, now always
+  a penalty is returned whenever the parameter is not valid. For profiling though, we still 
+  keep the old behavior, i.e. map to allowed parameters by makeOKPar() in the returned criterion
+  function.
++ in mceCalc naming is "more" unique (to avoid unintended name clashes)
++ class MCEstimate gains slot optimwarn to gather warnings issued in optimization; 
+  may be accessed with method optimwarn()
++ potentially, mleCalc now transports the value of the current parameter value 
+  theta as argument thetaPar to the optimization criterion;
+  controlled for by argument withthetaPar (defaulting to FALSE)
+  Hence, if desired,  particular criterion functions could make use of 
+  this information, by, say computing the criterion differently for 
+  different parameter values
+  We used it to check whether the numerically found optimum obeys 
+  first order conditions (i.e. sum (L2deriv(x_i))=0)
++ new utility: .deleteDim to delete /only/ dim attribute
++ to deal with nuisance parameters:
+  * utility .validTrafo(), in presence of nuisance, covering coordinates p+1..k, 
+         now accepts for matrices either dim  p x p or p x k 
+         and in case ncol(trafo==k)
+  * correspondingly modified validity function slot in ParamFamParameter()
+  * method trafo is changed for nuisance parameters:
+    - for signature ParamFamily, ParamFamParameter now takes special care
+      about presence of a nuisance parameter: 
+      if so it returns as mat item a matrix with corresponding zero-columns for
+      the nuisance coordinates so that it has dim p x k where k=length(main)+length(nuisance)
+    - .validTrafo calls in ParamFamParameter.R 
+      (in generating function ParamFamParameter, 
+       in trafo-methods signature ParamFamParameter, missing
+       in main<- method for signature ParamFamParameter
+       in trafo<- method for signature ParamFamParameter)
+       are now prepended with necessary dimension
+    -  calculations in order to check whether its dim is pxp or pxk (see point ".validTrafo")
++ show methods for class Estimate are a bit more careful:
+  * in principle they accept estimate slots with a dim attribute
+  * special care is taken to whether untransformed.asvar is not NULL / NA-free
++ removed unnecessary "fixed" component of parameter in ExpScaleFamily
+
+BUGFIXES:
+
++ inserted Symmetry information in demo modelExp3.R
++ simplified treatment of random variable L2deriv in L2ParamFamily.R
++ small modifications to make modifyModel work with matrices in calls 
++ small correction needed for case trafo in R^(1 x k)
++ plot should now work for models with trafo - shows untransformed family 
++ mceCalc was building a named call with arguments x and Distribution and hence
+  MDEstimator did no longer work...
++ for MDEstimator, similarly, this is controlled by paramDepDist
++ there were problems in confint() when diag() was called with numeric of length one.
++ modified wrong use of "criterium" to "criterion"
++ a tiny buglet in prototype for trafo slot
++ yet another issue with "pretty printing", -> give default names "" if empty
++ the "dim"-issue:
+  * estimate, untransformed.estimate, main, and nuisance from time to time 
+    did not return numerics (instead: items with dim attribute...)
+  * accessors to [untransoformed.]asvar now coerce to matrix, but only so if the item is not NULL
+  * in .process.meCalcRes delete dim attribute for slots [untransformed.]estimate unless
+    already present in main (and nuisance)
++ yet another issue with accessor function to [untransformed.]estimate --- it ate the names....
++ setAs(<MCEstimate>,<mle>) was wrong for nuisance parameters
+
+
+
 ##############
 v 2.1
 ##############

@@ -9,7 +9,7 @@
 \section{Objects from the Class}{A virtual Class: No objects may be created from it.}
 \section{Slots}{
   \describe{
-    \item{\code{name}:}{Object of class \code{"character"}.}
+    \item{\code{name}}{Object of class \code{"character"}.}
   }
 }
 \section{Methods}{

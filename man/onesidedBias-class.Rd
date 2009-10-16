@@ -15,9 +15,9 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{name}:}{Object of class \code{"character"}.}
-    \item{\code{sign}:}{Object of class \code{"numeric"}; 
-                      to be {-1,1} --- whether bias is to be positive or negative}
+    \item{\code{name}}{Object of class \code{"character"}.}
+    \item{\code{sign}}{Object of class \code{"numeric"}; 
+                      to be in \{-1,1\} --- whether bias is to be positive or negative}
   }
 }
 \section{Methods}{

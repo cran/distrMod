@@ -19,11 +19,11 @@ setMethod("plot", signature(x = "L2ParamFamily", y = "missing"),
         
         dots$to.draw.arg <- NULL
         trafO <- trafo(x@param)
-        dims <- nrow(trafO)
-        dimm <- length(x@param)
+#        dims <- nrow(trafO)
+        dimm <- dims <- length(x@param)
         
         to.draw <- 1:(3+dims)
-        dimnms  <- c(rownames(trafO))
+        dimnms  <- names(main(x@param)) #c(rownames(trafO))
         if(is.null(dimnms))
            dimnms <- paste("dim",1:dims,sep="")
         names(to.draw) <- c("d","p","q", dimnms)
@@ -157,9 +157,8 @@ setMethod("plot", signature(x = "L2ParamFamily", y = "missing"),
      }
 
      if(is.logical(innerL)){
-        tnm  <- c(rownames(trafO))
-        tnms <- if(is.null(tnm)) paste(1:dims) else 
-                                 paste("'", tnm, "'", sep = "") 
+#        tnm  <- c(rownames(trafO))
+        tnms <- 1:dims #if(is.null(tnm)) paste(1:dims) else paste("'", tnm, "'", sep = "") 
         mnm <- names(x@param@main)
         mnms <- if(is.null(mnm)) NULL else paste("'", mnm, "' = ", sep = "") 
         mss  <- paste(mnms, round(x@param@main, 3), collapse=", ",sep="")

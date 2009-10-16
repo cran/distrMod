@@ -3,11 +3,13 @@
 
 ### not exported:
 .negLoglikelihood <- function(x, Distribution, ...){
+           dots <- list(...)
+           dots$thetaPar <- NULL
           ### increase accuracy:
            if(Distribution@.withSim||!.inArgs("log",d(Distribution)))
-               res <- -sum(log(Distribution@d(x, ...)))
+               res <- -sum(log(do.call(Distribution@d,args = c(list(x),dots) )))
            else
-               res <- -sum(Distribution@d(x, log = TRUE, ...))
+               res <- -sum(do.call(Distribution@d,args = c(list(x,log = TRUE), dots) ))
            return(res)
     }
 
@@ -24,6 +26,9 @@
     idx <- 1:lmx
     jdx <-      if(lnx) lmx + 1:lnx else idx
     nuis.idx <- if(lnx) jdx else NULL
+
+    hasnodim.main <- is.null(dim(main(PFam)))
+    hasnodim.nuis <- is.null(dim(nuisance(PFam)))
 
     theta <- res$estimate
     crit <- res$criterion
@@ -73,7 +78,7 @@
           {warning("Optimization for MCE did not give a valid result. You could try to use argument 'penalty'.")
            theta <- as.numeric(rep(NA, lnx+lmx))
            res <- new("MCEstimate", name = est.name, estimate = theta,
-                       criterion = crit, Infos = Infos, samplesize = samplesize,
+                       criterion = crit, Infos = Infos, samplesize = res$samplesize,
                        nuis.idx = nuis.idx, estimate.call = call,
                        trafo = traf0)
            return(res)}
@@ -90,12 +95,19 @@
 
     if(!.isUnitMatrix(traf0$mat)){
        estimate <- traf0$fct(estimate)$fval
+       estimate <- .deleteDim(estimate)
        trafm <- traf0$mat
        if(!is.null(asvar)){
            asvar <- trafm%*%asvar[idx,idx]%*%t(trafm)
            rownames(asvar) <- colnames(asvar) <- c(names(estimate))
           }
+    }else{
+       if(hasnodim.main)
+           estimate <- .deleteDim(estimate)
     }
+    if(hasnodim.main & hasnodim.nuis)
+        untransformed.estimate <- .deleteDim(untransformed.estimate)
+
     res.me <- new("MCEstimate", name = est.name, estimate = estimate, 
                   criterion = crit, asvar = asvar, Infos = Infos, 
                   samplesize = res$samplesize, nuis.idx = nuis.idx, 
@@ -103,7 +115,8 @@
                   untransformed.estimate = untransformed.estimate,
                   untransformed.asvar = untransformed.asvar,
                   criterion.fct = res$crit.fct, method = res$method,
-                  fixed = fixed(param))
+                  fixed = fixed(param), optimwarn = res$warns,
+                  startPar = res$startPar)
     return(res.me)
 }
 

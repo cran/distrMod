@@ -379,6 +379,10 @@ ExpScaleFamily <- function(scale = 1, trafo){
       f.call <- substitute(ExpScaleFamily(scale = s, trafo = Tr),
                          list(s = scale, Tr = trafo))
 
+    par0 <- res@param
+    par0@fixed <- NULL
+    res@param <- par0
+    
     res@fam.call <- f.call
     return(res)
 }

@@ -3,7 +3,6 @@
 \alias{getdistrModOption}
 \alias{distrModoptions}
 \alias{show.details}
-\alias{use.generalized.inverse.by.default}
 
 \title{Function to change the global variables of the package `distrMod' }
 \description{With \code{distrModOptions} you can inspect and change 
@@ -50,21 +49,13 @@ just a synonym to \code{distrModoptions}.
   for details.}
   }
   The default value is \code{"maximal"}.}
-\item{use.generalized.inverse.by.default}{logical; decides whether by default
-(i.e., if argument \code{generalized} of \code{\link{solve}} is not explicitely
-set), \code{\link{solve}} is to use generalized inverses if the original 
-\code{solve}-method from package \pkg{base} fails; if the option is \code{FALSE}, 
-in case of failure, and unless argument \code{generalized} is not explicitely 
-set to \code{TRUE}, \code{solve} will throw an error as is 
-the \pkg{base}-method behavior. The default value is \code{TRUE}.  
-  }
 }}
 %\references{}
 \author{Matthias Kohl \email{Matthias.Kohl@stamats.de},\cr
         Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
 %\note{}
-\seealso{\code{\link[base]{options}}, \code{\link[base]{getOption}},
-\code{\link[distr]{distroptions}}, \code{\link[distr]{getdistrOption}}}
+\seealso{\code{\link[base]{options}}, \code{\link[base:options]{getOption}},
+\code{\link[distr]{distroptions}}, \code{\link[distr:distroptions]{getdistrOption}}}
 \examples{
 distrModoptions()
 distrModoptions("show.details")

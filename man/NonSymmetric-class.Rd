@@ -11,9 +11,9 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{type}:}{Object of class \code{"character"}:
+    \item{\code{type}}{Object of class \code{"character"}:
       contains \dQuote{non-symmetric function} }
-    \item{\code{SymmCenter}:}{Object of class \code{"NULL"} }
+    \item{\code{SymmCenter}}{Object of class \code{"NULL"} }
   }
 }
 \section{Extends}{

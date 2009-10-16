@@ -8,8 +8,8 @@
 }
 \usage{
 MDEstimator(x, ParamFamily, distance = KolmogorovDist, dist.name, 
-            startPar = NULL,  Infos, trafo = NULL, 
-            penalty = 0, asvar.fct, ...)
+            paramDepDist = FALSE, startPar = NULL,  Infos, trafo = NULL,
+            penalty = 1e20, asvar.fct, na.rm = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,6 +18,10 @@ MDEstimator(x, ParamFamily, distance = KolmogorovDist, dist.name,
   \item{distance}{ (generic) function: to compute distance beetween (emprical)
   data and objects of class \code{"Distribution"}. }
   \item{dist.name}{ optional name of distance }
+  \item{paramDepDist}{logical; will computation of distance be parameter
+                      dependent (see also note below)? if \code{TRUE}, distance function
+                      must be able to digest a parameter \code{thetaPar}; otherwise
+                      this parameter will be eliminated if present in \code{...}-argument.}
   \item{startPar}{ initial information used by \code{optimize} resp. \code{optim};
     i.e; if (total) parameter is of length 1, \code{startPar} is 
     a search interval, else it is an initial parameter value; if \code{NULL}
@@ -34,7 +38,8 @@ MDEstimator(x, ParamFamily, distance = KolmogorovDist, dist.name,
     and \code{param} (the parameter value as object of class 
     \code{ParamFamParameter}); arguments are called by name; \code{asvar.fct}
      may also process further arguments passed through the \code{\dots} argument}              
-  \item{\dots}{ further arguments to \code{criterion} or \code{optimize} 
+  \item{na.rm}{logical: if  \code{TRUE}, the estimator is evaluated at \code{complete.cases(x)}.}
+  \item{\dots}{ further arguments to \code{criterion} or \code{optimize}
     or \code{optim}, respectively. }
 }
 \details{
@@ -48,6 +53,11 @@ MDEstimator(x, ParamFamily, distance = KolmogorovDist, dist.name,
   An object of S4-class \code{"MCEstimate"} which inherits from class 
   \code{"Estimate"}.
 }
+\note{The distance function may be called together with a parameter \code{thetaPar}
+ which is the current parameter value under consideration, i.e.; the value
+ under which the model distribution is considered. Hence, if desired,
+ particular distance functions could make use of this information, by, say
+ computing the distance differently for different parameter values.}
 \references{
     Huber, P.J. (1981) \emph{Robust Statistics}. New York: Wiley.
 
@@ -57,8 +67,8 @@ MDEstimator(x, ParamFamily, distance = KolmogorovDist, dist.name,
         Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
 %\note{}
 \seealso{\code{\link{ParamFamily-class}}, \code{\link{ParamFamily}}, 
-         \code{\link{MCEstimator}, \code{\link{MCEstimate-class}}},
-\code{\link[MASS]{fitdistr}} }
+         \code{\link{MCEstimator}}, \code{\link{MCEstimate-class}},
+          \code{\link[MASS]{fitdistr}} }
 \examples{
 ## (empirical) Data
 x <- rgamma(50, scale = 0.5, shape = 3)

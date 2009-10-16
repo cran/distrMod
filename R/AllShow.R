@@ -79,13 +79,6 @@ setMethod("show", "ParamFamParameter",
             }
         } 
     })
-setMethod("show", "Symmetry", 
-    function(object){ 
-        cat(gettextf("type of symmetry:\t%s\n", object@type))
-        if(!is.null(object@SymmCenter))
-            cat(gettext("center of symmetry:\n"))
-            print(object@SymmCenter, quote = FALSE)
-    })
 setMethod("show", "ParamFamily", 
     function(object){
         cat(gettextf("An object of class \"%s\"\n", class(object)))
@@ -154,11 +147,36 @@ setMethod("show", "Estimate",
         if(!is.null(object@asvar)){
 
            sd0 <- sqrt(diag(object@asvar)/object@samplesize)
-           untransformed.sd0 <- sqrt(diag(object@untransformed.asvar)/object@samplesize)
-
+           if(!is.null(object@untransformed.asvar) && all(!is.na(object@untransformed.asvar)))
+                untransformed.sd0 <- sqrt(diag(object@untransformed.asvar)/object@samplesize)
+           else untransformed.sd0 <- NULL
+           
            if(getdistrModOption("show.details")!="minimal")
               cat(gettextf("estimate:\n"))
-           .show.with.sd(object@estimate,sd0)
+
+           dim.est <- dim(object@estimate)
+           if(is.null(dim.est))
+              .show.with.sd(object@estimate,sd0)
+           else{
+              if(length(dim.est) >2) stop("not yet implemented")
+              c.nms <- colnames(object@estimate)
+              r.nms <- rownames(object@estimate)
+              rn <- dim.est[1]; cn <- dim.est[2]
+              if(rn == 1){
+                 dim(object@estimate) <- NULL
+                 names(object@estimate) <- c.nms
+                 .show.with.sd(object@estimate,sd0)
+              }else{
+                 cni <- (1:cn)-1
+                 for(k in 1:rn){
+                     cat("Row [", r.nms[k], ",]:\n", sep="")
+                     oe <- object@estimate[k,,drop=TRUE]
+                     names(oe) <- paste("[",r.nms[k],",",c.nms,"]",sep="")
+                     sd1 <- sd0[cni*rn+k]
+                     .show.with.sd(oe,sd1)
+                 }
+              }
+           }
 
            if(!is.null(object@nuis.idx)){
               cat(gettextf("nuisance parameter:\n"))
@@ -178,11 +196,17 @@ setMethod("show", "Estimate",
 
            if(getdistrModOption("show.details")=="maximal"){
               if(!.isUnitMatrix(trafo.mat)){
-                   cat(gettextf("untransformed estimate:\n"))
-                   .show.with.sd(object@untransformed.estimate,untransformed.sd0)
-           
-                   cat(gettextf("asymptotic (co)variance of untransformed estimate (multiplied with samplesize):\n"))
-                   print(object@untransformed.asvar[,])
+                   if(!is.null(untransformed.sd0) && all(!is.na(untransformed.sd0))){
+                      cat(gettextf("untransformed estimate:\n"))
+                      .show.with.sd(object@untransformed.estimate,untransformed.sd0)
+                   }else{
+                      cat(gettextf("untransformed estimate:\n"))
+                      print(object@untransformed.estimate, quote = FALSE)
+                   }
+                   if(!is.null(object@untransformed.asvar)){
+                      cat(gettextf("asymptotic (co)variance of untransformed estimate (multiplied with samplesize):\n"))
+                      print(object@untransformed.asvar[,])
+                     }
                    }
             }
         }else{
@@ -225,7 +249,7 @@ setMethod("show", "MCEstimate",
        digits <- getOption("digits")
        show(as(object,"Estimate"))
        if(getdistrModOption("show.details")!="minimal"){
-        cat("Criterium:\n")
+        cat("Criterion:\n")
         print(criterion(object), quote = FALSE)}
     })
 

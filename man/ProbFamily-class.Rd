@@ -23,13 +23,13 @@
 \section{Objects from the Class}{A virtual Class: No objects may be created from it.}
 \section{Slots}{
   \describe{
-    \item{\code{name}:}{Object of class \code{"character"}: 
+    \item{\code{name}}{Object of class \code{"character"}: 
       name of the family. }
-    \item{\code{distribution}:}{Object of class \code{"Distribution"}: 
+    \item{\code{distribution}}{Object of class \code{"Distribution"}: 
       member of the family. }
-    \item{\code{distrSymm}:}{Object of class \code{"DistributionSymmetry"}: 
+    \item{\code{distrSymm}}{Object of class \code{"DistributionSymmetry"}: 
       symmetry of \code{distribution}. }
-    \item{\code{props}:}{Object of class \code{"character"}: 
+    \item{\code{props}}{Object of class \code{"character"}: 
       properties of the family. }
   }
 }
