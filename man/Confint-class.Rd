@@ -99,7 +99,7 @@
      but with additional arguments \code{digits}.}
   }
 }
-\section{Details for methods \code{show}, \code{print}}{
+\section{Details for methods 'show', 'print'}{
 Detailedness of output by methods \code{show}, \code{print} is controlled
 by the global option \code{show.details} to be set by 
 \code{\link{distrModoptions}}.

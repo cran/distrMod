@@ -15,8 +15,8 @@ maximum likelihood or minimum distance estimators for probability models.
 \details{
 \tabular{ll}{
 Package: \tab distrMod \cr
-Version: \tab 2.2 \cr
-Date: \tab 2009-09-04 \cr
+Version: \tab 2.2.1 \cr
+Date: \tab 2010-01-18 \cr
 Depends: \tab R(>= 2.6.0), methods, startupmsg, distr(>= 2.2), distrEx(>= 2.2), RandVar(>= 0.6.3), MASS, stats4 \cr
 LazyLoad: \tab yes \cr
 License: \tab LGPL-3 \cr
@@ -281,11 +281,17 @@ Matthias Kohl \email{Matthias.Kohl@stamats.de}\cr
 }
 
 \references{
+M. Kohl and P. Ruckdeschel (2010):
+R Package distrMod: S4 Classes and Methods for Probability Models.
+Journal of Statistical Software, 35(10), 1-27. 
+\url{http://www.jstatsoft.org/v35/i10/}
+(see also \code{vignette("distrMod")})
+
 P. Ruckdeschel, M. Kohl, T. Stabla, F. Camphausen (2006):
 S4 Classes for Distributions, \emph{R News}, \emph{6}(2), 2-6. 
 \url{http://CRAN.R-project.org/doc/Rnews/Rnews_2006-2.pdf}
 
-a vignette for packages \pkg{distr}, \pkg{distrSim}, \pkg{distrTEst}, and 
+A vignette for packages \pkg{distr}, \pkg{distrSim}, \pkg{distrTEst}, and 
 \pkg{distrEx} is included into the mere documentation package \pkg{distrDoc} 
 and may be called by 
 \code{require("distrDoc");vignette("distr")}

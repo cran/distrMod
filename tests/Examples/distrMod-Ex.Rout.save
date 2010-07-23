@@ -1,6 +1,6 @@
 
-R version 2.10.0 beta (2009-10-15 r50107)
-Copyright (C) 2009 The R Foundation for Statistical Computing
+R version 2.10.1 Patched (2010-01-12 r50990)
+Copyright (C) 2010 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -17,77 +17,12 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-> ### * <HEADER>
-> ###
-> attach(NULL, name = "CheckExEnv")
-> assign("nameEx",
-+        local({
-+ 	   s <- "__{must remake R-ex/*.R}__"
-+            function(new) {
-+                if(!missing(new)) s <<- new else s
-+            }
-+        }),
-+        pos = "CheckExEnv")
-> ## Add some hooks to label plot pages for base and grid graphics
-> assign("base_plot_hook",
-+        function() {
-+            pp <- par(c("mfg","mfcol","oma","mar"))
-+            if(all(pp$mfg[1:2] == c(1, pp$mfcol[2]))) {
-+                outer <- (oma4 <- pp$oma[4]) > 0; mar4 <- pp$mar[4]
-+                mtext(sprintf("help(\"%s\")", nameEx()), side = 4,
-+                      line = if(outer)max(1, oma4 - 1) else min(1, mar4 - 1),
-+                outer = outer, adj = 1, cex = .8, col = "orchid", las=3)
-+            }
-+        },
-+        pos = "CheckExEnv")
-> assign("grid_plot_hook",
-+        function() {
-+            grid::pushViewport(grid::viewport(width=grid::unit(1, "npc") -
-+                               grid::unit(1, "lines"), x=0, just="left"))
-+            grid::grid.text(sprintf("help(\"%s\")", nameEx()),
-+                            x=grid::unit(1, "npc") + grid::unit(0.5, "lines"),
-+                            y=grid::unit(0.8, "npc"), rot=90,
-+                            gp=grid::gpar(col="orchid"))
-+        },
-+        pos = "CheckExEnv")
-> setHook("plot.new",     get("base_plot_hook", pos = "CheckExEnv"))
-> setHook("persp",        get("base_plot_hook", pos = "CheckExEnv"))
-> setHook("grid.newpage", get("grid_plot_hook", pos = "CheckExEnv"))
-> assign("cleanEx",
-+        function(env = .GlobalEnv) {
-+ 	   rm(list = ls(envir = env, all.names = TRUE), envir = env)
-+            RNGkind("default", "default")
-+ 	   set.seed(1)
-+    	   options(warn = 1)
-+ 	   .CheckExEnv <- as.environment("CheckExEnv")
-+ 	   delayedAssign("T", stop("T used instead of TRUE"),
-+ 		  assign.env = .CheckExEnv)
-+ 	   delayedAssign("F", stop("F used instead of FALSE"),
-+ 		  assign.env = .CheckExEnv)
-+ 	   sch <- search()
-+ 	   newitems <- sch[! sch %in% .oldSearch]
-+ 	   for(item in rev(newitems))
-+                eval(substitute(detach(item), list(item=item)))
-+ 	   missitems <- .oldSearch[! .oldSearch %in% sch]
-+ 	   if(length(missitems))
-+ 	       warning("items ", paste(missitems, collapse=", "),
-+ 		       " have been removed from the search path")
-+        },
-+        pos = "CheckExEnv")
-> assign("ptime", proc.time(), pos = "CheckExEnv")
-> ## at least one package changes these via ps.options(), so do this
-> ## before loading the package.
-> ## Use postscript as incomplete files may be viewable, unlike PDF.
-> ## Choose a size that is close to on-screen devices, fix paper
-> grDevices::ps.options(width = 7, height = 7, paper = "a4", reset = TRUE)
-> grDevices::postscript("distrMod-Ex.ps")
-> 
-> assign("par.postscript", graphics::par(no.readonly = TRUE), pos = "CheckExEnv")
-> options(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"))
+> pkgname <- "distrMod"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
 > options(warn = 1)
 > library('distrMod')
 Loading required package: startupmsg
-:startupmsg>  Utilities for start-up messages (version 0.7)
+:startupmsg>  Utilities for start-up messages (version 0.7.1)
 :startupmsg> 
 :startupmsg>  For more information see ?"startupmsg",
 :startupmsg>  NEWS("startupmsg")
@@ -96,7 +31,8 @@ Loading required package: distr
 Loading required package: sfsmisc
 Loading required package: SweaveListingUtils
 :SweaveListingUtils>  Utilities for Sweave together with
-:SweaveListingUtils>  TeX listings package (version 0.4)
+:SweaveListingUtils>  TeX listings package (version
+:SweaveListingUtils>  0.4.1)
 :SweaveListingUtils> 
 :SweaveListingUtils>  Some functions from package 'base'
 :SweaveListingUtils>  are intentionally masked ---see
@@ -124,7 +60,7 @@ Attaching package: 'SweaveListingUtils'
 	 require 
 
 :distr>  Object orientated implementation of distributions (version
-:distr>  2.2)
+:distr>  2.2.1)
 :distr> 
 :distr>  Attention: Arithmetics on distribution objects are
 :distr>  understood as operations on corresponding random variables
@@ -163,7 +99,7 @@ Attaching package: 'actuar'
 
 	 cm 
 
-:distrEx>  Extensions of package distr (version 2.2)
+:distrEx>  Extensions of package distr (version 2.2.1)
 :distrEx> 
 :distrEx>  Note: Packages "e1071", "moments", "fBasics" should be
 :distrEx>  attached /before/ package "distrEx". See distrExMASK().
@@ -197,8 +133,8 @@ Loading required package: RandVar
 
 Loading required package: MASS
 Loading required package: stats4
-:distrMod>  Object orientated implementation of probability models
-:distrMod>  (version 2.2)
+:distrMod>  Object oriented implementation of probability models
+:distrMod>  (version 2.2.1)
 :distrMod> 
 :distrMod>  Some functions from pkg's 'base' and 'stats' are
 :distrMod>  intentionally masked ---see distrModMASK().
@@ -228,8 +164,8 @@ Attaching package: 'distrMod'
 
 > 
 > assign(".oldSearch", search(), pos = 'CheckExEnv')
-> assign(".oldNS", loadedNamespaces(), pos = 'CheckExEnv')
-> cleanEx(); nameEx("BetaFamily")
+> cleanEx()
+> nameEx("BetaFamily")
 > ### * BetaFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -263,7 +199,7 @@ shape2      0      1
 [1] "The Beta family is invariant in the following sense"
 [2] "if (x_i)~Beta(s1,s2) then (1-x_i)~Beta(s2,s1)"      
 > FisherInfo(B1)
-An object of class “PosSemDefSymmMatrix”
+An object of class "PosSemDefSymmMatrix"
            shape1     shape2
 shape1  1.0000000 -0.6449341
 shape2 -0.6449341  1.0000000
@@ -279,7 +215,8 @@ $maximum.deviation
 > 
 > 
 > 
-> cleanEx(); nameEx("BiasType-class")
+> cleanEx()
+> nameEx("BiasType-class")
 > ### * BiasType-class
 > 
 > flush(stderr()); flush(stdout())
@@ -297,7 +234,8 @@ $maximum.deviation
 > 
 > 
 > 
-> cleanEx(); nameEx("BinomFamily")
+> cleanEx()
+> nameEx("BinomFamily")
 > ### * BinomFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -331,7 +269,7 @@ prob    1
 [2] "i.e., d(Binom(size, prob))(k)=d(Binom(size,1-prob))(size-k)" 
 > plot(B1)
 > FisherInfo(B1)
-An object of class “PosSemDefSymmMatrix”
+An object of class "PosSemDefSymmMatrix"
          prob
 prob 133.3333
 > checkL2deriv(B1)
@@ -345,7 +283,8 @@ $maximum.deviation
 > 
 > 
 > 
-> cleanEx(); nameEx("CauchyLocationScaleFamily")
+> cleanEx()
+> nameEx("CauchyLocationScaleFamily")
 > ### * CauchyLocationScaleFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -380,7 +319,7 @@ scale   0     1
 [3] "with location parameter 'loc' and scale parameter 'scale'"
 > plot(C1)
 > FisherInfo(C1)
-An object of class “PosDefSymmMatrix”
+An object of class "PosDefSymmMatrix"
       loc scale
 loc   0.5   0.0
 scale 0.0   0.5
@@ -399,7 +338,8 @@ $maximum.deviation
 > 
 > 
 > 
-> cleanEx(); nameEx("Confint-class")
+> cleanEx()
+> nameEx("Confint-class")
 > ### * Confint-class
 > 
 > flush(stderr()); flush(stdout())
@@ -477,7 +417,8 @@ rate  1.751  4.097
 > 
 > 
 > 
-> cleanEx(); nameEx("Estimate-class")
+> cleanEx()
+> nameEx("Estimate-class")
 > ### * Estimate-class
 > 
 > flush(stderr()); flush(stdout())
@@ -519,7 +460,8 @@ named numeric(0)
 > 
 > 
 > 
-> cleanEx(); nameEx("Estimator")
+> cleanEx()
+> nameEx("Estimator")
 > ### * Estimator
 > 
 > flush(stderr()); flush(stdout())
@@ -555,7 +497,8 @@ named numeric(0)
 > 
 > 
 > 
-> cleanEx(); nameEx("EvenSymmetric-class")
+> cleanEx()
+> nameEx("EvenSymmetric-class")
 > ### * EvenSymmetric-class
 > 
 > flush(stderr()); flush(stdout())
@@ -574,7 +517,8 @@ numeric(0)
 > 
 > 
 > 
-> cleanEx(); nameEx("EvenSymmetric")
+> cleanEx()
+> nameEx("EvenSymmetric")
 > ### * EvenSymmetric
 > 
 > flush(stderr()); flush(stdout())
@@ -602,7 +546,8 @@ function (SymmCenter = 0)
 > 
 > 
 > 
-> cleanEx(); nameEx("ExpScaleFamily")
+> cleanEx()
+> nameEx("ExpScaleFamily")
 > ### * ExpScaleFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -642,7 +587,7 @@ function (x)
 {
     ((x - 0)/1 * LogDeriv((x - 0)/1) - 1)/1
 }
-<environment: 0x7f7e928>
+<environment: 0x5757930>
 
 > checkL2deriv(E1)
 precision of centering:	 -1.511810e-06 
@@ -655,7 +600,8 @@ $maximum.deviation
 > 
 > 
 > 
-> cleanEx(); nameEx("FunSymmList-class")
+> cleanEx()
+> nameEx("FunSymmList-class")
 > ### * FunSymmList-class
 > 
 > flush(stderr()); flush(stdout())
@@ -669,7 +615,7 @@ $maximum.deviation
 > 
 > new("FunSymmList", list(NonSymmetric(), EvenSymmetric(SymmCenter = 1), 
 +                         OddSymmetric(SymmCenter = 2)))
-An object of class “FunSymmList”
+An object of class "FunSymmList"
 [[1]]
 type of symmetry:	non-symmetric function
 NULL
@@ -687,7 +633,8 @@ center of symmetry:
 > 
 > 
 > 
-> cleanEx(); nameEx("FunSymmList")
+> cleanEx()
+> nameEx("FunSymmList")
 > ### * FunSymmList
 > 
 > flush(stderr()); flush(stdout())
@@ -701,7 +648,7 @@ center of symmetry:
 > 
 > FunSymmList(NonSymmetric(), EvenSymmetric(SymmCenter = 1), 
 +             OddSymmetric(SymmCenter = 2))
-An object of class “FunSymmList”
+An object of class "FunSymmList"
 [[1]]
 type of symmetry:	non-symmetric function
 NULL
@@ -728,7 +675,8 @@ function (...)
 > 
 > 
 > 
-> cleanEx(); nameEx("GammaFamily")
+> cleanEx()
+> nameEx("GammaFamily")
 > ### * GammaFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -761,7 +709,7 @@ shape     0     1
 [1] "The Gamma family is scale invariant via the parametrization"
 [2] "'(nu,shape)=(log(scale),shape)'"                            
 > FisherInfo(G1)
-An object of class “PosSemDefSymmMatrix”
+An object of class "PosSemDefSymmMatrix"
       scale    shape
 scale     1 1.000000
 shape     1 1.644934
@@ -777,7 +725,8 @@ $maximum.deviation
 > 
 > 
 > 
-> cleanEx(); nameEx("GumbelLocationFamily")
+> cleanEx()
+> nameEx("GumbelLocationFamily")
 > ### * GumbelLocationFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -815,7 +764,7 @@ function (x)
 {
     LogDeriv(x - 0)
 }
-<environment: 0x85ba170>
+<environment: 0x70c22d0>
 
 > checkL2deriv(G1)
 precision of centering:	 1.511810e-06 
@@ -828,7 +777,8 @@ $maximum.deviation
 > 
 > 
 > 
-> cleanEx(); nameEx("InfoNorm")
+> cleanEx()
+> nameEx("InfoNorm")
 > ### * InfoNorm
 > 
 > flush(stderr()); flush(stdout())
@@ -841,9 +791,9 @@ $maximum.deviation
 > ### ** Examples
 > 
 > InfoNorm()
-An object of class “InfoNorm”
+An object of class "InfoNorm"
 Slot "QuadForm":
-An object of class “PosSemDefSymmMatrix”
+An object of class "PosSemDefSymmMatrix"
      [,1]
 [1,]    1
 
@@ -853,7 +803,7 @@ Slot "name":
 Slot "fct":
 function (x) 
 QuadFormNorm(x, A = A)
-<environment: 0x7e98768>
+<environment: 0x6629a80>
 
 > 
 > ## The function is currently defined as
@@ -865,7 +815,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("L2GroupFamily-class")
+> cleanEx()
+> nameEx("L2GroupFamily-class")
 > ### * L2GroupFamily-class
 > 
 > flush(stderr()); flush(stdout())
@@ -884,7 +835,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("L2LocationFamily-class")
+> cleanEx()
+> nameEx("L2LocationFamily-class")
 > ### * L2LocationFamily-class
 > 
 > flush(stderr()); flush(stdout())
@@ -901,7 +853,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("L2LocationFamily")
+> cleanEx()
+> nameEx("L2LocationFamily")
 > ### * L2LocationFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -918,7 +871,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("L2LocationScaleFamily-class")
+> cleanEx()
+> nameEx("L2LocationScaleFamily-class")
 > ### * L2LocationScaleFamily-class
 > 
 > flush(stderr()); flush(stdout())
@@ -935,7 +889,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("L2LocationScaleFamily")
+> cleanEx()
+> nameEx("L2LocationScaleFamily")
 > ### * L2LocationScaleFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -952,7 +907,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("L2LocationUnknownScaleFamily")
+> cleanEx()
+> nameEx("L2LocationUnknownScaleFamily")
 > ### * L2LocationUnknownScaleFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -970,7 +926,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("L2ParamFamily-class")
+> cleanEx()
+> nameEx("L2ParamFamily-class")
 > ### * L2ParamFamily-class
 > 
 > flush(stderr()); flush(stdout())
@@ -1007,7 +964,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("L2ParamFamily")
+> cleanEx()
+> nameEx("L2ParamFamily")
 > ### * L2ParamFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -1024,7 +982,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("L2ScaleFamily-class")
+> cleanEx()
+> nameEx("L2ScaleFamily-class")
 > ### * L2ScaleFamily-class
 > 
 > flush(stderr()); flush(stdout())
@@ -1041,7 +1000,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("L2ScaleFamily")
+> cleanEx()
+> nameEx("L2ScaleFamily")
 > ### * L2ScaleFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -1058,7 +1018,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("L2ScaleUnknownLocationFamily")
+> cleanEx()
+> nameEx("L2ScaleUnknownLocationFamily")
 > ### * L2ScaleUnknownLocationFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -1076,7 +1037,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("LnormScaleFamily")
+> cleanEx()
+> nameEx("LnormScaleFamily")
 > ### * LnormScaleFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -1119,7 +1081,7 @@ function (x)
 {
     ((x - 0)/1 * LogDeriv((x - 0)/1) - 1)/1
 }
-<environment: 0x8275218>
+<environment: 0x7996620>
 
 > checkL2deriv(L1)
 precision of centering:	 -0.003003394 
@@ -1132,7 +1094,8 @@ $maximum.deviation
 > 
 > 
 > 
-> cleanEx(); nameEx("MCEstimate-class")
+> cleanEx()
+> nameEx("MCEstimate-class")
 > ### * MCEstimate-class
 > 
 > flush(stderr()); flush(stdout())
@@ -1193,7 +1156,8 @@ negative log-likelihood
 > 
 > 
 > graphics::par(get("par.postscript", pos = 'CheckExEnv'))
-> cleanEx(); nameEx("MCEstimator")
+> cleanEx()
+> nameEx("MCEstimator")
 > ### * MCEstimator
 > 
 > flush(stderr()); flush(stdout())
@@ -1320,7 +1284,8 @@ Hellinger Distance
 > 
 > 
 > 
-> cleanEx(); nameEx("MDEstimator")
+> cleanEx()
+> nameEx("MDEstimator")
 > ### * MDEstimator
 > 
 > flush(stderr()); flush(stdout())
@@ -1446,7 +1411,8 @@ Hellinger distance
 > 
 > 
 > 
-> cleanEx(); nameEx("MLEstimator")
+> cleanEx()
+> nameEx("MLEstimator")
 > ### * MLEstimator
 > 
 > flush(stderr()); flush(stdout())
@@ -1694,7 +1660,8 @@ scale 0.9945880 2.277044
 > 
 > 
 > graphics::par(get("par.postscript", pos = 'CheckExEnv'))
-> cleanEx(); nameEx("NonSymmetric-class")
+> cleanEx()
+> nameEx("NonSymmetric-class")
 > ### * NonSymmetric-class
 > 
 > flush(stderr()); flush(stdout())
@@ -1712,7 +1679,8 @@ NULL
 > 
 > 
 > 
-> cleanEx(); nameEx("NonSymmetric")
+> cleanEx()
+> nameEx("NonSymmetric")
 > ### * NonSymmetric
 > 
 > flush(stderr()); flush(stdout())
@@ -1737,7 +1705,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("NormLocationFamily")
+> cleanEx()
+> nameEx("NormLocationFamily")
 > ### * NormLocationFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -1777,7 +1746,8 @@ An object of class "UnivarDistrList"
 > 
 > 
 > 
-> cleanEx(); nameEx("NormLocationScaleFamily")
+> cleanEx()
+> nameEx("NormLocationScaleFamily")
 > ### * NormLocationScaleFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -1811,7 +1781,7 @@ sd:	1
 [3] "with location parameter 'loc' and scale parameter 'scale'"
 > plot(N1)
 > FisherInfo(N1)
-An object of class “PosDefSymmMatrix”
+An object of class "PosDefSymmMatrix"
      mean sd
 mean    1  0
 sd      0  2
@@ -1827,7 +1797,8 @@ $maximum.deviation
 > 
 > 
 > 
-> cleanEx(); nameEx("NormLocationUnknownScaleFamily")
+> cleanEx()
+> nameEx("NormLocationUnknownScaleFamily")
 > ### * NormLocationUnknownScaleFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -1863,7 +1834,7 @@ sd:	1
 [3] "with location parameter 'loc' and scale parameter 'scale'"                     
 > plot(N1)
 > FisherInfo(N1)
-An object of class “PosDefSymmMatrix”
+An object of class "PosDefSymmMatrix"
      mean sd
 mean    1  0
 sd      0  2
@@ -1879,7 +1850,8 @@ $maximum.deviation
 > 
 > 
 > 
-> cleanEx(); nameEx("NormScaleFamily")
+> cleanEx()
+> nameEx("NormScaleFamily")
 > ### * NormScaleFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -1914,7 +1886,7 @@ fixed part of param.:
 [3] "with scale parameter 'scale'"                 
 > plot(N1)
 > FisherInfo(N1)
-An object of class “PosDefSymmMatrix”
+An object of class "PosDefSymmMatrix"
    sd
 sd  2
 > checkL2deriv(N1)
@@ -1928,7 +1900,8 @@ $maximum.deviation
 > 
 > 
 > 
-> cleanEx(); nameEx("NormScaleUnknownLocationFamily")
+> cleanEx()
+> nameEx("NormScaleUnknownLocationFamily")
 > ### * NormScaleUnknownLocationFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -1964,7 +1937,7 @@ mean:	0
 [3] "with location parameter 'loc' and scale parameter 'scale'"                     
 > plot(N1)
 > FisherInfo(N1)
-An object of class “PosDefSymmMatrix”
+An object of class "PosDefSymmMatrix"
      sd mean
 sd    1    0
 mean  0    2
@@ -1980,7 +1953,8 @@ $maximum.deviation
 > 
 > 
 > 
-> cleanEx(); nameEx("NormType-class")
+> cleanEx()
+> nameEx("NormType-class")
 > ### * NormType-class
 > 
 > flush(stderr()); flush(stdout())
@@ -2007,7 +1981,8 @@ function (x)
 > 
 > 
 > 
-> cleanEx(); nameEx("NormType")
+> cleanEx()
+> nameEx("NormType")
 > ### * NormType
 > 
 > flush(stderr()); flush(stdout())
@@ -2020,7 +1995,7 @@ function (x)
 > ### ** Examples
 > 
 > NormType()
-An object of class “NormType”
+An object of class "NormType"
 Slot "name":
 [1] "EuclideanNorm"
 
@@ -2036,7 +2011,8 @@ function (x)
 > 
 > 
 > 
-> cleanEx(); nameEx("OddSymmetric-class")
+> cleanEx()
+> nameEx("OddSymmetric-class")
 > ### * OddSymmetric-class
 > 
 > flush(stderr()); flush(stdout())
@@ -2055,7 +2031,8 @@ numeric(0)
 > 
 > 
 > 
-> cleanEx(); nameEx("OddSymmetric")
+> cleanEx()
+> nameEx("OddSymmetric")
 > ### * OddSymmetric
 > 
 > flush(stderr()); flush(stdout())
@@ -2083,7 +2060,8 @@ function (SymmCenter = 0)
 > 
 > 
 > 
-> cleanEx(); nameEx("ParamFamParameter-class")
+> cleanEx()
+> nameEx("ParamFamParameter-class")
 > ### * ParamFamParameter-class
 > 
 > flush(stderr()); flush(stdout())
@@ -2107,7 +2085,8 @@ name:	parameter of a parametric family of probability measures
 > 
 > 
 > 
-> cleanEx(); nameEx("ParamFamParameter")
+> cleanEx()
+> nameEx("ParamFamParameter")
 > ### * ParamFamParameter
 > 
 > flush(stderr()); flush(stdout())
@@ -2132,7 +2111,8 @@ fixed part of param.:	2
 > 
 > 
 > 
-> cleanEx(); nameEx("ParamFamily-class")
+> cleanEx()
+> nameEx("ParamFamily-class")
 > ### * ParamFamily-class
 > 
 > flush(stderr()); flush(stdout())
@@ -2154,7 +2134,8 @@ fixed part of param.:	2
 > 
 > 
 > 
-> cleanEx(); nameEx("ParamFamily")
+> cleanEx()
+> nameEx("ParamFamily")
 > ### * ParamFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -2422,7 +2403,8 @@ shape:	2
 > 
 > 
 > 
-> cleanEx(); nameEx("PoisFamily")
+> cleanEx()
+> nameEx("PoisFamily")
 > ### * PoisFamily
 > 
 > flush(stderr()); flush(stdout())
@@ -2446,7 +2428,7 @@ name:	positive mean
 lambda:	4.5
 > plot(P1)
 > FisherInfo(P1)
-An object of class “PosSemDefSymmMatrix”
+An object of class "PosSemDefSymmMatrix"
           lambda
 lambda 0.2222222
 > checkL2deriv(P1)
@@ -2460,7 +2442,8 @@ $maximum.deviation
 > 
 > 
 > 
-> cleanEx(); nameEx("QFNorm")
+> cleanEx()
+> nameEx("QFNorm")
 > ### * QFNorm
 > 
 > flush(stderr()); flush(stdout())
@@ -2473,9 +2456,9 @@ $maximum.deviation
 > ### ** Examples
 > 
 > QFNorm()
-An object of class “QFNorm”
+An object of class "QFNorm"
 Slot "QuadForm":
-An object of class “PosSemDefSymmMatrix”
+An object of class "PosSemDefSymmMatrix"
      [,1]
 [1,]    1
 
@@ -2485,7 +2468,7 @@ Slot "name":
 Slot "fct":
 function (x) 
 QuadFormNorm(x, A = A0)
-<environment: 0x58c2278>
+<environment: 0x78c9f88>
 
 > 
 > ## The function is currently defined as
@@ -2497,7 +2480,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("SelfNorm")
+> cleanEx()
+> nameEx("SelfNorm")
 > ### * SelfNorm
 > 
 > flush(stderr()); flush(stdout())
@@ -2510,9 +2494,9 @@ function ()
 > ### ** Examples
 > 
 > SelfNorm()
-An object of class “SelfNorm”
+An object of class "SelfNorm"
 Slot "QuadForm":
-An object of class “PosSemDefSymmMatrix”
+An object of class "PosSemDefSymmMatrix"
      [,1]
 [1,]    1
 
@@ -2522,7 +2506,7 @@ Slot "name":
 Slot "fct":
 function (x) 
 QuadFormNorm(x, A = A)
-<environment: 0x4d56b78>
+<environment: 0x77fb088>
 
 > 
 > ## The function is currently defined as
@@ -2534,7 +2518,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("asBias-class")
+> cleanEx()
+> nameEx("asBias-class")
 > ### * asBias-class
 > 
 > flush(stderr()); flush(stdout())
@@ -2552,7 +2537,8 @@ risk type:	 asymptotic bias
 > 
 > 
 > 
-> cleanEx(); nameEx("asBias")
+> cleanEx()
+> nameEx("asBias")
 > ### * asBias
 > 
 > flush(stderr()); flush(stdout())
@@ -2578,7 +2564,8 @@ function (biastype = symmetricBias(), normtype = NormType())
 > 
 > 
 > 
-> cleanEx(); nameEx("asCov-class")
+> cleanEx()
+> nameEx("asCov-class")
 > ### * asCov-class
 > 
 > flush(stderr()); flush(stdout())
@@ -2596,7 +2583,8 @@ risk type:	 asymptotic covariance
 > 
 > 
 > 
-> cleanEx(); nameEx("asCov")
+> cleanEx()
+> nameEx("asCov")
 > ### * asCov
 > 
 > flush(stderr()); flush(stdout())
@@ -2621,7 +2609,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("asHampel-class")
+> cleanEx()
+> nameEx("asHampel-class")
 > ### * asHampel-class
 > 
 > flush(stderr()); flush(stdout())
@@ -2641,7 +2630,8 @@ bound:	 Inf
 > 
 > 
 > 
-> cleanEx(); nameEx("asHampel")
+> cleanEx()
+> nameEx("asHampel")
 > ### * asHampel
 > 
 > flush(stderr()); flush(stdout())
@@ -2668,7 +2658,8 @@ function (bound = Inf, biastype = symmetricBias(), normtype = NormType())
 > 
 > 
 > 
-> cleanEx(); nameEx("asMSE-class")
+> cleanEx()
+> nameEx("asMSE-class")
 > ### * asMSE-class
 > 
 > flush(stderr()); flush(stdout())
@@ -2686,7 +2677,8 @@ risk type:	 asymptotic mean square error
 > 
 > 
 > 
-> cleanEx(); nameEx("asMSE")
+> cleanEx()
+> nameEx("asMSE")
 > ### * asMSE
 > 
 > flush(stderr()); flush(stdout())
@@ -2712,7 +2704,8 @@ function (biastype = symmetricBias(), normtype = NormType())
 > 
 > 
 > 
-> cleanEx(); nameEx("asSemivar-class")
+> cleanEx()
+> nameEx("asSemivar-class")
 > ### * asSemivar-class
 > 
 > flush(stderr()); flush(stdout())
@@ -2730,7 +2723,8 @@ risk type:	 asymptotic Semivariance
 > 
 > 
 > 
-> cleanEx(); nameEx("asSemivar")
+> cleanEx()
+> nameEx("asSemivar")
 > ### * asSemivar
 > 
 > flush(stderr()); flush(stdout())
@@ -2749,7 +2743,8 @@ risk type:	 asymptotic Semivariance
 > 
 > 
 > 
-> cleanEx(); nameEx("asUnOvShoot-class")
+> cleanEx()
+> nameEx("asUnOvShoot-class")
 > ### * asUnOvShoot-class
 > 
 > flush(stderr()); flush(stdout())
@@ -2769,7 +2764,8 @@ width:
 > 
 > 
 > 
-> cleanEx(); nameEx("asUnOvShoot")
+> cleanEx()
+> nameEx("asUnOvShoot")
 > ### * asUnOvShoot
 > 
 > flush(stderr()); flush(stdout())
@@ -2796,7 +2792,8 @@ function (width = 1.96, biastype = symmetricBias())
 > 
 > 
 > 
-> cleanEx(); nameEx("asymmetricBias-class")
+> cleanEx()
+> nameEx("asymmetricBias-class")
 > ### * asymmetricBias-class
 > 
 > flush(stderr()); flush(stdout())
@@ -2810,7 +2807,7 @@ function (width = 1.96, biastype = symmetricBias())
 > ### ** Examples
 > 
 > asymmetricBias()
-An object of class “asymmetricBias”
+An object of class "asymmetricBias"
 Slot "nu":
 [1] 1 1
 
@@ -2835,7 +2832,8 @@ Error in `nu<-`(`*tmp*`, value = -2) :
 > 
 > 
 > 
-> cleanEx(); nameEx("asymmetricBias")
+> cleanEx()
+> nameEx("asymmetricBias")
 > ### * asymmetricBias
 > 
 > flush(stderr()); flush(stdout())
@@ -2848,7 +2846,7 @@ Error in `nu<-`(`*tmp*`, value = -2) :
 > ### ** Examples
 > 
 > asymmetricBias()
-An object of class “asymmetricBias”
+An object of class "asymmetricBias"
 Slot "nu":
 [1] 1 1
 
@@ -2866,7 +2864,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("checkL2deriv")
+> cleanEx()
+> nameEx("checkL2deriv")
 > ### * checkL2deriv
 > 
 > flush(stderr()); flush(stdout())
@@ -2890,7 +2889,8 @@ $maximum.deviation
 > 
 > 
 > 
-> cleanEx(); nameEx("confint-methods")
+> cleanEx()
+> nameEx("confint-methods")
 > ### * confint-methods
 > 
 > flush(stderr()); flush(stdout())
@@ -2993,7 +2993,8 @@ shape 2.0485880 6.0719832
 > 
 > 
 > 
-> cleanEx(); nameEx("distrModMASK")
+> cleanEx()
+> nameEx("distrModMASK")
 > ### * distrModMASK
 > 
 > flush(stderr()); flush(stdout())
@@ -3026,7 +3027,8 @@ masking:
 > 
 > 
 > 
-> cleanEx(); nameEx("distrModOptions")
+> cleanEx()
+> nameEx("distrModOptions")
 > ### * distrModOptions
 > 
 > flush(stderr()); flush(stdout())
@@ -3055,7 +3057,8 @@ $show.details
 > 
 > 
 > 
-> cleanEx(); nameEx("fiBias-class")
+> cleanEx()
+> nameEx("fiBias-class")
 > ### * fiBias-class
 > 
 > flush(stderr()); flush(stdout())
@@ -3073,7 +3076,8 @@ risk type:	 finite-sample bias
 > 
 > 
 > 
-> cleanEx(); nameEx("fiBias")
+> cleanEx()
+> nameEx("fiBias")
 > ### * fiBias
 > 
 > flush(stderr()); flush(stdout())
@@ -3098,7 +3102,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("fiCov-class")
+> cleanEx()
+> nameEx("fiCov-class")
 > ### * fiCov-class
 > 
 > flush(stderr()); flush(stdout())
@@ -3116,7 +3121,8 @@ risk type:	 finite-sample covariance
 > 
 > 
 > 
-> cleanEx(); nameEx("fiCov")
+> cleanEx()
+> nameEx("fiCov")
 > ### * fiCov
 > 
 > flush(stderr()); flush(stdout())
@@ -3141,7 +3147,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("fiHampel-class")
+> cleanEx()
+> nameEx("fiHampel-class")
 > ### * fiHampel-class
 > 
 > flush(stderr()); flush(stdout())
@@ -3160,7 +3167,8 @@ bound:	 Inf
 > 
 > 
 > 
-> cleanEx(); nameEx("fiHampel")
+> cleanEx()
+> nameEx("fiHampel")
 > ### * fiHampel
 > 
 > flush(stderr()); flush(stdout())
@@ -3186,7 +3194,8 @@ function (bound = Inf)
 > 
 > 
 > 
-> cleanEx(); nameEx("fiMSE-class")
+> cleanEx()
+> nameEx("fiMSE-class")
 > ### * fiMSE-class
 > 
 > flush(stderr()); flush(stdout())
@@ -3204,7 +3213,8 @@ risk type:	 finite-sample mean square error
 > 
 > 
 > 
-> cleanEx(); nameEx("fiMSE")
+> cleanEx()
+> nameEx("fiMSE")
 > ### * fiMSE
 > 
 > flush(stderr()); flush(stdout())
@@ -3229,7 +3239,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("fiUnOvShoot-class")
+> cleanEx()
+> nameEx("fiUnOvShoot-class")
 > ### * fiUnOvShoot-class
 > 
 > flush(stderr()); flush(stdout())
@@ -3249,7 +3260,8 @@ width:
 > 
 > 
 > 
-> cleanEx(); nameEx("fiUnOvShoot")
+> cleanEx()
+> nameEx("fiUnOvShoot")
 > ### * fiUnOvShoot
 > 
 > flush(stderr()); flush(stdout())
@@ -3275,7 +3287,8 @@ function (width = 1.96)
 > 
 > 
 > 
-> cleanEx(); nameEx("isKerAinKerB")
+> cleanEx()
+> nameEx("isKerAinKerB")
 > ### * isKerAinKerB
 > 
 > flush(stderr()); flush(stdout())
@@ -3296,7 +3309,8 @@ function (width = 1.96)
 > 
 > 
 > 
-> cleanEx(); nameEx("negativeBias")
+> cleanEx()
+> nameEx("negativeBias")
 > ### * negativeBias
 > 
 > flush(stderr()); flush(stdout())
@@ -3309,7 +3323,7 @@ function (width = 1.96)
 > ### ** Examples
 > 
 > negativeBias()
-An object of class “onesidedBias”
+An object of class "onesidedBias"
 Slot "sign":
 [1] -1
 
@@ -3326,7 +3340,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("norms")
+> cleanEx()
+> nameEx("norms")
 > ### * norms
 > 
 > flush(stderr()); flush(stdout())
@@ -3348,7 +3363,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("onesidedBias-class")
+> cleanEx()
+> nameEx("onesidedBias-class")
 > ### * onesidedBias-class
 > 
 > flush(stderr()); flush(stdout())
@@ -3362,7 +3378,7 @@ function ()
 > ### ** Examples
 > 
 > positiveBias()
-An object of class “onesidedBias”
+An object of class "onesidedBias"
 Slot "sign":
 [1] 1
 
@@ -3377,7 +3393,7 @@ function ()
 }
 > 
 > negativeBias()
-An object of class “onesidedBias”
+An object of class "onesidedBias"
 Slot "sign":
 [1] -1
 
@@ -3400,7 +3416,8 @@ Error in `sign<-`(`*tmp*`, value = -2) : Left value has to be +-1
 > 
 > 
 > 
-> cleanEx(); nameEx("positiveBias")
+> cleanEx()
+> nameEx("positiveBias")
 > ### * positiveBias
 > 
 > flush(stderr()); flush(stdout())
@@ -3413,7 +3430,7 @@ Error in `sign<-`(`*tmp*`, value = -2) : Left value has to be +-1
 > ### ** Examples
 > 
 > positiveBias()
-An object of class “onesidedBias”
+An object of class "onesidedBias"
 Slot "sign":
 [1] 1
 
@@ -3430,7 +3447,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("print-methods")
+> cleanEx()
+> nameEx("print-methods")
 > ### * print-methods
 > 
 > flush(stderr()); flush(stdout())
@@ -3604,7 +3622,8 @@ negative log-likelihood
 > 
 > 
 > 
-> cleanEx(); nameEx("qqplot")
+> cleanEx()
+> nameEx("qqplot")
 > ### * qqplot
 > 
 > flush(stderr()); flush(stdout())
@@ -3655,7 +3674,8 @@ $y
 > 
 > 
 > 
-> cleanEx(); nameEx("symmetricBias-class")
+> cleanEx()
+> nameEx("symmetricBias-class")
 > ### * symmetricBias-class
 > 
 > flush(stderr()); flush(stdout())
@@ -3668,7 +3688,7 @@ $y
 > ### ** Examples
 > 
 > symmetricBias()
-An object of class “symmetricBias”
+An object of class "symmetricBias"
 Slot "name":
 [1] "symmetric Bias"
 
@@ -3681,7 +3701,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("symmetricBias")
+> cleanEx()
+> nameEx("symmetricBias")
 > ### * symmetricBias
 > 
 > flush(stderr()); flush(stdout())
@@ -3694,7 +3715,7 @@ function ()
 > ### ** Examples
 > 
 > symmetricBias()
-An object of class “symmetricBias”
+An object of class "symmetricBias"
 Slot "name":
 [1] "symmetric Bias"
 
@@ -3708,7 +3729,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("trAsCov-class")
+> cleanEx()
+> nameEx("trAsCov-class")
 > ### * trAsCov-class
 > 
 > flush(stderr()); flush(stdout())
@@ -3726,7 +3748,8 @@ risk type:	 trace of asymptotic covariance
 > 
 > 
 > 
-> cleanEx(); nameEx("trAsCov")
+> cleanEx()
+> nameEx("trAsCov")
 > ### * trAsCov
 > 
 > flush(stderr()); flush(stdout())
@@ -3751,7 +3774,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("trFiCov-class")
+> cleanEx()
+> nameEx("trFiCov-class")
 > ### * trFiCov-class
 > 
 > flush(stderr()); flush(stdout())
@@ -3769,7 +3793,8 @@ risk type:	 trace of finite-sample covariance
 > 
 > 
 > 
-> cleanEx(); nameEx("trFiCov")
+> cleanEx()
+> nameEx("trFiCov")
 > ### * trFiCov
 > 
 > flush(stderr()); flush(stdout())
@@ -3794,7 +3819,8 @@ function ()
 > 
 > 
 > 
-> cleanEx(); nameEx("trafo-methods")
+> cleanEx()
+> nameEx("trafo-methods")
 > ### * trafo-methods
 > 
 > flush(stderr()); flush(stdout())
@@ -3847,7 +3873,8 @@ sig^2  3.6698685 11.189719
 > 
 > 
 > 
-> cleanEx(); nameEx("trafoEst")
+> cleanEx()
+> nameEx("trafoEst")
 > ### * trafoEst
 > 
 > flush(stderr()); flush(stdout())
@@ -3890,7 +3917,8 @@ sig^2  3.6698685 11.189719
 > 
 > 
 > 
-> cleanEx(); nameEx("validParameter-methods")
+> cleanEx()
+> nameEx("validParameter-methods")
 > ### * validParameter-methods
 > 
 > flush(stderr()); flush(stdout())
@@ -3926,7 +3954,7 @@ TRUE
 > ### * <FOOTER>
 > ###
 > cat("Time elapsed: ", proc.time() - get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  67.536 0.192 68.103 0.004 0.004 
+Time elapsed:  66.45 0.18 66.683 0.01 0.01 
 > grDevices::dev.off()
 null device 
           1 
