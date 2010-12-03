@@ -116,6 +116,221 @@ PoisFamily <- function(lambda = 1, trafo){
 }
 
 ##################################################################
+## NegBinomial family
+##################################################################
+NbinomFamily <- function(size = 1, prob = 0.5, trafo){ 
+    name <- "Negative Binomial family"
+    distribution <- Nbinom(size = size, prob = prob)
+    distrSymm <- NoSymmetry()
+    param0 <- prob
+    names(param0) <- "prob"
+    param1 <- size
+    names(param1) <- "size"
+    if(missing(trafo)) trafo <- matrix(1, dimnames = list("prob","prob"))
+    param <- ParamFamParameter(name = "probability of success",  
+                               main = param0, 
+                               fixed = param1, 
+                               trafo = trafo)
+    modifyParam <- function(theta){ Nbinom(size = size, prob = theta) }
+    body(modifyParam) <- substitute({ Nbinom(size = size, prob = theta) }, list(size = size))
+    props <- ""
+    
+    startPar <- function(x,...) c(.Machine$double.eps,1-.Machine$double.eps)
+    makeOKPar <- function(param) {if(param<=0) return(.Machine$double.eps)
+                                  if(param>=1) return(1-.Machine$double.eps)
+                                  return(param)}
+    L2deriv.fct <- function(param){
+                   prob <- main(param)
+                   fct <- function(x){}
+                   body(fct) <- substitute({ (size/prob- x/(1-prob)) },
+                                list(size = size, prob = prob))
+                   return(fct)}
+    L2derivSymm <- FunSymmList(NonSymmetric()) 
+    L2derivDistr <- UnivarDistrList((size/prob- distribution/(1-prob)))
+    L2derivDistrSymm <- DistrSymmList(NoSymmetry())
+    FisherInfo.fct <- function(param){
+                       prob <- main(param)
+                       PosDefSymmMatrix(matrix(size/(prob^2*(1-prob)),
+                           dimnames=list("prob","prob")))}
+
+    FisherInfo <- FisherInfo.fct(param)
+    res <- L2ParamFamily(name = name, distribution = distribution, 
+        distrSymm = distrSymm, param = param, modifyParam = modifyParam,
+        props = props, L2deriv.fct = L2deriv.fct, L2derivSymm = L2derivSymm,
+        L2derivDistr = L2derivDistr, L2derivDistrSymm = L2derivDistrSymm,
+        FisherInfo.fct = FisherInfo.fct, FisherInfo = FisherInfo,
+        startPar = startPar, makeOKPar = makeOKPar, 
+        .returnClsName = "NbinomFamily")
+    if(!is.function(trafo))
+       f.call <- substitute(NbinomFamily(size = s, prob = p,
+  	                     trafo = matrix(Tr, dimnames = list("prob","prob"))),
+  	                     list(s = size, p = prob, Tr = trafo))    
+    else
+       f.call <- substitute(NbnomFamily(size = s, prob = p,
+  	                     trafo = Tr), list(s = size, p = prob, Tr = trafo))    
+    
+    res@fam.call <- f.call
+    return(res)
+}
+
+
+NbinomwithSizeFamily <- function(size = 1, prob = 0.5, trafo){ 
+    name <- "Negative Binomial family"
+    distribution <- Nbinom(size = size, prob = prob)
+    distrSymm <- NoSymmetry()
+    param0 <- c(size,prob)
+    names(param0) <- nms <- c("size","prob")
+    if(missing(trafo)) trafo <- matrix(c(1,0,0,1),2,2, dimnames = list(c("size","prob"),c("size","prob")))
+    param <- ParamFamParameter(name = "NegBinomParameter",  
+                               main = param0, 
+                               trafo = trafo)
+    modifyParam <- function(theta){ Nbinom(size = theta[1], prob = theta[2]) }
+    body(modifyParam) <- substitute({ Nbinom(size = theta[1], prob = theta[2]) })
+    props <- ""
+    
+    startPar <- function(x,...){ param1 <- c(1,0.5)
+                                 names(param1) <- c("size","prob")
+                                 return(param1)}
+    makeOKPar <- function(param) {if(param["prob"]<=0) param["prob"] <- .Machine$double.eps
+                                  if(param["prob"]>=1) param["prob"] <- (1-.Machine$double.eps)
+                                  param["size"] <- min(1e-8, param["size"])
+                                  return(param)}
+    L2deriv.fct <- function(param){
+                   prob <- main(param)["prob"]
+                   size <- main(param)["size"]
+                   fct1 <- function(x){}
+                   fct2 <- function(x){}
+                   body(fct2) <- substitute({ (size/prob- x/(1-prob)) },
+                                list(size = size, prob = prob))
+                   body(fct1) <- substitute({ digamma(x+size)-digamma(size)+log(prob)},
+                                list(size = size, prob = prob))
+                   return(list(fct1, fct2))}
+
+    L2derivSymm <- FunSymmList(NonSymmetric(), NonSymmetric())
+    L2derivDistr <- UnivarDistrList( digamma(distribution+size)-digamma(size)+log(prob), 
+                                    (size/prob- distribution/(1-prob)))
+    L2derivDistrSymm <- DistrSymmList(NoSymmetry(), NoSymmetry())
+
+    FisherInfo.fct <- function(param){
+                   prob <- main(param)["prob"]
+                   size <- main(param)["size"]
+                   xn <- 0:min(max(support(distribution)),
+                               qnbinom(1e-6,size=size,prob=prob,lower=FALSE),
+                               1e5)
+                   I11 <- -sum((trigamma(xn+size)-trigamma(size))*dnbinom(xn,size=size,prob=prob))
+                   I12 <- -1/prob
+                   I22 <- size/prob^2/(1-prob)
+                   PosDefSymmMatrix(matrix(c(I11,I12,I12,I22),2,2,
+                           dimnames=list(nms,nms)))}
+
+    FisherInfo <- FisherInfo.fct(param)
+    res <- L2ParamFamily(name = name, distribution = distribution, 
+        distrSymm = distrSymm, param = param, modifyParam = modifyParam,
+        props = props, L2deriv.fct = L2deriv.fct, L2derivSymm = L2derivSymm,
+        L2derivDistr = L2derivDistr, L2derivDistrSymm = L2derivDistrSymm,
+        FisherInfo.fct = FisherInfo.fct, FisherInfo = FisherInfo,
+        startPar = startPar, makeOKPar = makeOKPar, 
+        .returnClsName = "NbinomwithSizeFamily")
+    if(!is.function(trafo))
+       f.call <- substitute(NbinomwithSizeFamily(size = s, prob = p,
+  	                     trafo = matrix(Tr, dimnames = DN)),
+  	                     list(s = size, p = prob, Tr = trafo,
+                         DN = list(nms,nms)))    
+    else
+       f.call <- substitute(NbnomwithSizeFamily(size = s, prob = p,
+  	                     trafo = Tr), list(s = size, p = prob, Tr = trafo))    
+    
+    res@fam.call <- f.call
+    return(res)
+}
+
+NbinomMeanSizeFamily <- function(size = 1, mean = .5, trafo){ 
+    name <- "Negative Binomial family"
+    prob.0 <- size/(size+mean)
+    distribution <- Nbinom(size = size, prob = size/(size+mean))
+    distrSymm <- NoSymmetry()
+    param0 <- c(size,mean)
+    names(param0) <- nms <- c("size","mean")
+    if(missing(trafo)) trafo <- matrix(c(1,0,0,1),2,2, dimnames = list(nms,nms))
+    param <- ParamFamParameter(name = "probability of success",  
+                               main = param0, 
+                               trafo = trafo)
+    modifyParam <- function(theta){ Nbinom(size = theta[1], prob = theta[1]/(theta[1]+theta[2])) }
+    body(modifyParam) <- substitute({ Nbinom(size = theta[1], prob = theta[1]/(theta[1]+theta[2])) })
+    props <- ""
+    
+    startPar <- function(x,...){ param1 <- c(1,0.5)
+                                 names(param1) <- c("size","mean")
+                                 return(param1)}
+    makeOKPar <- function(param) {if(param["mean"]<=0) param["mean"] <- .Machine$double.eps
+                                  if(param["mean"]>=1) param["mean"] <- (1-.Machine$double.eps)
+                                  param["size"] <- min(1e-8, param["size"])
+                                  return(param)}
+    L2deriv.fct <- function(param){
+                   size.0 <- main(param)["size"]
+                   mean.0 <- main(param)["mean"]
+                   prob.0 <- size.0/(size.0+mean.0)
+                   
+                   fct1 <- function(x){}
+                   fct1.2 <- function(x){}
+                   fct2 <- function(x){}
+                   body(fct1) <- substitute({ digamma(x+size)-digamma(size)+log(prob.2)},
+                                list(size = size.0, prob.2 = prob.0))
+                   body(fct1.2)<- substitute({ (size/prob.2- x/(1-prob.2)) },
+                                list(size = size.0, prob.2 = prob.0))
+                   body(fct2)  <- substitute({ (1/prob.2-1)* fct1(x) - size/prob.2^2 * fct1.2(x)},
+                                list(size = size.0, prob.2 = prob.0))
+                   return(list(fct1, fct2))}
+    L2derivSymm <- FunSymmList(NonSymmetric(), NonSymmetric())
+
+    .di1 <- function(x)  digamma(x+size)-digamma(size)+log(prob.0)
+    .di2 <- function(x) .di1(x)*(1/prob.0-1)- (size/prob.0- x/(1-prob.0))*size/prob.0^2 
+    .supp1 <- support(distribution)
+    .supp0 <- .di2(.supp1)
+    .prob1 <- aggregate(data.frame(prob(as(distribution,"DiscreteDistribution"))),
+                 by=list(round(.supp0,5)),sum)[,2]
+    .Di2 <- DiscreteDistribution( supp=.supp0, prob=.prob1, .withArith = TRUE)
+    L2derivDistr <- UnivarDistrList( digamma(distribution+size)-digamma(size)+log(prob.0), 
+                                     .Di2)
+                                     
+    L2derivDistrSymm <- DistrSymmList(NoSymmetry(), NoSymmetry())
+    FisherInfo.fct <- function(param){
+                   mean <- main(param)["mean"]
+                   size <- main(param)["size"]
+                   prob.0 <- size/(size+mean)
+                   xn <- 0:min(max(support(distribution)),
+                               qnbinom(1e-6,size=size,prob=prob.0,lower=FALSE),
+                               1e5)
+                   I11 <- -sum((trigamma(xn+size)-trigamma(size))*dnbinom(xn,size=size,prob=prob.0))
+                   I12 <- -1/prob.0
+                   I22 <- size/prob.0^2/(1-prob.0)
+                   D.m <- matrix(c(1,1/prob.0-1,0,-size/prob.0^2),2,2)
+                   ma  <- D.m%*%matrix(c(I11,I12,I12,I22),2,2)%*%t(D.m)
+                   dimnames(ma) <- list(nms,nms)
+                   PosDefSymmMatrix(ma)}
+
+    FisherInfo <- FisherInfo.fct(param)
+    res <- L2ParamFamily(name = name, distribution = distribution, 
+        distrSymm = distrSymm, param = param, modifyParam = modifyParam,
+        props = props, L2deriv.fct = L2deriv.fct, L2derivSymm = L2derivSymm,
+        L2derivDistr = L2derivDistr, L2derivDistrSymm = L2derivDistrSymm,
+        FisherInfo.fct = FisherInfo.fct, FisherInfo = FisherInfo,
+        startPar = startPar, makeOKPar = makeOKPar, 
+        .returnClsName = "NbinomMeanSizeFamily")
+    if(!is.function(trafo)){
+       f.call <- substitute(NbinomMeanSizeFamily(size = s, mean = m,
+  	                     trafo = matrix(Tr, dimnames = DN)),
+  	                     list(s = size, m = mean, Tr = trafo, DN = list(nms,nms)))    
+    }else{
+       f.call <- substitute(NbinomMeanSizeFamily(size = s, mean = m,
+  	                     trafo = Tr), list(s = size, m= mean, Tr = trafo))    
+    
+    }
+    res@fam.call <- f.call
+    return(res)
+}
+
+##################################################################
 ## Gamma family
 ##################################################################
 GammaFamily <- function(scale = 1, shape = 1, trafo){ 

@@ -20,7 +20,8 @@ qqplot(x, y, ...)
     cex.lbl = par("cex"), col.lbl = par("col"), adj.lbl = NULL,
     jit.fac = 0, check.NotInSupport = TRUE, col.NotInSupport = "red",
     with.legend = TRUE, legend.bg = "white",
-    legend.pos = "topleft", legend.cex = 0.8)
+    legend.pos = "topleft", legend.cex = 0.8, 
+    legend.pref = "", legend.postf = "",  legend.alpha = alpha.CI)
 \S4method{qqplot}{ANY,ProbFamily}(x, y,
    n = length(x), withIdLine = TRUE, withConf = TRUE,
    withConf.pw  = withConf,  withConf.sim = withConf,
@@ -95,6 +96,9 @@ in \code{support(y)}?}
 \item{legend.bg}{background color for the legend}
 \item{legend.pos}{position for the legend}
 \item{legend.cex}{magnification factor for the legend}
+\item{legend.pref}{character to be prepended to legend text}
+\item{legend.postf}{character to be appended to legend text}
+\item{legend.alpha}{nominal coverage probability}
 }
 \description{
   We generalize function \code{\link[stats:qqnorm]{qqplot}} from package \pkg{stats} to

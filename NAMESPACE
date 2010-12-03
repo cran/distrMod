@@ -64,10 +64,10 @@ export("distrModOptions", "distrModoptions", "getdistrModOption",
        "Estimator", "MCEstimator", "MLEstimator", "MDEstimator")
 export("NonSymmetric", "EvenSymmetric", "OddSymmetric", "FunSymmList") 
 export("ParamFamParameter", "ParamFamily", "L2ParamFamily",
-       "BinomFamily", "PoisFamily", "NormLocationFamily",
+       "BinomFamily", "PoisFamily", "NbinomFamily", "NormLocationFamily",
        "GumbelLocationFamily", "NormScaleFamily", "ExpScaleFamily",
        "LnormScaleFamily", "GammaFamily", "BetaFamily", "NormLocationScaleFamily",
-       "CauchyLocationScaleFamily")
+       "CauchyLocationScaleFamily", "NbinomwithSizeFamily", "NbinomMeanSizeFamily" )
 export("asCov", "trAsCov", "asHampel", "asBias", "asMSE", "asUnOvShoot", 
        "fiCov", "trFiCov", "fiHampel", "fiMSE", "fiBias", "fiUnOvShoot")
 export("positiveBias", "negativeBias", "symmetricBias", 

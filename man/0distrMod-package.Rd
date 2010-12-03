@@ -15,12 +15,14 @@ maximum likelihood or minimum distance estimators for probability models.
 \details{
 \tabular{ll}{
 Package: \tab distrMod \cr
-Version: \tab 2.2.1 \cr
-Date: \tab 2010-01-18 \cr
-Depends: \tab R(>= 2.6.0), methods, startupmsg, distr(>= 2.2), distrEx(>= 2.2), RandVar(>= 0.6.3), MASS, stats4 \cr
+Version: \tab 2.3 \cr
+Date: \tab 2010-12-03 \cr
+Depends: \tab R(>= 2.6.0), methods, startupmsg, distr(>= 2.2), distrEx(>=
+2.2), RandVar(>= 0.6.3), MASS, stats4 \cr
 LazyLoad: \tab yes \cr
 License: \tab LGPL-3 \cr
 URL: \tab http://distr.r-forge.r-project.org/\cr
+SVNRevision: \tab 699 \cr
 }}
 
 \section{Classes}{
@@ -286,6 +288,7 @@ R Package distrMod: S4 Classes and Methods for Probability Models.
 Journal of Statistical Software, 35(10), 1-27. 
 \url{http://www.jstatsoft.org/v35/i10/}
 (see also \code{vignette("distrMod")})
+
 
 P. Ruckdeschel, M. Kohl, T. Stabla, F. Camphausen (2006):
 S4 Classes for Distributions, \emph{R News}, \emph{6}(2), 2-6. 

@@ -8,6 +8,64 @@
  information)
 
 ##############
+v 2.3
+##############
+
+user-visible CHANGES:
+
++ introduced NbinomFamily in response to Markus Kalisch's mail to RsR
++ restated L2-deriv and L2-deriv distribution s.t. it is computationally easier to treat
++ also now allow 2-parametric model Nbinom (see SimpleL2ParamFamilies.R...)
+
+++ Vignette:
+ + uploaded vignette for distrMod  (still to be done: insert exact volume,number,pages)
+ + Matthias' Kommentare (Kreis-Symbol, Rem) geändert
+ + merged in Matthias' changes
+ + integrated JSS version of vignette
+ + vignette distrMod fertiggemacht
+
++ vignette announced in startup msg
++ meta-information included to vignette 
+
+under the hood:
+
++ DESCRIPTION files and package-help files gain a tag 
+  SVNRevision to be filled by get[All]RevNr.R from utils in distr
+
+
+BUGFIXES:
+
++ re-uploaded svn-multi.sty and svnkw.sty after error report by Jan de Leeuw.
++ made doc for NbinomFamily error-free
+
+Bug
++ qqplot 
+  https://r-forge.r-project.org/tracker/?atid=400&group_id=87&func=browse
+  should be fixed
++ for restoring old par() values, not all attributes may be set; hence deleted them from
+  stored value in plot functions by something like
+            opar$cin <- opar$cra <- opar$csi <- opar$cxy <-  opar$din <- NULL
+
++ unnecessary Rplots.pdf deleted from inst folders of distr and 
+  distrMod (are created anyway during vignette build)
+
+##############
+v 2.2.2
+##############
+Vignette to distrMod aka
+
+M. Kohl and P. Ruckdeschel (2010): R Package distrMod: S4 Classes and Methods for Probability Models.
+Journal of Statistical Software, 35(10), 1-27. \url{http://www.jstatsoft.org/v35/i10/}
+
+included
+
+##############
+v 2.2.1
+##############
++ fixed error in \section{} (had \code{} markup...)
+   http://n4.nabble.com/Recent-TeX-changes-and-R-package-manuals-tp956056p956056.html
+
+##############
 v 2.2.2
 ##############
 Vignette to distrMod aka

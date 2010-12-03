@@ -210,8 +210,9 @@ setMethod("plot", signature(x = "L2ParamFamily", y = "missing"),
         o.warn <- options("warn")
         options(warn = -1)
         on.exit(options(warn=o.warn))
-        opar <- par()
-        on.exit(par(opar))
+        opar <- par(no.readonly = TRUE)
+   #     opar$cin <- opar$cra <- opar$csi <- opar$cxy <-  opar$din <- NULL
+        on.exit(par(opar, no.readonly = TRUE))
         
         if (!withSweave)
              devNew()
@@ -220,8 +221,8 @@ setMethod("plot", signature(x = "L2ParamFamily", y = "missing"),
         if(mfColRow)
            parArgs <- list(mfrow = c(nrows, ncols))
 
-        omar <- par("mar")
-        parArgs <- c(parArgs,list(mar = c(bmar,omar[2],tmar,omar[4])))
+        omar <- par("mar", no.readonly = TRUE)
+        parArgs <- c(parArgs,list(mar = c(bmar,omar[2],tmar,omar[4]), no.readonly = TRUE))
        
         dots$ylim <- NULL
         do.call(par,args=parArgs)

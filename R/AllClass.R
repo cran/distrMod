@@ -17,7 +17,9 @@
     buildStartupMessage(pkg = "distrMod", msga, msgb,
                         library = library, packageHelp = TRUE,
         #                    MANUAL="http://www.uni-bayreuth.de/departments/math/org/mathe7/DISTR/distr.pdf",
-        VIGNETTE = gettext("Package \"distrDoc\" provides a vignette to this package as well as to several related packages; try vignette(\"distr\").")
+        VIGNETTE = gettext("There is a vignette to this package; try vignette(\"distrMod\").\n",
+                           "Package \"distrDoc\" provides a vignette to the other distrXXX packages,",
+                           "as well as to several related packages; try vignette(\"distr\").")
         )
     invisible()
 }
