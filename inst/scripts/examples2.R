@@ -219,7 +219,8 @@ MLEstimator(x,my3dF)
 #CvM distance
 #  0.03114585
 #
-#MDE.asvar <- distrMod:::.CvMMDCovariance(my3dF,
-#                 param = ParamFamParameter(main= estimate(MDE)),
-#                 expon = 2, withplot = TRUE)
+MDE.asvar <- distrMod:::.CvMMDCovariance(my3dF,
+                 param = ParamFamParameter(main= estimate(MDE),
+                           .returnClsName = "ParamWithScaleFamParameter"),
+                 expon = 2, withplot = TRUE)
 

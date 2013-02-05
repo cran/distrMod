@@ -5,6 +5,7 @@
 \alias{trafo,Estimate,missing-method}
 \alias{trafo,Estimate,ParamFamParameter-method}
 \alias{trafo,ParamFamParameter,missing-method}
+\alias{trafo,ParamWithScaleAndShapeFamParameter,missing-method}
 \alias{trafo,ParamFamily,missing-method}
 \alias{trafo,ParamFamily,ParamFamParameter-method}
 \alias{trafo.fct}
@@ -23,6 +24,7 @@
 trafo(object, param, ...)
 \S4method{trafo}{Estimate,missing}(object,param)
 \S4method{trafo}{ParamFamParameter,missing}(object,param)
+\S4method{trafo}{ParamWithScaleAndShapeFamParameter,missing}(object,param)
 \S4method{trafo}{ParamFamily,missing}(object,param)
 \S4method{trafo}{ParamFamily,ParamFamParameter}(object,param)
 \S4method{trafo}{Estimate,ParamFamParameter}(object,param)
@@ -64,7 +66,7 @@ trafo(object) <- value
   by the information contained in an instance thereof.
 
   \code{trafo} realizes partial influence curves; i.e.; we are only
-  interested is some possibly lower dimensional smooth (not necessarily
+  interested in some possibly lower dimensional smooth (not necessarily
   linear or even coordinate-wise) aspect/transformation \eqn{\tau}{tau}
   of the parameter \eqn{\theta}{theta}.
 

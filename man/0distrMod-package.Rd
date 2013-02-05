@@ -15,14 +15,14 @@ maximum likelihood or minimum distance estimators for probability models.
 \details{
 \tabular{ll}{
 Package: \tab distrMod \cr
-Version: \tab 2.3 \cr
-Date: \tab 2010-12-03 \cr
+Version: \tab 2.4 \cr
+Date: \tab 2013-02-05 \cr
 Depends: \tab R(>= 2.6.0), methods, startupmsg, distr(>= 2.2), distrEx(>=
 2.2), RandVar(>= 0.6.3), MASS, stats4 \cr
 LazyLoad: \tab yes \cr
 License: \tab LGPL-3 \cr
 URL: \tab http://distr.r-forge.r-project.org/\cr
-SVNRevision: \tab 699 \cr
+SVNRevision: \tab 834 \cr
 }}
 
 \section{Classes}{
@@ -49,17 +49,17 @@ L2derivDistrSymm(DistrSymmList), FisherInfo(PosSemDefSymmMatrix),
 FisherInfo.fct(function)
 |>|>|>"BinomFamily" [*]
 |>|>|>"PoisFamily"  [*]
-|>|>|>"GammaFamily" [*]
 |>|>|>"BetaFamily"  [*]
 |>|>|>"L2GroupParamFamily"
 additional slots:
 LogDeriv(function)
+|>|>|>|>"L2ScaleShapeUnion"  /VIRTUAL/
+|>|>|>|>|>"GammaFamily" [*]
 |>|>|>|>"L2LocationScaleUnion"  /VIRTUAL/
 additional slots:
 locscalename(character)
 |>|>|>|>|>"L2LocationFamily"            [*]
 |>|>|>|>|>|>"NormLocationFamily"        [*] 
-|>|>|>|>|>|>"GumbelLocationFamily"      [*] 
 |>|>|>|>|>"L2ScaleFamily"               [*]
 |>|>|>|>|>|>"NormScaleFamily"           [*] 
 |>|>|>|>|>|>"ExpScaleFamily"            [*] 
@@ -67,6 +67,9 @@ locscalename(character)
 |>|>|>|>|>"L2LocationScaleFamily"       [*]
 |>|>|>|>|>|>"NormLocationScaleFamily"   [*] 
 |>|>|>|>|>|>"CauchyLocationScaleFamily" [*] 
+
+and a (virtual) class union "L2ScaleUnion"  between
+   "L2LocationScaleUnion"  and "L2ScaleShapeUnion"
 
 ##########################
 ParamFamParameter

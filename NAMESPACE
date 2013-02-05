@@ -22,8 +22,11 @@ exportClasses("asSemivar", "asRiskwithBias")
 exportClasses("L2GroupParamFamily", "L2LocationFamily", 
               "L2ScaleFamily", "L2LocationScaleFamily")
 exportClasses("L2LocationScaleUnion")
+exportClasses("L2ScaleShapeUnion", "L2ScaleUnion")
+exportClasses("ParamWithScaleFamParameter", "ParamWithShapeFamParameter", 
+              "ParamWithScaleAndShapeFamParameter")
 exportClasses("BinomFamily","PoisFamily", "NormLocationFamily",
-       "GumbelLocationFamily", "NormScaleFamily", "ExpScaleFamily",
+       "NormScaleFamily", "ExpScaleFamily",
        "LnormScaleFamily", "GammaFamily", "BetaFamily", "NormLocationScaleFamily",
        "CauchyLocationScaleFamily")
 exportClasses("NormType", "QFNorm", "InfoNorm", "SelfNorm")
@@ -48,14 +51,15 @@ exportMethods("name", "name<-", "r", "d", "p", "q",
               "name.estimate", "trafo.estimate", "nuisance.estimate", 
               "fixed.estimate", "Infos", "Infos<-", "addInfo<-",
               "criterion", "criterion<-", "criterion.fct", "method",
-              "samplesize", "asvar", "asvar<-", "optimwarn")
+              "samplesize", "asvar", "asvar<-", "optimwarn",
+			  "withPosRestr", "withPosRestr<-")
 exportMethods("untransformed.estimate", "untransformed.asvar")
 exportMethods("confint")
 exportMethods("nuisance", "main") 
 exportMethods("validParameter")
 exportMethods("startPar", "makeOKPar")
-exportMethods("locscalename", "LogDeriv")
-exportMethods("coerce", "profile")
+exportMethods("locscalename", "scaleshapename", "scalename", "LogDeriv")
+exportMethods("coerce", "profile", "locscalename", "scaleshapename<-")
 exportMethods("mleCalc", "mceCalc")
 exportMethods("qqplot")
 export("distrModMASK")
@@ -65,9 +69,9 @@ export("distrModOptions", "distrModoptions", "getdistrModOption",
 export("NonSymmetric", "EvenSymmetric", "OddSymmetric", "FunSymmList") 
 export("ParamFamParameter", "ParamFamily", "L2ParamFamily",
        "BinomFamily", "PoisFamily", "NbinomFamily", "NormLocationFamily",
-       "GumbelLocationFamily", "NormScaleFamily", "ExpScaleFamily",
+       "NormScaleFamily", "ExpScaleFamily",
        "LnormScaleFamily", "GammaFamily", "BetaFamily", "NormLocationScaleFamily",
-       "CauchyLocationScaleFamily", "NbinomwithSizeFamily", "NbinomMeanSizeFamily" )
+       "CauchyLocationScaleFamily", "NbinomwithSizeFamily", "NbinomMeanSizeFamily")
 export("asCov", "trAsCov", "asHampel", "asBias", "asMSE", "asUnOvShoot", 
        "fiCov", "trFiCov", "fiHampel", "fiMSE", "fiBias", "fiUnOvShoot")
 export("positiveBias", "negativeBias", "symmetricBias", 
@@ -79,3 +83,4 @@ export("NormType", "QFNorm", "InfoNorm", "SelfNorm")
 export("NormScaleUnknownLocationFamily", "NormLocationUnknownScaleFamily")
 export("L2LocationUnknownScaleFamily", "L2ScaleUnknownLocationFamily")
 export("meRes", "get.criterion.fct")
+export("addAlphTrsp2col")

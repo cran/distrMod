@@ -113,5 +113,3 @@ plot(F1)
 \concept{parametric family}
 \keyword{classes}
 \keyword{models}
-
-                                                                                                                   

@@ -69,7 +69,8 @@ confint(mledistrMod)
 #  0.02527883
 
 asvar(mde.CvM) <- distrMod:::.CvMMDCovariance(my3dF, 
-                  param = ParamFamParameter(main= estimate(MDE)),
+                  param = ParamFamParameter(main= estimate(MDE),
+                           .returnClsName = "ParamWithScaleFamParameter"),
                   expon = 2, withplot = TRUE)
 # a confidence interval
 confint(mde.CvM)

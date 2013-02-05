@@ -25,4 +25,4 @@ distrModOptions <- function(...) {
 }
 
 getdistrModOption <- function(x) distrModOptions(x)[[1]]
-distrModoptions <- distrModOptions  
+distrModoptions <- distrModOptions

@@ -8,7 +8,8 @@
 }
 \usage{
 Estimator(x, estimator, name, Infos, asvar = NULL, nuis.idx,
-          trafo = NULL, fixed = NULL, asvar.fct, na.rm = TRUE, ...)
+          trafo = NULL, fixed = NULL, asvar.fct, na.rm = TRUE, ...,
+          ParamFamily = NULL)
 }
 \arguments{
   \item{x}{ (empirical) data }
@@ -23,12 +24,14 @@ Estimator(x, estimator, name, Infos, asvar = NULL, nuis.idx,
   for the main parameter}
   \item{asvar.fct}{optionally: a function to determine the corresponding
     asymptotic variance; if given, \code{asvar.fct} takes arguments
-    \code{L2Fam}((the parametric model as object of class \code{L2ParamFamily})) 
+    \code{L2Fam}(the parametric model as object of class \code{L2ParamFamily})
     and \code{param} (the parameter value as object of class 
     \code{ParamFamParameter}); arguments are called by name; \code{asvar.fct}
-     may also process further arguments passed through the \code{\dots} argument}              
+     may also process further arguments passed through the \code{\dots} argument. }
   \item{na.rm}{logical: if  \code{TRUE}, the estimator is evaluated at \code{complete.cases(x)}.}
-  \item{\dots}{ further arguments to \code{estimator}. }
+  \item{\dots}{ further arguments to \code{estimator}.}
+  \item{ParamFamily}{an optional object of class \code{ParamFamily}. Passed on
+     to \code{asvar.fct} to compute asymptotic variances.}
 }
 \details{
   The argument \code{criterion} has to be a function with arguments the 

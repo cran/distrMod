@@ -87,7 +87,8 @@ NL
 theta <- 1
 names(theta) <- "sd"
 NS <- ParamFamily(name = "Normal scale family",
-          param = ParamFamParameter(name = "scale parameter", main = theta),
+          param = ParamFamParameter(name = "scale parameter", main = theta,
+          .returnClsName = "ParamWithScaleFamParameter"),
           distribution = Norm(mean = 0, sd = 1), ## mean known!
           startPar = function(x,...) c(0,-min(x)+max(x)),
           distrSymm <- SphericalSymmetry(SymmCenter = 0),
@@ -102,7 +103,8 @@ theta <- c(0, 1)
 names(theta) <- c("mean", "sd")
 NLS <- ParamFamily(name = "Normal location and scale family",
           param = ParamFamParameter(name = "location and scale parameter",
-                                    main = theta),
+                                    main = theta,
+                                 .returnClsName = "ParamWithScaleFamParameter"),
           distribution = Norm(mean = 0, sd = 1),
           startPar = function(x,...) c(median(x),mad(x)),
           makeOKPar = function(param) {param[2]<-abs(param[2]); return(param)},
@@ -142,24 +144,13 @@ P <- ParamFamily(name = "Poisson family",
           modifyParam = function(theta){ Pois(lambda = theta) })
 P
 
-## 6. Gumbel location family
-theta <- 0
-names(theta) <- "loc"
-GL <- ParamFamily(name = "Gumbel location family",
-          param = ParamFamParameter(name = "location parameter", main = theta),
-          startPar = function(x,...) c(min(x),max(x)),
-          distribution = Gumbel(loc = 0, scale = 1), ## scale known!
-          modifyParam = function(theta){ Gumbel(loc = theta, scale = 1) },
-          props = paste(c("The Gumbel location family is invariant under",
-                    "the group of transformations 'g(x) = x + loc'",
-                    "with location parameter 'loc'"), collapse = " "))
-GL
 
-## 7. Exponential scale family
+## 6. Exponential scale family
 theta <- 2
 names(theta) <- "scale"
 ES <- ParamFamily(name = "Exponential scale family",
-          param = ParamFamParameter(name = "scale parameter", main = theta),
+          param = ParamFamParameter(name = "scale parameter", main = theta,
+                           .returnClsName = "ParamWithScaleFamParameter"),
           startPar = function(x,...) c(0,max(x)-min(x)),
           distribution = Exp(rate = 1/2),
           modifyParam = function(theta){ Exp(rate = 1/theta) },
@@ -169,11 +160,12 @@ ES <- ParamFamily(name = "Exponential scale family",
                     collapse = " " ))
 ES
 
-## 8. Lognormal scale family
+## 7. Lognormal scale family
 theta <- 2
 names(theta) <- "scale"
 LS <- ParamFamily(name = "Lognormal scale family",
-          param = ParamFamParameter(name = "scale parameter", main = theta),
+          param = ParamFamParameter(name = "scale parameter", main = theta,
+                           .returnClsName = "ParamWithScaleFamParameter"),
           startPar = function(x,...) c(0,max(x)-min(x)),
           distribution = Lnorm(meanlog = log(2), sdlog = 2),## sdlog known!
           modifyParam = function(theta){ 
@@ -185,11 +177,13 @@ LS <- ParamFamily(name = "Lognormal scale family",
                     collapse = " "))
 LS
 
-## 9. Gamma family
+## 8. Gamma family
 theta <- c(1, 2)
 names(theta) <- c("scale", "shape")
 G <- ParamFamily(name = "Gamma family",
-        param = ParamFamParameter(name = "scale and shape", main = theta),
+        param = ParamFamParameter(name = "scale and shape", main = theta,
+                           withPosRestr = TRUE,
+                           .returnClsName = "ParamWithScaleAndShapeFamParameter"),
         startPar = function(x,...) {E <- mean(x); V <- var(X); c(V/E,E^2/V)},
         makeOKPar = function(param) abs(param),
         distribution = Gammad(scale = 1, shape = 2),

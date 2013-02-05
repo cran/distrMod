@@ -79,6 +79,16 @@ setMethod("show", "ParamFamParameter",
             }
         } 
     })
+
+setMethod("show", "ParamWithShapeFamParameter",
+    function(object){
+       show(as(object,"ParamFamParameter"))
+       if(object@withPosRestr)
+          cat(gettext("Shape parameter must not be negative.\n"))
+})
+setMethod("show", "ParamWithScaleAndShapeFamParameter",
+    getMethod("show", "ParamWithShapeFamParameter"))
+
 setMethod("show", "ParamFamily", 
     function(object){
         cat(gettextf("An object of class \"%s\"\n", class(object)))

@@ -20,7 +20,7 @@
 #internal helper
 ##########################################################################
 .process.meCalcRes <- function(res, PFam, trafo, res.name, call,
-                               asvar.fct, ...){
+                               asvar.fct, check.validity, ...){
     lmx <- length(main(PFam))
     lnx <- length(nuisance(PFam))
     idx <- 1:lmx
@@ -74,7 +74,7 @@
          }
 
     
-    if(!validParameter(PFam,param))
+    if(!validParameter(PFam,param) && check.validity)
           {warning("Optimization for MCE did not give a valid result. You could try to use argument 'penalty'.")
            theta <- as.numeric(rep(NA, lnx+lmx))
            res <- new("MCEstimate", name = est.name, estimate = theta,
@@ -125,3 +125,32 @@
 ## caching to speed up things:
 .inArgs <- distr:::.inArgs
 
+.callParamFamParameter <- function(PFam, theta, idx, nuis, fixed){
+
+    clsParam <- paste(class(param(PFam)))
+    sltsParam <- setdiff(names(getSlots(class(param(PFam)))),
+                         names(getSlots("ParamFamParameter")))
+    if(clsParam=="ParamFamParameter") clsParam <- NULL
+
+    main <- if(is.null(idx)) theta else theta[idx]
+    paramCallArgs <- list( main = main,
+                           nuisance = nuis,
+                           fixed = fixed)
+
+    paramCallArgs$name <- if(!is.null(names(theta)))
+                                names(theta) else param(PFam)@name
+
+    if(!is.null(clsParam)){
+       paramCallArgs$.returnClsName <- clsParam
+       lparamCallArgs <- length(paramCallArgs)
+       if(length(sltsParam)){
+          for(i in 1:length(sltsParam)){
+              paramCallArgs[[lparamCallArgs+i]] <- slot(param(PFam),sltsParam[i])
+              names(paramCallArgs)[lparamCallArgs+i] <- sltsParam[i]
+          }
+       }
+    }
+
+    param0 <- do.call(ParamFamParameter, args = paramCallArgs)
+    return(param0)
+}

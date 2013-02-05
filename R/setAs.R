@@ -1,8 +1,7 @@
 setAs("MCEstimate", "mle", def = function(from){
        crit.f0 <- from@criterion.fct
        start.f0 <- as.list(from@untransformed.estimate)
-       
-       if(!.isUnitMatrix(trafo(from)$mat)){          
+       if(!.isUnitMatrix(trafo(from)$mat)){
           
           ### we have to turn crit.f0 into a function in the
           ### transformed parameter; to this end, we specify
@@ -39,8 +38,8 @@ setAs("MCEstimate", "mle", def = function(from){
                 ## generate a valid ParamFamParameter object out of it
                 param <- ParamFamParameter(main = est.main, nuisance = est.nuis,
                                            fixed = from@fixed)
-                
-                ## "invert" (locally!) the transformation, 
+
+                ## "invert" (locally!) the transformation,
                 # i.e. th1 "=" trafo^-1(th0)                
                 D1 <- (trafo(from)$fct)(th0)$mat
                 th1 <- est1 + solve(D1, th0-est0)

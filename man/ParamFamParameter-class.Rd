@@ -1,21 +1,34 @@
 \name{ParamFamParameter-class}
 \docType{class}
 \alias{ParamFamParameter-class}
+\alias{ParamWithScaleFamParameter-class}
+\alias{ParamWithScaleAndShapeFamParameter-class}
+\alias{ParamWithShapeFamParameter-class}
 \alias{length,ParamFamParameter-method}
 \alias{dimension,ParamFamParameter-method}
 \alias{main}
 \alias{main,ParamFamParameter-method}
+\alias{main,ParamWithScaleAndShapeFamParameter-method}
 \alias{main<-}
 \alias{main<-,ParamFamParameter-method}
 \alias{nuisance}
 \alias{nuisance,ParamFamParameter-method}
+\alias{nuisance,ParamWithScaleAndShapeFamParameter-method}
 \alias{nuisance<-}
 \alias{nuisance<-,ParamFamParameter-method}
 \alias{fixed}
 \alias{fixed,ParamFamParameter-method}
+\alias{fixed,ParamWithScaleAndShapeFamParameter-method}
 \alias{fixed<-}
 \alias{fixed<-,ParamFamParameter-method}
+\alias{withPosRestr}
+\alias{withPosRestr,ParamWithShapeFamParameter-method}
+\alias{withPosRestr<-}
+\alias{withPosRestr<-,ParamWithShapeFamParameter-method}
 \alias{show,ParamFamParameter-method}
+\alias{show,ParamWithShapeFamParameter-method}
+\alias{show,ParamWithScaleAndShapeFamParameter-method}
+
 %\alias{trafo}
 %\alias{trafo,ParamFamParameter-method}
 %\alias{trafo<-}
@@ -40,6 +53,9 @@
       transformation of the parameter. }
     \item{\code{name}}{Object of class \code{"character"}:
       name of the parameter. }
+    \item{\code{withPosRestr}}{(for \code{ParamWithShapeFamParameter} and
+     \code{ParamWithScaleAndShapeFamParameter}): Object of class \code{"logical"}:
+     Is shape restricted to be positive? }
   }
 }
 \section{Extends}{
@@ -78,7 +94,15 @@ Class \code{"OptionalParameter"}, by class \code{"Parameter"}.
     \item{dimension}{\code{signature(x = "ParamFamParameter")}: 
       length of \code{main}. }
 
+    \item{withPosRestr}{\code{signature(object = "ParamWithShapeFamParameter")}:
+      accessor function for slot \code{trafo}. }
+
+    \item{withPosRestr<-}{\code{signature(object = "ParamWithShapeFamParameter")}:
+      replacement function for slot \code{trafo}. }
+
     \item{show}{\code{signature(object = "ParamFamParameter")}}
+    \item{show}{\code{signature(object = "ParamWithShapeFamParameter")}}
+    \item{show}{\code{signature(object = "ParamWithScaleAndShapeFamParameter")}}
   }
 }
 \section{Details for methods 'show', 'print'}{

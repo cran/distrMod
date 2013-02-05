@@ -1,6 +1,9 @@
 ### from Matthias' thesis / ROptEst
 ## generating function
-ParamFamParameter <- function(name, main = numeric(0), nuisance, fixed, trafo){
+ParamFamParameter <- function(name, main = numeric(0), nuisance, fixed, trafo,
+                  ..., .returnClsName = NULL){
+
+    mc <- as.list(match.call(expand.dots=TRUE))
     if(missing(name))
         name <- "parameter of a parametric family of probability measures"
     if(missing(nuisance))
@@ -16,13 +19,35 @@ ParamFamParameter <- function(name, main = numeric(0), nuisance, fixed, trafo){
 
     if(.validTrafo(trafo, dimension = ln.m, dimensionwithN = ln)) ### check validity
        trafo <- trafo[,1:ln.m,drop=FALSE]
-    PFP <- new("ParamFamParameter")
+    if(is.null(.returnClsName))
+       PFP <- new("ParamFamParameter")
+    else
+       PFP <- new(.returnClsName)
+
     PFP@name <- name
     PFP@main <- main
     PFP@nuisance <- nuisance
     PFP@fixed <- fixed
     PFP@trafo <- trafo
 
+    lN <- length(mc$...)
+    if(lN){
+       nms <- names(mc$...)
+       mat <- pmatch(nms,"withPosRestr")
+       ws <- lS <- TRUE
+       if(1 %in% mat){
+          PFP@withPosRestr <- mc$...[[which(mat==1)]]
+          ws <- FALSE
+       }
+       nms0 <- which(nms=="")
+       if(length(nms0)){
+           if(ws){
+              PFP@withPosRestr <- mc$...[[nms0[1]]]
+              ws <- FALSE
+              nms0 <- nms0[-1]
+           }
+       }
+    }
     return(PFP)
 }
 
@@ -58,7 +83,14 @@ setMethod("trafo", signature(object = "ParamFamParameter", param = "missing"),
 
    return(mat0)
 })
-
+setMethod("withPosRestr", "ParamWithShapeFamParameter", function(object) object@withPosRestr)
+setMethod("main", "ParamWithScaleAndShapeFamParameter", function(object) object@main)
+setMethod("nuisance", "ParamWithScaleAndShapeFamParameter", function(object) object@nuisance)
+setMethod("fixed", "ParamWithScaleAndShapeFamParameter", function(object) object@fixed)
+setMethod("trafo", signature(object = "ParamWithScaleAndShapeFamParameter",
+                   param = "missing"),
+          getMethod("trafo", signature(object = "ParamFamParameter",
+                     param = "missing")))
 ## replace methods
 setReplaceMethod("main", "ParamFamParameter", 
     function(object, value){ 
@@ -90,10 +122,14 @@ setReplaceMethod("trafo", "ParamFamParameter",
         object@trafo <- value
         object
     })
-
 ## method length
 setMethod("length", "ParamFamParameter", 
     function(x){ length(x@main) + length(x@nuisance) })
 
 ## method dimension
 setMethod("dimension", "ParamFamParameter", function(object) length(object@main))
+
+setReplaceMethod("withPosRestr", "ParamWithShapeFamParameter", function(object,value){
+          object@withPosRestr
+           })
+

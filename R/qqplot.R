@@ -85,6 +85,7 @@ setMethod("qqplot", signature(x = "ANY",
              cex.lbl = par("cex"),## magnification factor for the plotted observation labels
              col.lbl = par("col"),## color for the plotted observation labels
              adj.lbl = NULL,      ## adj parameter for the plotted observation labels
+             alpha.trsp = NA,     ## alpha transparency to be added afterwards
              jit.fac = 0,         ## jittering factor used for discrete distributions
              check.NotInSupport = TRUE, ## shall we check if all x lie in support(y)
              col.NotInSupport = "red", ## if preceding check TRUE color of x if not in support(y)
@@ -120,10 +121,14 @@ setMethod("qqplot", signature(x = "ANY",
     if("support" %in% names(getSlots(class(y))))
        yc <- sort(jitter(yc, factor=jit.fac))
 
+    alp.v <- .makeLenAndOrder(alpha.trsp,ord.x)
+    alp.t <- function(x,a1) if(is.na(x)) x else addAlphTrsp2col(x,a1)
+    alp.f <- if(length(alpha.trsp)==1L && is.na(alpha.trsp))
+             function(x,a) x else function(x,a) mapply(x,alp.t,a1=a)
     cex.pch <- .makeLenAndOrder(cex.pch,ord.x)
     cex.lbl <- .makeLenAndOrder(cex.lbl,ord.x)
-    col.pch <- .makeLenAndOrder(col.pch,ord.x)
-    col.lbl <- .makeLenAndOrder(col.lbl,ord.x)
+    col.pch <- alp.f(.makeLenAndOrder(col.pch,ord.x),alp.v)
+    col.lbl <- alp.f(.makeLenAndOrder(col.lbl,ord.x),alp.v)
 
     if(withLab){
       if(is.null(lab.pts)) lab.pts <- paste(ord.x)

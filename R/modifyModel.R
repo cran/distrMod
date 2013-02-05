@@ -1,4 +1,52 @@
 ### move model from one parameter to the next...
+setMethod("modifyModel", signature(model = "ParamFamily", param = "ParamFamParameter"),
+          function(model, param, .withCall = TRUE, ...){
+          M <- model
+          theta <- c(main(param),nuisance(param))
+          M@distribution <- model@modifyParam(theta)
+          M@param <- param
+          #we loose symmetry if available ...
+          M@distrSymm <- NoSymmetry()
+          
+          if(paste(M@fam.call[1]) == "ParamFamily")
+             fam.call <- eval(substitute(
+                      call("ParamFamily",
+                              name = name0,
+                              distribution = distribution0,
+                              distrSymm = distrSymm0,
+                              param = param0,
+                              props = props0,
+                              startPar = startPar0,
+                              makeOKPar = makeOKPar0,
+                              modifyParam = modifyParam0,
+                           ),
+                      list(   name0 = M@name,
+                              distribution0 = M@distribution,
+                              distrSymm0 = M@distrSymm,
+                              param0 = M@param,
+                              props0 = M@props,
+                              startPar0 = M@startPar,
+                              makeOKPar0 = M@startPar,
+                              modifyParam0 = M@modifyParam,
+                          )
+                      ))
+          else{
+             fam.call <- model@fam.call
+             par.names <- names(theta)
+             call.n <- names(fam.call)
+             w <- which(call.n %in% par.names)
+             if(length(w))
+                fam.call <- fam.call[-w]
+             fam.call <-  as.call(c(as.list(fam.call),theta))
+          }
+
+          M@fam.call <- fam.call
+          class(M) <- class(model)
+          return(M)
+          })
+
+
+### move model from one parameter to the next...
 setMethod("modifyModel", signature(model = "L2ParamFamily", param = "ParamFamParameter"),
           function(model, param, .withCall = TRUE, .withL2derivDistr = TRUE,
                    ...){
@@ -99,10 +147,12 @@ setMethod("modifyModel", signature(model = "L2LocationFamily",
                 names(cl)[cl.l+1] <- loc.name
              }
              M@fam.call <- cl
-             class(M) <- class(model)
-             M@locscalename <- locscalename(model)
-             M@LogDeriv <- LogDeriv(model)
-             return(M)
+             slots.from <- slotNames(class(M))
+             M1 <- new(class(model))
+             for(slot.s in slots.from) slot(M1,slot.s) <- slot(M,slot.s)
+             M1@locscalename <- locscalename(model)
+             M1@LogDeriv <- LogDeriv(model)
+             return(M1)
           })
 
 setMethod("modifyModel", signature(model = "L2ScaleFamily",
@@ -141,10 +191,12 @@ setMethod("modifyModel", signature(model = "L2ScaleFamily",
                 names(cl)[cl.l] <- scale.name
              }
              M@fam.call <- cl
-             class(M) <- class(model)
-             M@locscalename <- locscalename(model)
-             M@LogDeriv <- LogDeriv(model)
-             return(M)
+             slots.from <- slotNames(class(M))
+             M1 <- new(class(model))
+             for(slot.s in slots.from) slot(M1,slot.s) <- slot(M,slot.s)
+             M1@locscalename <- locscalename(model)
+             M1@LogDeriv <- LogDeriv(model)
+             return(M1)
           })
 
 setMethod("modifyModel", signature(model = "L2LocationScaleFamily",
@@ -201,10 +253,12 @@ setMethod("modifyModel", signature(model = "L2LocationScaleFamily",
                 names(cl)[cl.l] <- scale.name
              }
              M@fam.call <- cl
-             class(M) <- class(model)
-             M@locscalename <- locscalename(model)
-             M@LogDeriv <- LogDeriv(model)
-             return(M)
+             slots.from <- slotNames(class(M))
+             M1 <- new(class(model))
+             for(slot.s in slots.from) slot(M1,slot.s) <- slot(M,slot.s)
+             M1@locscalename <- locscalename(model)
+             M1@LogDeriv <- LogDeriv(model)
+             return(M1)
           })
 
 setMethod("modifyModel", signature(model = "GammaFamily",
@@ -212,11 +266,13 @@ setMethod("modifyModel", signature(model = "GammaFamily",
           function(model, param, ...){
              M <- modifyModel(as(model, "L2ParamFamily"), param = param,
                               .withCall = FALSE)
-             M@L2derivSymm <- FunSymmList(OddSymmetric(SymmCenter = 
+             slots.from <- slotNames(class(M))
+             M1 <- new(class(model))
+             for(slot.s in slots.from) slot(M1,slot.s) <- slot(M,slot.s)
+             M1@L2derivSymm <- FunSymmList(OddSymmetric(SymmCenter =
                                                        prod(main(param))),
                                           NonSymmetric())
-             class(M) <- class(model)
-             return(M)
+             return(M1)
           })
 setMethod("modifyModel", signature(model = "ExpScaleFamily",
            param = "ParamFamParameter"),
@@ -224,10 +280,12 @@ setMethod("modifyModel", signature(model = "ExpScaleFamily",
              M <- modifyModel(as(model, "L2ParamFamily"), param = param,
                               .withCall = FALSE)
              scale <- main(param)
-             M@L2derivDistr <- UnivarDistrList((Exp(rate = 1)-1)/scale)
-             M@L2derivSymm <- FunSymmList(OddSymmetric(SymmCenter = main(param)))
-             class(M) <- class(model)
-             M@locscalename <- locscalename(model)
-             M@LogDeriv <- LogDeriv(model)
-             return(M)
+             slots.from <- slotNames(class(M))
+             M1 <- new(class(model))
+             for(slot.s in slots.from) slot(M1,slot.s) <- slot(M,slot.s)
+             M1@L2derivDistr <- UnivarDistrList((Exp(rate = 1)-1)/scale)
+             M1@L2derivSymm <- FunSymmList(OddSymmetric(SymmCenter = main(param)))
+             M1@locscalename <- locscalename(model)
+             M1@LogDeriv <- LogDeriv(model)
+             return(M1)
           })

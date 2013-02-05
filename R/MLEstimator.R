@@ -5,7 +5,8 @@
 
 ## Maximum-Likelihood estimator
 MLEstimator <- function(x, ParamFamily, startPar = NULL, 
-                        Infos, trafo = NULL, penalty = 1e20, na.rm = TRUE, ...){
+                        Infos, trafo = NULL, penalty = 1e20,
+                        validity.check = TRUE, na.rm = TRUE, ...){
 
     ## preparation: getting the matched call
     es.call <- match.call()
@@ -23,6 +24,9 @@ MLEstimator <- function(x, ParamFamily, startPar = NULL,
     ## manipulation of the arg list to method mceCalc
     argList <- c(list(x = x, PFam = ParamFamily, startPar = startPar, 
                       penalty = penalty))
+
+    if(missing(validity.check)) validity.check <- TRUE
+       argList$validity.check <- validity.check
     if(missing(Infos))      Infos <- NULL
         argList <- c(argList, Infos = Infos)
     if(!is.null(dots))      argList <- c(argList, dots)
@@ -41,7 +45,7 @@ MLEstimator <- function(x, ParamFamily, startPar = NULL,
 
     if(!is.null(asv))   argList <- c(argList, asvar.fct = asv)
     if(!is.null(dots))  argList <- c(argList, dots)
-    
+
     ## digesting the results of mceCalc
     res <- do.call(what = ".process.meCalcRes", args = argList)
     
@@ -52,5 +56,3 @@ MLEstimator <- function(x, ParamFamily, startPar = NULL,
     
     return(res)
 }
-
- 

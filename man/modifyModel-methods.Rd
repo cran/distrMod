@@ -2,6 +2,7 @@
 \docType{methods}
 \alias{modifyModel-methods}
 \alias{modifyModel}
+\alias{modifyModel,ParamFamily,ParamFamParameter-method}
 \alias{modifyModel,L2ParamFamily,ParamFamParameter-method}
 \alias{modifyModel,L2LocationFamily,ParamFamParameter-method}
 \alias{modifyModel,L2ScaleFamily,ParamFamParameter-method}
@@ -16,6 +17,8 @@
  }
 \usage{
 modifyModel(model, param,...)
+\S4method{modifyModel}{ParamFamily,ParamFamParameter}(model,param, 
+                       .withCall = TRUE, ...)
 \S4method{modifyModel}{L2ParamFamily,ParamFamParameter}(model,param, 
                        .withCall = TRUE, .withL2derivDistr = TRUE, ...)
 \S4method{modifyModel}{L2LocationFamily,ParamFamParameter}(model,param, ...)
@@ -26,7 +29,7 @@ modifyModel(model, param,...)
 \S4method{modifyModel}{ExpScaleFamily,ParamFamParameter}(model,param, ...)
 }
 \arguments{
-  \item{model}{an object of class \code{L2ParamFamily}  --- the model to move.}
+  \item{model}{an object of class \code{ParamFamily}  --- the model to move.}
   \item{param}{an object of class \code{ParamFamParameter} --- the parameter to move to.}
   \item{.withCall}{logical: shall slot \code{fam.call} be updated?}
   \item{.withL2derivDistr}{logical: shall slot \code{L2derivDistr} be updated?}

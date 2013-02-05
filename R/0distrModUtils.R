@@ -18,7 +18,7 @@
   upp1 <- me + IQR.fac * s1 
   low <- max(low0,low1); upp <- min(upp0, upp1)
   xs <- seq(low, upp, length = getdistrOption("DefaultNrGridPoints"))
-  m <- getdistrOption("DefaultNrGridPoints")%/%100
+  m <- getdistrOption("DefaultNrGridPoints")%/%100+1
   dxs<- -d(distr)(xs, log = TRUE)
 #  plot(xs, dxs,type="l")
   x1 <- xs[1]; xn <- (rev(xs)[1])
@@ -110,8 +110,9 @@
    param0 <- L2Fam@param
    dim0 <- dimension(param0)
 #   print(param0)
-   paramP <- ParamFamParameter(name = name(param0), main = main(param),
-                               trafo = diag(dim0))
+   paramP <- param0
+   paramP@main <- main(param)
+   paramP@trafo <- diag(dim0)
 #   print(paramP)
    L2Fam <- modifyModel(L2Fam, paramP)
 
@@ -277,12 +278,12 @@
          else  Delta <- function(x) Delta1(x)
          Map.Delta[[i]] <- Delta
          env.i <- environment(Map.Delta[[i]]) <- new.env()
-         assign("i", i, env=env.i)
-         assign("fct", fct, env=env.i)
-         assign("fct0", fct0, env=env.i)
-         assign("Delta", Delta, env=env.i)
-         assign("Delta0", Delta0, env=env.i)
-         assign("Delta1", Delta1, env=env.i)
+         assign("i", i, envir=env.i)
+         assign("fct", fct, envir=env.i)
+         assign("fct0", fct0, envir=env.i)
+         assign("Delta", Delta, envir=env.i)
+         assign("Delta0", Delta0, envir=env.i)
+         assign("Delta1", Delta1, envir=env.i)
          if(withplot){ 
            windows()
            plot(x.seq, sapply(x.seq,Map.Delta[[i]]),
@@ -307,7 +308,7 @@
    for(i in 1:Dim)
        { Map.phi1[[i]] <- function(x) evalRandVar(phi,x)[i] * p(distr)(x)
          env.i <- environment(Map.phi1[[i]]) <- new.env()
-         assign("i", i, env=env.i)
+         assign("i", i, envir=env.i)
          }
 
    phi1 <- EuclRandVariable(Map = Map.phi1, Domain = Reals())
@@ -333,19 +334,19 @@
               
        phi0a <- approxfun(x.mu.seq, phi0, yleft = 0, yright = rev(phi0)[1])
        env.i <- environment(phi1) <- new.env()
-       assign("i", i, env=env.i)
+       assign("i", i, envir=env.i)
        if(is(distr,"DiscreteDistribution"))
              psi0 <- function(x) phi0a(x) * (x %in% support(mu))
        else  psi0 <- function(x) phi0a(x)
 
        Map.psi[[i]] <- psi0
        env.i <- environment(Map.psi[[i]]) <- new.env()
-       assign("i", i, env=env.i)
-       assign("fct", fct, env=env.i)
-       assign("fct0", fct0, env=env.i)
-       assign("psi0", psi0, env=env.i)
-       assign("phi0a", phi0a, env=env.i)
-       assign("phi0", phi0, env=env.i)
+       assign("i", i, envir=env.i)
+       assign("fct", fct, envir=env.i)
+       assign("fct0", fct0, envir=env.i)
+       assign("psi0", psi0, envir=env.i)
+       assign("phi0a", phi0a, envir=env.i)
+       assign("phi0", phi0, envir=env.i)
     }
    psi <-  EuclRandVariable(Map = Map.psi, Domain = Reals())
 

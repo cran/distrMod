@@ -8,6 +8,52 @@
  information)
 
 ##############
+v 2.4
+##############
+
+user-visible CHANGES:
++ moved GumbelLocationFamily to new package "RobExtremes"
++ new function addAlphTrsp2col to add alpha transparency to a 
+  given color; qqplot gains argument alpha.trsp to control for alpha transparency
+
+under the hood:
++ added modifyModel method for ParamFamily, some minor corrections due to more strict checking in R devel
++ created folder vignettes and moved content of inst/doc/ to it
++ removed lazyload tag in DESCRIPTION
++ updated affiliation info in newDistributions.Rnw
++ deleted inst/doc folder
++ .Rbuildignore file as a reaction to B. Ripley's mail on r-devel, 
+   "CRAN package sizes",  Feb-14-2011
++ added computation of relative error in checkL2deriv - 
+  maybe there is a better idea avoiding division by zero, 
++ added DESCRIPTION tag "ByteCompile" to all our packages
++ updating maintainer email address and URL.
++ added argument no.readonly = TRUE to assignments of form opar <- par()
++ new intermediate classes/ class unions for scale families and scale shape families; 
++ consequent use of argument validity.check in MCE estimators.
++ removed relics of ancient L2Fam-slot withPos (was introduced in a try)
++ introduced slot scaleshapename for L2ScaleShapeUnion and methods scalename und scaleshapename (accessor/replacers)
++ after change of @<- semantics by J. Chambers moved from  class(M) <- class(model)  to slotwise copying
++ S4Method "mceCalc", signature(x = "numeric", PFam = "ParamFamily") gains additional 
+  calls to makeOKPar() to warrant admissible parameter values
++ Estimator can now deal with asymptotic variances if given; to this end 
+  gains optional argument ParamFamily 
++ put some examples in \dontrun to reduce check time on CRAN
++ deleted file GumbelLocationFamily.Rd (no longer needed)
++ Default name of Estimator is now "Estimator"
++ deleted no longer needed chm folders
+
+BUGFIXES:
+
++ bugfixes in NbinomMeanSizeFamily 
+                 and NbinomwithSizeFamily (detected by Matthias!)
++ digamma was used instead of trigamma
++ validparameter: fixed a bug with slot withPosRestr (which is not a member of 
+                  L2ParamFamily but of the respective parameter!) 
+
+
+
+##############
 v 2.3
 ##############
 
@@ -48,22 +94,6 @@ Bug
 
 + unnecessary Rplots.pdf deleted from inst folders of distr and 
   distrMod (are created anyway during vignette build)
-
-##############
-v 2.2.2
-##############
-Vignette to distrMod aka
-
-M. Kohl and P. Ruckdeschel (2010): R Package distrMod: S4 Classes and Methods for Probability Models.
-Journal of Statistical Software, 35(10), 1-27. \url{http://www.jstatsoft.org/v35/i10/}
-
-included
-
-##############
-v 2.2.1
-##############
-+ fixed error in \section{} (had \code{} markup...)
-   http://n4.nabble.com/Recent-TeX-changes-and-R-package-manuals-tp956056p956056.html
 
 ##############
 v 2.2.2

@@ -20,9 +20,11 @@ mceCalc(x, PFam, ...)
 mleCalc(x, PFam, ...)
 \S4method{mceCalc}{numeric,ParamFamily}(x, PFam, criterion, 
                    startPar = NULL, penalty = 1e20, crit.name,
-                   Infos = NULL, withthetaPar = FALSE,\dots)
+                   Infos = NULL, validity.check = TRUE,
+                   withthetaPar = FALSE,\dots)
 \S4method{mleCalc}{numeric,ParamFamily}(x, PFam, startPar = NULL, 
-                   penalty = 1e20, Infos = NULL, \dots)
+                   penalty = 1e20, Infos = NULL,
+                    validity.check = TRUE, \dots)
 \S4method{mleCalc}{numeric,BinomFamily}(x, PFam, \dots)
 \S4method{mleCalc}{numeric,PoisFamily}(x, PFam, \dots)
 \S4method{mleCalc}{numeric,NormLocationFamily}(x, PFam, \dots)
@@ -42,6 +44,8 @@ mleCalc(x, PFam, ...)
   \item{withthetaPar}{logical; shall Parameter theta be transmitted?}
   \item{Infos}{matrix; info slot to be filled in object of class \code{MCEstimate}; 
                may be missing}
+  \item{validity.check}{logical: shall return parameter value be checked for
+    validity?}
   \item{\dots}{additional argument(s) for \code{optim} / \code{optimize}}
 }
 \value{

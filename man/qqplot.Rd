@@ -18,7 +18,8 @@ qqplot(x, y, ...)
     cex.sCI = par("cex"),
     cex.pch = par("cex"), col.pch = par("col"),
     cex.lbl = par("cex"), col.lbl = par("col"), adj.lbl = NULL,
-    jit.fac = 0, check.NotInSupport = TRUE, col.NotInSupport = "red",
+    alpha.trsp = NA, jit.fac = 0,
+    check.NotInSupport = TRUE, col.NotInSupport = "red",
     with.legend = TRUE, legend.bg = "white",
     legend.pos = "topleft", legend.cex = 0.8, 
     legend.pref = "", legend.postf = "",  legend.alpha = alpha.CI)
@@ -87,6 +88,14 @@ simultaneous CI}
 \item{cex.lbl}{magnification factor for the plotted observation labels}
 \item{col.lbl}{color for the plotted observation labels}
 \item{adj.lbl}{adj parameter for the plotted observation labels}
+\item{alpha.trsp}{alpha transparency to be added ex post to colors
+        \code{col.pch} and \code{col.lbl}; if one-dim and NA all colors are
+        left unchanged. Otherwise, with usual recycling rules \code{alpha.trsp}
+        gets shorted/prolongated to length the data-symbols to be plotted.
+        Coordinates of this vector \code{alpha.trsp} with NA are left unchanged,
+        while for the remaining ones, the alpha channel in rgb space is set
+        to the respective coordinate value of \code{alpha.trsp}. The non-NA
+        entries must be integers in [0,255] (0 invisible, 255 opaque).}
 \item{jit.fac}{jittering factor used for discrete distributions}
 \item{check.NotInSupport}{logical; shall we check if all \code{x}-quantiles lie
 in \code{support(y)}?}

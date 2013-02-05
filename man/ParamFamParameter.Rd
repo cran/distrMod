@@ -6,7 +6,8 @@
   Generates an object of class \code{"ParamFamParameter"}.
 }
 \usage{
-ParamFamParameter(name, main = numeric(0), nuisance, fixed, trafo)
+ParamFamParameter(name, main = numeric(0), nuisance, fixed, trafo,
+                  ..., .returnClsName = NULL)
 }
 \arguments{
   \item{name}{ (optional) character string: name of parameter }
@@ -14,6 +15,12 @@ ParamFamParameter(name, main = numeric(0), nuisance, fixed, trafo)
   \item{nuisance}{ (optional) numeric vector: nuisance paramter }
   \item{fixed}{ (optional) numeric vector: fixed part of the paramter }
   \item{trafo}{(optional) MatrixorFunction: transformation of the parameter }
+  \item{\dots}{(optional) additional arguments for further return classes,
+                e.g.\ \code{withPosRestr} (only use case so far) for
+                class \code{ParamWithShapeFamParameter}}
+  \item{.returnClsName}{character or \code{NULL}; if non-null, the
+  generated object will be of class \code{.returnClsName}, which must
+  be a subclass of \code{ParamFamParameter}.}
 }
 \details{
   If \code{name} is missing, the default 
@@ -25,7 +32,8 @@ ParamFamParameter(name, main = numeric(0), nuisance, fixed, trafo)
   If \code{trafo} is missing, no transformation to the parameter
   is applied; i.e., \code{trafo} is set to an identity matrix.
 }
-\value{Object of class \code{"ParamFamParameter"}}
+\value{Object of class \code{"ParamFamParameter"} (or, if non-null, of class
+       \code{.returnClsName})}
 %\references{}
 \author{Matthias Kohl \email{Matthias.Kohl@stamats.de},\cr
 Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}

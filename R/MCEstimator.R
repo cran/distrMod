@@ -24,6 +24,9 @@ MCEstimator <- function(x, ParamFamily, criterion, crit.name,
     ## manipulation of the arg list to method mceCalc
     argList <- c(list(x = x, PFam = ParamFamily, criterion = criterion, 
                    startPar = startPar, penalty = penalty))
+
+    if(missing(validity.check)) validity.check <- TRUE
+       argList$validity.check <- validity.check
     if(missing(Infos))      Infos <- NULL
     argList <- c(argList, Infos = Infos)
     if(missing(crit.name)) crit.name <- ""               
@@ -46,7 +49,7 @@ MCEstimator <- function(x, ParamFamily, criterion, crit.name,
 
     if(!is.null(asv))   argList <- c(argList, asvar.fct = asv)
     if(!is.null(dots))  argList <- c(argList, dots)
-    
+
     ## digesting the results of mceCalc
     res <- do.call(.process.meCalcRes, argList)
     res@completecases <- completecases

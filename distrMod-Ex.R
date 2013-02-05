@@ -303,26 +303,6 @@ checkL2deriv(G1)
 
 
 cleanEx()
-nameEx("GumbelLocationFamily")
-### * GumbelLocationFamily
-
-flush(stderr()); flush(stdout())
-
-### Name: GumbelLocationFamily
-### Title: Generating function for Gumbel location families
-### Aliases: GumbelLocationFamily
-### Keywords: models
-
-### ** Examples
-
-(G1 <- GumbelLocationFamily())
-plot(G1)
-Map(L2deriv(G1)[[1]])
-checkL2deriv(G1)
-
-
-
-cleanEx()
 nameEx("InfoNorm")
 ### * InfoNorm
 
@@ -612,7 +592,8 @@ MDEstimator(x, G)
 (m <- MLEstimator(x, G))
 m.mle <- as(m,"mle")
 par(mfrow=c(1,2))
-plot(profile(m))
+profileM <- profile(m)
+## plot-profile throws an error
 
 
 
@@ -699,27 +680,30 @@ MDEstimator(x = x, ParamFamily = G, distance = KolmogorovDist)
 ## von Mises minimum distance estimator with default mu
 MDEstimator(x = x, ParamFamily = G, distance = CvMDist)
 
-## von Mises minimum distance estimator with default mu
-MDEstimator(x = x, ParamFamily = G, distance = CvMDist,
-            asvar.fct = distrMod:::.CvMMDCovariance)
-#*** variance routine is still in testing phase so not yet
-#*** exported to namespace
-## von Mises minimum distance estimator with mu = N(0,1)
-MDEstimator(x = x, ParamFamily = G, distance = CvMDist, mu = Norm())
-
-## Total variation minimum distance estimator
-## gamma distributions are discretized
-MDEstimator(x = x, ParamFamily = G, distance = TotalVarDist)
-## or smoothing of emprical distribution (takes some time!)
-#MDEstimator(x = x, ParamFamily = G, distance = TotalVarDist, asis.smooth.discretize = "smooth")
-
-## Hellinger minimum distance estimator
-## gamma distributions are discretized
-distroptions(DistrResolution = 1e-10)
-MDEstimator(x = x, ParamFamily = G, distance = HellingerDist, startPar = c(1,2))
-distroptions(DistrResolution = 1e-6) # default
-## or smoothing of emprical distribution (takes some time!)
-#MDEstimator(x = x, ParamFamily = G, distance = HellingerDist, asis.smooth.discretize = "smooth")
+## don't run to reduce check time on CRAN
+## Not run: 
+##D ## von Mises minimum distance estimator with default mu
+##D MDEstimator(x = x, ParamFamily = G, distance = CvMDist,
+##D             asvar.fct = distrMod:::.CvMMDCovariance)
+##D #*** variance routine is still in testing phase so not yet
+##D #*** exported to namespace
+##D ## von Mises minimum distance estimator with mu = N(0,1)
+##D MDEstimator(x = x, ParamFamily = G, distance = CvMDist, mu = Norm())
+##D 
+##D ## Total variation minimum distance estimator
+##D ## gamma distributions are discretized
+##D MDEstimator(x = x, ParamFamily = G, distance = TotalVarDist)
+##D ## or smoothing of emprical distribution (takes some time!)
+##D #MDEstimator(x = x, ParamFamily = G, distance = TotalVarDist, asis.smooth.discretize = "smooth")
+##D 
+##D ## Hellinger minimum distance estimator
+##D ## gamma distributions are discretized
+##D distroptions(DistrResolution = 1e-10)
+##D MDEstimator(x = x, ParamFamily = G, distance = HellingerDist, startPar = c(1,2))
+##D distroptions(DistrResolution = 1e-6) # default
+##D ## or smoothing of emprical distribution (takes some time!)
+##D #MDEstimator(x = x, ParamFamily = G, distance = HellingerDist, asis.smooth.discretize = "smooth")
+## End(Not run)
 
 
 
@@ -809,30 +793,33 @@ res1$loglik
 criterion(res)
 
 
-## explicitely transforming to
-## MASS parametrization:
-mtrafo <- function(x){
-     nms0 <- names(c(main(param(G)),nuisance(param(G))))
-     nms <- c("shape","rate")
-     fval0 <- c(x[2], 1/x[1])
-     names(fval0) <- nms
-     mat0 <- matrix( c(0, -1/x[1]^2, 1, 0), nrow = 2, ncol = 2,
-                     dimnames = list(nms,nms0))                          
-     list(fval = fval0, mat = mat0)}
-
-G2 <- G
-trafo(G2) <- mtrafo
-res2 <- MLEstimator(x = x, ParamFamily = G2)
-
-old <- getdistrModOption("show.details")
-distrModoptions("show.details" = "minimal")
-res1
-res2
-
-## some profiling
-par(mfrow=c(1,2))
-plot(profile(res2))
-par(mfrow=c(1,1))
+## don't run to reduce check time on CRAN
+## Not run: 
+##D ## explicitely transforming to
+##D ## MASS parametrization:
+##D mtrafo <- function(x){
+##D      nms0 <- names(c(main(param(G)),nuisance(param(G))))
+##D      nms <- c("shape","rate")
+##D      fval0 <- c(x[2], 1/x[1])
+##D      names(fval0) <- nms
+##D      mat0 <- matrix( c(0, -1/x[1]^2, 1, 0), nrow = 2, ncol = 2,
+##D                      dimnames = list(nms,nms0))                          
+##D      list(fval = fval0, mat = mat0)}
+##D 
+##D G2 <- G
+##D trafo(G2) <- mtrafo
+##D res2 <- MLEstimator(x = x, ParamFamily = G2)
+##D 
+##D old <- getdistrModOption("show.details")
+##D distrModoptions("show.details" = "minimal")
+##D res1
+##D res2
+##D 
+##D ## some profiling
+##D par(mfrow=c(1,2))
+##D plot(profile(res2))
+##D par(mfrow=c(1,1))
+## End(Not run)
 
 #############################
 ## 5. Cauchy Location Scale model
@@ -874,6 +861,11 @@ checkL2deriv(N1)
 plot(N1.w)
 FisherInfo(N1.w)
 checkL2deriv(N1.w)
+(N2.w <- NbinomMeanSizeFamily(size = 25, mean = 75))
+plot(N2.w)
+FisherInfo(N2.w)
+checkL2deriv(N2.w)
+
 
 
 
@@ -1099,13 +1091,22 @@ flush(stderr()); flush(stdout())
 
 ### Name: ParamFamParameter-class
 ### Title: Parameter of a parametric family of probability measures
-### Aliases: ParamFamParameter-class length,ParamFamParameter-method
+### Aliases: ParamFamParameter-class ParamWithScaleFamParameter-class
+###   ParamWithScaleAndShapeFamParameter-class
+###   ParamWithShapeFamParameter-class length,ParamFamParameter-method
 ###   dimension,ParamFamParameter-method main main,ParamFamParameter-method
-###   main<- main<-,ParamFamParameter-method nuisance
-###   nuisance,ParamFamParameter-method nuisance<-
+###   main,ParamWithScaleAndShapeFamParameter-method main<-
+###   main<-,ParamFamParameter-method nuisance
+###   nuisance,ParamFamParameter-method
+###   nuisance,ParamWithScaleAndShapeFamParameter-method nuisance<-
 ###   nuisance<-,ParamFamParameter-method fixed
-###   fixed,ParamFamParameter-method fixed<-
-###   fixed<-,ParamFamParameter-method show,ParamFamParameter-method
+###   fixed,ParamFamParameter-method
+###   fixed,ParamWithScaleAndShapeFamParameter-method fixed<-
+###   fixed<-,ParamFamParameter-method withPosRestr
+###   withPosRestr,ParamWithShapeFamParameter-method withPosRestr<-
+###   withPosRestr<-,ParamWithShapeFamParameter-method
+###   show,ParamFamParameter-method show,ParamWithShapeFamParameter-method
+###   show,ParamWithScaleAndShapeFamParameter-method
 ### Keywords: classes
 
 ### ** Examples
@@ -1197,7 +1198,8 @@ NL
 theta <- 1
 names(theta) <- "sd"
 NS <- ParamFamily(name = "Normal scale family",
-          param = ParamFamParameter(name = "scale parameter", main = theta),
+          param = ParamFamParameter(name = "scale parameter", main = theta,
+          .returnClsName = "ParamWithScaleFamParameter"),
           distribution = Norm(mean = 0, sd = 1), ## mean known!
           startPar = function(x,...) c(0,-min(x)+max(x)),
           distrSymm <- SphericalSymmetry(SymmCenter = 0),
@@ -1212,7 +1214,8 @@ theta <- c(0, 1)
 names(theta) <- c("mean", "sd")
 NLS <- ParamFamily(name = "Normal location and scale family",
           param = ParamFamParameter(name = "location and scale parameter",
-                                    main = theta),
+                                    main = theta,
+                                 .returnClsName = "ParamWithScaleFamParameter"),
           distribution = Norm(mean = 0, sd = 1),
           startPar = function(x,...) c(median(x),mad(x)),
           makeOKPar = function(param) {param[2]<-abs(param[2]); return(param)},
@@ -1252,24 +1255,13 @@ P <- ParamFamily(name = "Poisson family",
           modifyParam = function(theta){ Pois(lambda = theta) })
 P
 
-## 6. Gumbel location family
-theta <- 0
-names(theta) <- "loc"
-GL <- ParamFamily(name = "Gumbel location family",
-          param = ParamFamParameter(name = "location parameter", main = theta),
-          startPar = function(x,...) c(min(x),max(x)),
-          distribution = Gumbel(loc = 0, scale = 1), ## scale known!
-          modifyParam = function(theta){ Gumbel(loc = theta, scale = 1) },
-          props = paste(c("The Gumbel location family is invariant under",
-                    "the group of transformations 'g(x) = x + loc'",
-                    "with location parameter 'loc'"), collapse = " "))
-GL
 
-## 7. Exponential scale family
+## 6. Exponential scale family
 theta <- 2
 names(theta) <- "scale"
 ES <- ParamFamily(name = "Exponential scale family",
-          param = ParamFamParameter(name = "scale parameter", main = theta),
+          param = ParamFamParameter(name = "scale parameter", main = theta,
+                           .returnClsName = "ParamWithScaleFamParameter"),
           startPar = function(x,...) c(0,max(x)-min(x)),
           distribution = Exp(rate = 1/2),
           modifyParam = function(theta){ Exp(rate = 1/theta) },
@@ -1279,11 +1271,12 @@ ES <- ParamFamily(name = "Exponential scale family",
                     collapse = " " ))
 ES
 
-## 8. Lognormal scale family
+## 7. Lognormal scale family
 theta <- 2
 names(theta) <- "scale"
 LS <- ParamFamily(name = "Lognormal scale family",
-          param = ParamFamParameter(name = "scale parameter", main = theta),
+          param = ParamFamParameter(name = "scale parameter", main = theta,
+                           .returnClsName = "ParamWithScaleFamParameter"),
           startPar = function(x,...) c(0,max(x)-min(x)),
           distribution = Lnorm(meanlog = log(2), sdlog = 2),## sdlog known!
           modifyParam = function(theta){ 
@@ -1295,11 +1288,13 @@ LS <- ParamFamily(name = "Lognormal scale family",
                     collapse = " "))
 LS
 
-## 9. Gamma family
+## 8. Gamma family
 theta <- c(1, 2)
 names(theta) <- c("scale", "shape")
 G <- ParamFamily(name = "Gamma family",
-        param = ParamFamParameter(name = "scale and shape", main = theta),
+        param = ParamFamParameter(name = "scale and shape", main = theta,
+                           withPosRestr = TRUE,
+                           .returnClsName = "ParamWithScaleAndShapeFamParameter"),
         startPar = function(x,...) {E <- mean(x); V <- var(X); c(V/E,E^2/V)},
         makeOKPar = function(param) abs(param),
         distribution = Gammad(scale = 1, shape = 2),
@@ -1370,6 +1365,27 @@ SelfNorm()
 
 ## The function is currently defined as
 function(){ new("SelfNorm") }
+
+
+
+cleanEx()
+nameEx("addAlphTrsp2col")
+### * addAlphTrsp2col
+
+flush(stderr()); flush(stdout())
+
+### Name: addAlphTrsp2col
+### Title: "addAlphTrsp2col"
+### Aliases: addAlphTrsp2col
+### Keywords: distribution
+
+### ** Examples
+
+  addAlphTrsp2col(rgb(1,0.3,0.03), 25)
+  addAlphTrsp2col("darkblue", 25)
+  addAlphTrsp2col("#AAAAAAAA",25)
+  palette(rainbow(6))
+  addAlphTrsp2col(2, 25)
 
 
 
@@ -2254,6 +2270,7 @@ flush(stderr()); flush(stdout())
 ### Aliases: trafo-methods trafo trafo,Estimate,missing-method
 ###   trafo,Estimate,ParamFamParameter-method
 ###   trafo,ParamFamParameter,missing-method
+###   trafo,ParamWithScaleAndShapeFamParameter,missing-method
 ###   trafo,ParamFamily,missing-method
 ###   trafo,ParamFamily,ParamFamParameter-method trafo.fct
 ###   trafo.fct-methods trafo.fct,ParamFamily-method trafo<-
@@ -2337,11 +2354,12 @@ flush(stderr()); flush(stdout())
 ### Name: validParameter-methods
 ### Title: Methods for function validParameter in Package 'distrMod'
 ### Aliases: validParameter-methods validParameter
-###   validParameter,ParamFamily-method validParameter,L2ScaleFamily-method
+###   validParameter,ParamFamily-method validParameter,L2ScaleUnion-method
+###   validParameter,L2ScaleFamily-method
 ###   validParameter,L2LocationFamily-method
 ###   validParameter,L2LocationScaleFamily-method
 ###   validParameter,BinomFamily-method validParameter,PoisFamily-method
-###   validParameter,GammaFamily-method
+###   validParameter,L2ScaleShapeUnion-method
 ### Keywords: models
 
 ### ** Examples

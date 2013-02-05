@@ -4,6 +4,7 @@
 \alias{.get.criterion.fct}
 \alias{.process.meCalcRes}
 \alias{.samplesize}
+\alias{.callParamFamParameter}
 
 \title{Internal helper functions for treating MCEstimators in package distrMod}
 
@@ -13,7 +14,9 @@ These functions are used internally by functions \code{MCEstimator} and
 
 \usage{
 .negLoglikelihood(x, Distribution, ...)
-.process.meCalcRes(res, PFam, trafo, res.name, call, asvar.fct, ...)
+.process.meCalcRes(res, PFam, trafo, res.name, call, asvar.fct, check.validity,
+                   ...)
+.callParamFamParameter(PFam, theta, idx, nuis, fixed)
 }
 
 
@@ -32,6 +35,12 @@ These functions are used internally by functions \code{MCEstimator} and
   \item{res.name}{the name of the corresponding estimator}
   \item{call}{the original call with which the estimate was produced}
   \item{asvar.fct}{a function producing an asymptotic covariance matrix or \code{NULL}.}
+  \item{validity.check}{logical: shall return parameter value be checked for
+    validity?}
+  \item{theta}{parameter vector}
+  \item{idx}{indices of the main part of the component}
+  \item{nuis}{nuisance part of the parameter}
+  \item{fixed}{fixed part of the parameter}
 }
 
 \details{
@@ -51,7 +60,11 @@ These functions are used internally by functions \code{MCEstimator} and
 \code{mceCalc} and \code{mleCalc} to give a corresponding object of
 class \code{MCEstimate}. 
 
-
+\code{.callParamFamParameter} determines by means of the family-slot
+parameter whether this is of a subclass of \code{ParamFamParameter},
+and if so manipulates the call to generating function \code{ParamFamParameter}
+accordingly (such that the result has the convenient type and the
+convenient extra slots).
 }
 
 \value{
@@ -59,6 +72,8 @@ class \code{MCEstimate}.
  evaluated at the data and the given distribution}
 \item{.get.criterion.fct}{a function as described in section ``details''}
 \item{.process.meCalcRes}{an object of class \code{MCEstimate}}
+\item{.callParamFamParameter}{an object of class \code{ParamFamParameter}
+or if necessary a corresponding subclass.}
 }
 
 \author{

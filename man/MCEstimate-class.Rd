@@ -124,7 +124,8 @@ MDEstimator(x, G)
 (m <- MLEstimator(x, G))
 m.mle <- as(m,"mle")
 par(mfrow=c(1,2))
-plot(profile(m))
+profileM <- profile(m)
+## plot-profile throws an error
 }
 \concept{estimate}
 \keyword{classes}

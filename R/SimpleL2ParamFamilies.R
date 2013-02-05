@@ -215,7 +215,7 @@ NbinomwithSizeFamily <- function(size = 1, prob = 0.5, trafo){
                    prob <- main(param)["prob"]
                    size <- main(param)["size"]
                    xn <- 0:min(max(support(distribution)),
-                               qnbinom(1e-6,size=size,prob=prob,lower=FALSE),
+                               qnbinom(1e-6,size=size,prob=prob,lower.tail=FALSE),
                                1e5)
                    I11 <- -sum((trigamma(xn+size)-trigamma(size))*dnbinom(xn,size=size,prob=prob))
                    I12 <- -1/prob
@@ -299,7 +299,7 @@ NbinomMeanSizeFamily <- function(size = 1, mean = .5, trafo){
                    size <- main(param)["size"]
                    prob.0 <- size/(size+mean)
                    xn <- 0:min(max(support(distribution)),
-                               qnbinom(1e-6,size=size,prob=prob.0,lower=FALSE),
+                               qnbinom(1e-6,size=size,prob=prob.0,lower.tail=FALSE),
                                1e5)
                    I11 <- -sum((trigamma(xn+size)-trigamma(size))*dnbinom(xn,size=size,prob=prob.0))
                    I12 <- -1/prob.0
@@ -341,7 +341,9 @@ GammaFamily <- function(scale = 1, shape = 1, trafo){
     names(param0) <- nms <- c("scale", "shape")
     if(missing(trafo)) {trafo <- diag(2); dimnames(trafo) <-list(nms,nms)}
     param <- ParamFamParameter(name = "scale and shape",  
-                        main = param0, trafo = trafo)
+                        main = param0, trafo = trafo,
+                               withPosRestr = TRUE,
+                               .returnClsName ="ParamWithScaleAndShapeFamParameter")
     modifyParam <- function(theta){ Gammad(scale = theta[1], shape = theta[2]) }
     props <- c("The Gamma family is scale invariant via the parametrization",
                "'(nu,shape)=(log(scale),shape)'")
@@ -379,13 +381,26 @@ GammaFamily <- function(scale = 1, shape = 1, trafo){
                            dimnames=list(nms,nms)))}
 
     FisherInfo <- FisherInfo.fct(param)
-    res <- L2ParamFamily(name = name, distribution = distribution, 
-        distrSymm = distrSymm, param = param, modifyParam = modifyParam,
-        props = props, L2deriv.fct = L2deriv.fct, L2derivSymm = L2derivSymm,
-        L2derivDistr = L2derivDistr, L2derivDistrSymm = L2derivDistrSymm,
-        FisherInfo.fct = FisherInfo.fct, FisherInfo = FisherInfo,
-        startPar = startPar, makeOKPar = makeOKPar, 
-        .returnClsName = "GammaFamily") 
+    L2Fam <- new("GammaFamily")
+    L2Fam@name <- name
+    L2Fam@distribution <- distribution
+    L2Fam@distrSymm <- distrSymm
+    L2Fam@param <- param
+    L2Fam@modifyParam <- modifyParam
+    L2Fam@props <- props
+    L2Fam@L2deriv.fct <- L2deriv.fct
+    L2Fam@L2derivSymm <- L2derivSymm
+    L2Fam@L2derivDistr <- L2derivDistr
+    L2Fam@L2derivDistrSymm <- L2derivDistrSymm
+    L2Fam@FisherInfo.fct <- FisherInfo.fct
+    L2Fam@FisherInfo <- FisherInfo
+    L2Fam@startPar <- startPar
+    L2Fam@makeOKPar <- makeOKPar
+    L2Fam@scaleshapename <- c("scale"="scale","shape"="shape")
+    
+    L2deriv <- EuclRandVarList(RealRandVariable(L2deriv.fct(param),
+                               Domain = Reals()))
+
     if(!is.function(trafo))
        f.call <- substitute(GammaFamily(scale = s1, shape = s2,
   	                           trafo = matrix(Tr, ncol = 2, dimnames = DN)),
@@ -394,9 +409,14 @@ GammaFamily <- function(scale = 1, shape = 1, trafo){
     else
        f.call <- substitute(GammaFamily(scale = s1, shape = s2, trafo = Tr),
   	                     list(s1 = scale, s2 = shape, Tr = trafo))
-    
-    res@fam.call <- f.call
-    return(res)
+
+    L2Fam@fam.call <- f.call
+
+    L2Fam@LogDeriv <- function(x) -(shape-1)/x + 1/scale
+    L2Fam@L2deriv <- L2deriv
+
+
+    return(L2Fam)
 }
 
 ##################################################################
@@ -645,37 +665,6 @@ LnormScaleFamily <- function(meanlog = 0, sdlog = 1, trafo){
 }
 
 
-##################################################################
-## Gumbel location family
-##################################################################
-GumbelLocationFamily <- function(loc = 0, scale = 1, trafo){ 
-    if(missing(trafo)) trafo <- matrix(1, dimnames = list("loc","loc"))
-    modParam <- function(theta){}
-    body(modParam) <- substitute({ Gumbel(loc = theta, scale = sd) },
-                                 list(sd = scale))
-    res <- L2LocationFamily(loc = loc,  
-                     name = "Gumbel location family", 
-                     locname = c("loc"="loc"),
-                     centraldistribution = Gumbel(loc = 0, scale = scale),
-                     modParam = modParam,
-                     LogDeriv = function(x) (1 - exp(-x/scale))/scale,
-                     L2derivDistr.0 = (1 - Exp(rate = 1))/scale,
-                     FisherInfo.0 = matrix(1/scale^2, 
-                                    dimnames = list("loc","loc")), 
-                     distrSymm = NoSymmetry(), 
-                     L2derivSymm = FunSymmList(NonSymmetric()), 
-                     L2derivDistrSymm = DistrSymmList(NoSymmetry()),
-                     trafo = trafo, .returnClsName = "GumbelLocationFamily")
-    if(!is.function(trafo))
-       f.call <- substitute(GumbelLocationFamily(loc = l, scale = s,
-                          trafo = matrix(Tr, dimnames = list("loc","loc"))),
-  	                     list(l = loc, s = scale, Tr = trafo))
-  	else                     
-       f.call <- substitute(GumbelLocationFamily(loc = l, scale = s, trafo = Tr),
-  	                     list(l = loc, s = scale, Tr = trafo))
-    res@fam.call <- f.call
-    return(res)
-}
 
 
 ##################################################################
@@ -694,7 +683,7 @@ CauchyLocationScaleFamily <- function(loc = 0, scale = 1, trafo){
                                             EvenSymmetric(SymmCenter = loc)),
                   L2derivDistrSymm = DistrSymmList(SphericalSymmetry(), 
                                                    NoSymmetry()),
-                  L2derivDistr = UnivarDistrList(Arcsine(),abs(Arcsine())),
+                  L2derivDistr.0 = UnivarDistrList(Arcsine(),abs(Arcsine())),
                   FisherInfo.0 = matrix(c(1,0,0,1)/2,2,2, 
                                            dimnames = list(c("loc","scale"),
                                                            c("loc","scale"))),

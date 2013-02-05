@@ -1,0 +1,3 @@
+^.*\.svn.+
+vignettes/Rplots\.ps
+vignettes/.+\.pdf

@@ -4,7 +4,8 @@
 MDEstimator <- function(x, ParamFamily, distance = KolmogorovDist,
                         dist.name,  paramDepDist = FALSE,
                         startPar = NULL,  Infos, 
-                        trafo = NULL, penalty = 1e20, asvar.fct, na.rm = TRUE,
+                        trafo = NULL, penalty = 1e20,
+                        validity.check = TRUE, asvar.fct, na.rm = TRUE,
                         ...){
 
     ## preparation: getting the matched call
@@ -27,6 +28,9 @@ MDEstimator <- function(x, ParamFamily, distance = KolmogorovDist,
     argList <- c(list(x = x, PFam = ParamFamily, criterion = distance,
                    startPar = startPar, penalty = penalty, 
                    crit.name = dist.name, withthetaPar = paramDepDist))
+
+    if(missing(validity.check)) validity.check <- TRUE
+       argList$validity.check <- validity.check
     if(missing(Infos))      Infos <- NULL
     argList <- c(argList, Infos = Infos)
     if(!is.null(dots))      argList <- c(argList, dots)
@@ -43,7 +47,9 @@ MDEstimator <- function(x, ParamFamily, distance = KolmogorovDist,
 
     if(!missing(asvar.fct))   argList <- c(argList, asvar.fct = asvar.fct)
     if(!is.null(dots))  argList <- c(argList, dots)
-    
+    if(!validity.check %in% names(argList))
+       argList$validity.check <- TRUE
+
     ## digesting the results of mceCalc
     res <- do.call(.process.meCalcRes, argList)
 

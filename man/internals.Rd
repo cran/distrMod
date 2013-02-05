@@ -18,7 +18,7 @@ These functions are used internally by package ``distrMod''.}
 .isUnitMatrix(m)
 .csimpsum(fx)
 .validTrafo(trafo, dimension, dimensionwithN)
-.CvMMDCovariance(L2Fam, param, mu = distribution(L2Fam),  
+.CvMMDCovariance(L2Fam, param, mu = distribution(L2Fam),
                  withplot = FALSE, withpreIC = FALSE,
                  N = getdistrOption("DefaultNrGridPoints")+1,
                  rel.tol=.Machine$double.eps^0.3, 
@@ -110,7 +110,7 @@ derivative of the density}
 \item{.csimpsum}{\code{numeric} (of length half the input length)}
 \item{.isUnitMatrix}{\code{logical} (length 1)}
 \item{.validTrafo}{\code{logical} (length 1)}
-\item{.CvMMDCovariance}{corresponding as. [co]variance of 
+\item{.CvMMDCovariance}{corresponding as. [co]variance of
    the corresponding Minimum CvM estimator or list withcomponents
    \code{preIC} and \code{var} ---see above}
 \item{.show.with.sd}{\code{invisible()}}

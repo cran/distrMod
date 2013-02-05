@@ -183,7 +183,8 @@ L2ScaleFamily <- function(scale = 1, loc = 0, name, centraldistribution = Norm()
     if(missing(trafo))  {trafo <- matrix(1)
                          dimnames(trafo) <- list(scalename,scalename)}
     param <- ParamFamParameter(name = "scale", main = param0, 
-                               fixed = param1, trafo = trafo)
+                               fixed = param1, trafo = trafo,
+                               .returnClsName ="ParamWithScaleFamParameter")
     if(missing(modParam)){
         modParam <- function(theta){}
         body(modParam) <- substitute({ theta*centraldistribution+loc },
@@ -340,7 +341,8 @@ L2LocationScaleFamily <- function(loc = 0, scale = 1, name,
                          dimnames(trafo) <- list(locscalename,
                                                  locscalename)}
     param <- ParamFamParameter(name = "location and scale", main = param0,
-                               trafo = trafo)
+                               trafo = trafo,
+                               .returnClsName ="ParamWithScaleFamParameter")
     
     startPar <- function(x,...) {
                    st <- c(median(x),mad(x, constant=mad.const))
@@ -534,7 +536,8 @@ L2LocationUnknownScaleFamily <- function(loc = 0, scale = 1, name,
                          dimnames(trafo) <- list(locscalename["loc"],
                                                  locscalename["loc"])}
     param <- ParamFamParameter(name = "location and scale", main = param0[1],
-                               nuisance = param0[2], trafo = trafo)
+                               nuisance = param0[2], trafo = trafo,
+                               .returnClsName ="ParamWithScaleFamParameter")
     if(missing(modParam))
         modParam <- function(theta){theta[2]*centraldistribution+theta[1] }
     props <- c(paste("The", name, "is invariant under"),
@@ -710,7 +713,8 @@ L2ScaleUnknownLocationFamily <- function(loc = 0, scale = 1, name,
     if(missing(trafo))  {trafo <- matrix(1)
                          dimnames(trafo) <- list("scale","scale")}
     param <- ParamFamParameter(name = "scale and location", main = param0[1],
-                               nuisance = param0[2], trafo = trafo)
+                               nuisance = param0[2], trafo = trafo,
+                               .returnClsName ="ParamWithScaleFamParameter")
     if(missing(modParam))
         modParam <- function(theta){theta[1]*centraldistribution+theta[2] }
     props <- c(paste("The", name, "is invariant under"),

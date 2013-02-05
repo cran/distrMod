@@ -10,7 +10,8 @@
 }
 \usage{
 MLEstimator(x, ParamFamily, startPar = NULL, 
-            Infos, trafo = NULL, penalty = 1e20, na.rm = TRUE, ...)
+            Infos, trafo = NULL, penalty = 1e20,
+            validity.check = TRUE, na.rm = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,6 +27,8 @@ MLEstimator(x, ParamFamily, startPar = NULL,
   \item{trafo}{ an object of class \code{MatrixorFunction} -- a transformation
   for the main parameter}
   \item{penalty}{(non-negative) numeric: penalizes non valid parameter-values}
+  \item{validity.check}{logical: shall return parameter value be checked for
+  validity? Defaults to yes (\code{TRUE})}
   \item{na.rm}{logical: if  \code{TRUE}, the estimator is evaluated at \code{complete.cases(x)}.}
   \item{\dots}{ further arguments to \code{criterion} or \code{optimize}
     or \code{optim}, respectively. }
@@ -121,6 +124,8 @@ res1$loglik
 criterion(res)
 
 
+## don't run to reduce check time on CRAN
+\dontrun{
 ## explicitely transforming to
 ## MASS parametrization:
 mtrafo <- function(x){
@@ -145,6 +150,7 @@ res2
 par(mfrow=c(1,2))
 plot(profile(res2))
 par(mfrow=c(1,1))
+}
 
 #############################
 ## 5. Cauchy Location Scale model

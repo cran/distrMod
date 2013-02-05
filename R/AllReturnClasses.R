@@ -28,8 +28,9 @@ setClass("NbinomMeanSizeFamily",
           contains = "L2ParamFamily")
 
 ## Gamma family
-setClass("GammaFamily",
-          contains = "L2ParamFamily")
+setClass("GammaFamily", prototype=prototype(scaleshapename=c("scale"="scale",
+                                  "shape"="shape")),
+          contains = "L2ScaleShapeUnion")
 
 ## Beta family
 setClass("BetaFamily",
@@ -37,10 +38,6 @@ setClass("BetaFamily",
 
 ## Normal location family
 setClass("NormLocationFamily",
-          contains = "L2LocationFamily")
-
-## Gumbel location family
-setClass("GumbelLocationFamily",
           contains = "L2LocationFamily")
 
 ## Normal scale family

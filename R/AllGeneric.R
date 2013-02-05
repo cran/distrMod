@@ -278,3 +278,18 @@ if(!isGeneric("method")){
 if(!isGeneric("optimwarn")){
     setGeneric("optimwarn", function(object) standardGeneric("optimwarn"))
 }
+if(!isGeneric("withPosRestr")){
+    setGeneric("withPosRestr", function(object) standardGeneric("withPosRestr"))
+}
+if(!isGeneric("withPosRestr<-")){
+    setGeneric("withPosRestr<-", function(object,value) standardGeneric("withPosRestr<-"))
+}
+if(!isGeneric("scaleshapename")){
+    setGeneric("scaleshapename", function(object) standardGeneric("scaleshapename"))
+}
+if(!isGeneric("scaleshapename<-")){
+    setGeneric("scaleshapename<-", function(object, value) standardGeneric("scaleshapename<-"))
+}
+if(!isGeneric("scalename")){
+    setGeneric("scalename", function(object) standardGeneric("scalename"))
+}

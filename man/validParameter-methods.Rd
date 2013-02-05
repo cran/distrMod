@@ -3,12 +3,13 @@
 \alias{validParameter-methods}
 \alias{validParameter}
 \alias{validParameter,ParamFamily-method}
+\alias{validParameter,L2ScaleUnion-method}
 \alias{validParameter,L2ScaleFamily-method}
 \alias{validParameter,L2LocationFamily-method}
 \alias{validParameter,L2LocationScaleFamily-method}
 \alias{validParameter,BinomFamily-method}
 \alias{validParameter,PoisFamily-method}
-\alias{validParameter,GammaFamily-method}
+\alias{validParameter,L2ScaleShapeUnion-method}
 
 
 \title{ Methods for function validParameter in Package `distrMod' }
@@ -21,12 +22,13 @@
 \usage{
 validParameter(object, \dots)
 \S4method{validParameter}{ParamFamily}(object, param)
+\S4method{validParameter}{L2ScaleUnion}(object, param, tol=.Machine$double.eps)
 \S4method{validParameter}{L2ScaleFamily}(object, param, tol=.Machine$double.eps)
 \S4method{validParameter}{L2LocationFamily}(object, param)
 \S4method{validParameter}{L2LocationScaleFamily}(object, param, tol=.Machine$double.eps)
 \S4method{validParameter}{BinomFamily}(object, param, tol=.Machine$double.eps)
 \S4method{validParameter}{PoisFamily}(object, param, tol=.Machine$double.eps)
-\S4method{validParameter}{GammaFamily}(object, param, tol=.Machine$double.eps)
+\S4method{validParameter}{L2ScaleShapeUnion}(object, param, tol=.Machine$double.eps)
 }
 
 \details{
@@ -37,21 +39,22 @@ method for signature
   of \code{object}, and finally, if a call to \code{modifyParam(object)} with
   argument \code{param} would throw an error.
   }
-  \item{\code{L2ScaleFamily}}{checks if the parameter is finite by \code{is.finite},
-  if its length is 1, and if it is strictly larger than 0 (upto argument \code{tol})}
+  \item{\code{L2ScaleUnion}}{checks if the parameter is finite by \code{is.finite},
+  and if it is strictly larger than 0 (upto argument \code{tol}). }
+  \item{\code{L2ScaleFamily}}{checks if the parameter length is 1,
+  and otherwise uses \code{L2ScaleUnion}-method.}
   \item{\code{L2LocationFamily}}{checks if the parameter is finite by \code{is.finite},
   if its length is 1}
-  \item{\code{L2LocationScaleFamily}}{checks if the scale parameter is finite by \code{is.finite},
-  if its length is 1 or 2 (e.g. if one features as nuisance parameter), and if it is 
-  strictly larger than 0 (upto argument \code{tol})}
+  \item{\code{L2LocationScaleFamily}}{checks if the parameter length is 1 or 2
+  (e.g. if one features as nuisance parameter), and also uses \code{L2ScaleUnion}-method. }
   \item{\code{BinomFamily}}{checks if the parameter is finite by \code{is.finite},
   if its length is 1, and if it is strictly larger than 0 and strictly smaller than 1 
   (upto argument \code{tol})}
   \item{\code{PoisFamily}}{checks if the parameter is finite by \code{is.finite},
   if its length is 1, and if it is strictly larger than 0 (upto argument \code{tol})}
-  \item{\code{GammaFamily}}{checks if both parameters are finite by \code{is.finite},
-  if their length is 1 or 2 (e.g. if one features as nuisance parameter), and if 
-  both are strictly larger than 0 (upto argument \code{tol})}
+  \item{\code{L2ScaleShapeUnion}}{uses \code{L2ScaleUnion}-method, checks if parameter
+  length is 1 or 2 (e.g. if one features as nuisance parameter), and if
+  \code{shape} is strictly larger than 0 (upto argument \code{tol})}
 }
 }
 \arguments{

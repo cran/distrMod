@@ -40,7 +40,7 @@ L2LocationFamily(loc = 0, name, centraldistribution = Norm(),
     argument is \code{NULL} whereupon the return class will be 
     \code{L2LocationScaleFamily}; but, internally, this generating function is also 
     used to produce objects of class Classes \code{NormLocationFamily} and 
-    \code{GumbelLocationFamily}.} 
+    \code{GumbelLocationFamily} (the latter in package \pkg{RobExtremes}.}
 }
 \details{
   If \code{name} is missing, the default 
