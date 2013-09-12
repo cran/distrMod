@@ -32,7 +32,8 @@ modifyModel(model, param,...)
   \item{model}{an object of class \code{ParamFamily}  --- the model to move.}
   \item{param}{an object of class \code{ParamFamParameter} --- the parameter to move to.}
   \item{.withCall}{logical: shall slot \code{fam.call} be updated?}
-  \item{.withL2derivDistr}{logical: shall slot \code{L2derivDistr} be updated?}
+  \item{.withL2derivDistr}{logical: shall slot \code{L2derivDistr} be updated or
+                            just the call to do the updated be stored?}
   \item{\dots}{additional argument(s) for methods; not used so far}
 }
 \value{

@@ -20,7 +20,8 @@
 #internal helper
 ##########################################################################
 .process.meCalcRes <- function(res, PFam, trafo, res.name, call,
-                               asvar.fct, check.validity, ...){
+                               asvar.fct, check.validity, ...,
+                               .withEvalAsVar = TRUE){
     lmx <- length(main(PFam))
     lnx <- length(nuisance(PFam))
     idx <- 1:lmx
@@ -87,9 +88,18 @@
 
     asvar <- NULL
     if(!missing(asvar.fct))
-       if(!is.null(asvar.fct))
-           asvar <- asvar.fct(PFam, param, ...)
-
+       if(!is.null(asvar.fct)){
+           asvar.tfct <- function(PFam, param, ...){
+              asvar.try <- try(asvar.fct(L2Fam = PFam, param = param, ...),
+                                         silent = TRUE)
+              as0 <- if(is(asvar.try,"try-error")) NULL else asvar.try
+              return(as0)
+           }
+           asvar <- substitute(do.call(asfct, args=c(list(PFam0, param0, ...))),
+                               list(asfct=asvar.tfct, PFam0=PFam, param0=param))
+       }
+    if(.withEvalAsVar) asvar <- eval(asvar)
+    
     untransformed.estimate <- theta
     untransformed.asvar <- asvar
 
@@ -98,9 +108,20 @@
        estimate <- .deleteDim(estimate)
        trafm <- traf0$mat
        if(!is.null(asvar)){
-           asvar <- trafm%*%asvar[idx,idx]%*%t(trafm)
-           rownames(asvar) <- colnames(asvar) <- c(names(estimate))
-          }
+           asvar.trfct <- function(trafm, asvarm, nms){
+              asvar <- trafm%*%asvarm%*%t(trafm)
+              rownames(asvar) <- colnames(asvar) <- c(nms)
+              return(asvar)
+           }
+           asvar <- if(.withEvalAsVar){
+                 asvar.trfct(trafm, asvar[idx,idx], names(estimate))
+           }else{
+                 substitute(do.call(asfct, args=list(trafm0, asvarm0, nms0)),
+                              list(asfct = asvar.trfct, trafm0 = trafm,
+                                    asvarm0 = asvar[idx,idx],
+                                    nms0 = names(estimate)))
+           }
+       }
     }else{
        if(hasnodim.main)
            estimate <- .deleteDim(estimate)

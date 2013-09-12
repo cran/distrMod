@@ -8,6 +8,55 @@
  information)
 
 ##############
+v 2.5
+##############
+
+user-visible CHANGES:
+
+GENERAL ENHANCEMENTS:
++ cleaned DESCRIPTION and NAMESPACE file as to Imports/Depends
+
+under the hood:
++ For speeding up things, we now have an option withL2derivDistr = TRUE which
+  if FALSE skips computing the image distribution in two dimensional models,
+  i.e., have switched slot L2derivDistr from "DistrList" to "OptionalDistrList".
+
++ delayed calculation of variances and allow to skip or delay calculation of
+  L2derivDistr; to this end introduced new class unions
+  "OptionalNumericOrMatrixOrCall", "OptionalDistrListOrCall";
+  respectively at certain stages, evaluation of the call must then be forced
+
++ consequence: L2LocationScaleFamilies now use median mad as starting estimator
+               in robest roptest (and no longer call CvM-MDE)
+
++ small change to avoid frequent calls to getImageDistr
+
++ (L2)ParamFamily gains slots 
+  .withEvalAsVar to allow delayed evaluation of variances
+  .withEvalL2derivDistr to allow delayed evaluation of L2derivDistr
+  .withMDE to control extra calls to MDEstimator that might not be necessary 
+     in robest (e.g. with GParetoFamily())
++ correspondingly accessor L2derivDistr now checks whether it is a 
+  call and if so evaluates
++ forgot to commit some changes in show() for asvar in the last round
+
++ in checkL2deriv, in addition, relative tolerances are also issued
+  for Fisher Information
+
++ fixed an issue with modifyModel in case of location scale models: in these
+  cases we do neither want to produce a call nor an evaluated call to
+  imageDistr...
+
++ added .Rbuildignore
+
++ exported some routines which had been internal so far to
+  avoid calls by :::
+
+  BUGFIXES:
++ moved generics to "distribution" and "samplesize" to pkg distr to avoid 
+   conflict with pkg distrSim
+
+##############
 v 2.4
 ##############
 

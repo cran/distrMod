@@ -15,7 +15,7 @@ These functions are used internally by functions \code{MCEstimator} and
 \usage{
 .negLoglikelihood(x, Distribution, ...)
 .process.meCalcRes(res, PFam, trafo, res.name, call, asvar.fct, check.validity,
-                   ...)
+                   ..., .withEvalAsVar = TRUE)
 .callParamFamParameter(PFam, theta, idx, nuis, fixed)
 }
 
@@ -41,6 +41,9 @@ These functions are used internally by functions \code{MCEstimator} and
   \item{idx}{indices of the main part of the component}
   \item{nuis}{nuisance part of the parameter}
   \item{fixed}{fixed part of the parameter}
+  \item{.withEvalAsVar}{logical: shall slot \code{asVar} be evaluated
+                   (if \code{asvar.fct} is given) or
+                   just the call be returned?}
 }
 
 \details{

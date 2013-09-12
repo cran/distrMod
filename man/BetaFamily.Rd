@@ -7,12 +7,15 @@
   represents a Beta family.
 }
 \usage{
-BetaFamily(shape1 = 1, shape2 = 1, trafo)
+BetaFamily(shape1 = 1, shape2 = 1, trafo, withL2derivDistr = TRUE)
 }
 \arguments{
   \item{shape1}{ positive real: shape1 parameter }
   \item{shape2}{ positive real: shape2 parameter }
   \item{trafo}{ matrix: transformation of the parameter }
+  \item{withL2derivDistr}{logical: shall the distribution of the L2 derivative
+      be computed? Defaults to \code{TRUE}; setting it to \code{FALSE}
+      speeds up computations.}
 }
 \details{
   The slots of the corresponding L2 differentiable 

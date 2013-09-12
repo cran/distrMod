@@ -60,6 +60,19 @@
     \item{\code{props}}{[inherited from class \code{"ProbFamily"}]
       object of class \code{"character"}:
       properties of the family. }
+    \item{\code{.withMDE}}{
+           object of class \code{"logical"} (of length 1):
+           Tells R how to use the function from slot \code{startPar} in case
+           of a \code{kStepEstimator} --- use it as is or to compute the
+           starting point for a minimum distance estimator which in turn then
+           serves as starting point for \code{roptest} / \code{robest}
+           (from package \pkg{ROptEst}). If
+           \code{TRUE} (default) the latter alternative is used.
+           Ignored if \pkg{ROptEst} is not used.}
+    \item{\code{.withEvalAsVar}}{
+           object of class \code{"logical"} (of length 1):
+           Tells R whether in determining \code{kStepEstimator}s one
+           evaluates the asymptotic variance or just produces a call to do so.}
 }}
 \section{Extends}{
 Class \code{"ProbFamily"}, directly.

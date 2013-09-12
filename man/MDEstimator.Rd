@@ -9,7 +9,8 @@
 \usage{
 MDEstimator(x, ParamFamily, distance = KolmogorovDist, dist.name, 
             paramDepDist = FALSE, startPar = NULL,  Infos, trafo = NULL,
-            penalty = 1e20, validity.check = TRUE, asvar.fct, na.rm = TRUE, ...)
+            penalty = 1e20, validity.check = TRUE, asvar.fct, na.rm = TRUE,
+            ..., .withEvalAsVar = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -43,6 +44,9 @@ MDEstimator(x, ParamFamily, distance = KolmogorovDist, dist.name,
   \item{na.rm}{logical: if  \code{TRUE}, the estimator is evaluated at \code{complete.cases(x)}.}
   \item{\dots}{ further arguments to \code{criterion} or \code{optimize}
     or \code{optim}, respectively. }
+  \item{.withEvalAsVar}{logical: shall slot \code{asVar} be evaluated
+                   (if \code{asvar.fct} is given) or
+                   just the call be returned?}
 }
 \details{
   The argument \code{distance} has to be a (generic) function with arguments 
@@ -84,8 +88,6 @@ MDEstimator(x = x, ParamFamily = G, distance = KolmogorovDist)
 ## von Mises minimum distance estimator with default mu
 MDEstimator(x = x, ParamFamily = G, distance = CvMDist)
 
-## don't run to reduce check time on CRAN
-\dontrun{
 ## von Mises minimum distance estimator with default mu
 MDEstimator(x = x, ParamFamily = G, distance = CvMDist,
             asvar.fct = distrMod:::.CvMMDCovariance)
@@ -107,7 +109,6 @@ MDEstimator(x = x, ParamFamily = G, distance = HellingerDist, startPar = c(1,2))
 distroptions(DistrResolution = 1e-6) # default
 ## or smoothing of emprical distribution (takes some time!)
 #MDEstimator(x = x, ParamFamily = G, distance = HellingerDist, asis.smooth.discretize = "smooth")
-}
 }
 \keyword{univar}
 \keyword{robust}

@@ -2,6 +2,8 @@
 \docType{class}
 \alias{InternalClassUnions}
 \alias{OptionalNumericOrMatrix-class}
+\alias{OptionalNumericOrMatrixOrCall-class}
+\alias{OptionalDistrListOrCall-class}
 \alias{MatrixorFunction-class}
 \alias{ShowDetails-class}
 \alias{L2LocationScaleUnion-class}
@@ -32,11 +34,18 @@
 These classes are used internally to make available methods or to allow
 slots of classes to be filled with varying types. In particular
 \describe{
-\item{\code{"OptionalNumericOrMatrix"}}{may contain objects of class  
-      \code{"OptionalNumeric"} or \code{"matrix"}; it is used e.g. for 
+\item{\code{"OptionalNumericOrMatrix"}}{may contain objects of class
+      \code{"OptionalNumeric"} or \code{"matrix"};}
+\item{\code{"OptionalNumericOrMatrixOrCall"}}{may contain objects of class
+      \code{"OptionalNumericOrMatrix"} or \code{"call"}; it is used e.g. for
        slot \code{asvar} of class \code{"Estimate"}, as it may or may not be 
-       present but if so it has to be a number (numeric) or a matrix.}
-\item{\code{"MatrixorFunction"}}{may contain objects of class  
+       present or be a call; otherwise it has to be a number (numeric) or a matrix.}
+\item{\code{"OptionalDistrListOrCall"}}{may contain objects of class
+      \code{"DistrList"} or \code{"call"}; it is used e.g. for
+       slot \code{L2derivDistr} of class \code{"L2ParamFammily"},
+       as it may or may not be present or be a call;
+       otherwise it has to be a list of distributions.}
+\item{\code{"MatrixorFunction"}}{may contain objects of class
       \code{"OptionalFunction"} or \code{"matrix"}; it is used e.g. for 
        slot \code{trafo} of class \code{"ParamFamParameter"}, as it may or may not be 
        present and if it is present, it has to either be a function or a matrix,

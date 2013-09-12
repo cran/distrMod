@@ -18,6 +18,8 @@ to be done in package distrMod
 
 + model classes for multivariate location and scale based on distrEllipse
 
-+ integration of GParetoFamily (not so soon)
-
 + generic functions to quantify model fit quality like AIC, BIC
+
++ enhance class ParamFamParameter by some slot metric for the 
+  parameter space -> to be used for clipping with non-standard norms
+  (compare d_beta norms GEV, GPareto)

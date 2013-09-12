@@ -445,7 +445,8 @@ f.call <- substitute(L2LocationScaleFamily(loc = l,
                L2derivSymm = L2Symm,
                L2derivDistrSymm = L2DSymm,
                trafo = Tr,
-               .returnClsName = rtn),
+               .returnClsName = rtn,
+               .withMDE = FALSE),
            list(s = scale,
                l = loc,
                N = name,
@@ -482,7 +483,7 @@ f.call <- substitute(L2LocationScaleFamily(loc = l,
     L2Fam@L2derivDistrSymm <- L2derivDistrSymm
     L2Fam@FisherInfo.fct <- FisherInfo.fct
     L2Fam@FisherInfo <- FisherInfo.fct(param)
-
+    L2Fam@.withMDE <- FALSE
     return(L2Fam)
 }
 

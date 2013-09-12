@@ -6,7 +6,8 @@
 ## Maximum-Likelihood estimator
 MLEstimator <- function(x, ParamFamily, startPar = NULL, 
                         Infos, trafo = NULL, penalty = 1e20,
-                        validity.check = TRUE, na.rm = TRUE, ...){
+                        validity.check = TRUE, na.rm = TRUE,
+                        ..., .withEvalAsVar = TRUE){
 
     ## preparation: getting the matched call
     es.call <- match.call()
@@ -39,9 +40,9 @@ MLEstimator <- function(x, ParamFamily, startPar = NULL,
                                   solve(FisherInfo(PFam, param = param))
            }else NULL
     
-    argList <- list(res0, PFam = ParamFamily, trafo = trafo, 
+    argList <- list(res0, PFam = ParamFamily, trafo = trafo,
                       res.name = "Maximum likelihood estimate",
-                      call = quote(es.call)) 
+                      call = quote(es.call), .withEvalAsVar=.withEvalAsVar)
 
     if(!is.null(asv))   argList <- c(argList, asvar.fct = asv)
     if(!is.null(dots))  argList <- c(argList, dots)

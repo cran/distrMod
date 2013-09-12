@@ -13,7 +13,8 @@
 \usage{
 MCEstimator(x, ParamFamily, criterion, crit.name, 
             startPar = NULL, Infos, trafo = NULL, 
-            penalty = 1e20, validity.check = TRUE, asvar.fct, na.rm = TRUE, ...)
+            penalty = 1e20, validity.check = TRUE, asvar.fct, na.rm = TRUE,
+            ..., .withEvalAsVar = TRUE)
 }
 \arguments{
   \item{x}{ (empirical) data }
@@ -41,6 +42,9 @@ MCEstimator(x, ParamFamily, criterion, crit.name,
   \item{na.rm}{logical: if  \code{TRUE}, the estimator is evaluated at \code{complete.cases(x)}.}
   \item{\dots}{ further arguments to \code{criterion} or \code{optimize}
     or \code{optim}, respectively. }
+  \item{.withEvalAsVar}{logical: shall slot \code{asVar} be evaluated
+                   (if \code{asvar.fct} is given) or
+                   just the call be returned?}
 }
 \details{
   The argument \code{criterion} has to be a function with arguments the 

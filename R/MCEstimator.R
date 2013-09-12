@@ -4,7 +4,7 @@
 MCEstimator <- function(x, ParamFamily, criterion, crit.name, 
                         startPar = NULL, 
                         Infos, trafo = NULL, penalty = 1e20, validity.check = TRUE,
-                        asvar.fct, na.rm = TRUE, ...){
+                        asvar.fct, na.rm = TRUE, ..., .withEvalAsVar = TRUE){
 
     ## preparation: getting the matched call
     es.call <- match.call()
@@ -45,7 +45,8 @@ MCEstimator <- function(x, ParamFamily, criterion, crit.name,
                               trafo = trafo, 
                               res.name = paste("Minimum", crit.name, 
                                                "estimate", sep=" ", collapse=""), 
-                              call = quote(es.call))) 
+                              call = quote(es.call),
+                              .withEvalAsVar=.withEvalAsVar))
 
     if(!is.null(asv))   argList <- c(argList, asvar.fct = asv)
     if(!is.null(dots))  argList <- c(argList, dots)

@@ -174,7 +174,8 @@ NbinomFamily <- function(size = 1, prob = 0.5, trafo){
 }
 
 
-NbinomwithSizeFamily <- function(size = 1, prob = 0.5, trafo){ 
+NbinomwithSizeFamily <- function(size = 1, prob = 0.5, trafo,
+                withL2derivDistr = TRUE){
     name <- "Negative Binomial family"
     distribution <- Nbinom(size = size, prob = prob)
     distrSymm <- NoSymmetry()
@@ -207,7 +208,10 @@ NbinomwithSizeFamily <- function(size = 1, prob = 0.5, trafo){
                    return(list(fct1, fct2))}
 
     L2derivSymm <- FunSymmList(NonSymmetric(), NonSymmetric())
-    L2derivDistr <- UnivarDistrList( digamma(distribution+size)-digamma(size)+log(prob), 
+    L2derivDistr <- NULL
+    if(withL2derivDistr)
+       L2derivDistr <- UnivarDistrList( digamma(distribution+size)-
+                                        digamma(size)+log(prob),
                                     (size/prob- distribution/(1-prob)))
     L2derivDistrSymm <- DistrSymmList(NoSymmetry(), NoSymmetry())
 
@@ -244,7 +248,8 @@ NbinomwithSizeFamily <- function(size = 1, prob = 0.5, trafo){
     return(res)
 }
 
-NbinomMeanSizeFamily <- function(size = 1, mean = .5, trafo){ 
+NbinomMeanSizeFamily <- function(size = 1, mean = .5, trafo,
+                                 withL2derivDistr = TRUE){
     name <- "Negative Binomial family"
     prob.0 <- size/(size+mean)
     distribution <- Nbinom(size = size, prob = size/(size+mean))
@@ -290,7 +295,9 @@ NbinomMeanSizeFamily <- function(size = 1, mean = .5, trafo){
     .prob1 <- aggregate(data.frame(prob(as(distribution,"DiscreteDistribution"))),
                  by=list(round(.supp0,5)),sum)[,2]
     .Di2 <- DiscreteDistribution( supp=.supp0, prob=.prob1, .withArith = TRUE)
-    L2derivDistr <- UnivarDistrList( digamma(distribution+size)-digamma(size)+log(prob.0), 
+    L2derivDistr <- NULL
+    if(withL2derivDistr)
+       L2derivDistr <- UnivarDistrList( digamma(distribution+size)-digamma(size)+log(prob.0),
                                      .Di2)
                                      
     L2derivDistrSymm <- DistrSymmList(NoSymmetry(), NoSymmetry())
@@ -333,7 +340,7 @@ NbinomMeanSizeFamily <- function(size = 1, mean = .5, trafo){
 ##################################################################
 ## Gamma family
 ##################################################################
-GammaFamily <- function(scale = 1, shape = 1, trafo){ 
+GammaFamily <- function(scale = 1, shape = 1, trafo, withL2derivDistr = TRUE){
     name <- "Gamma family"
     distribution <- Gammad(scale = scale, shape = shape)
     distrSymm <- NoSymmetry()
@@ -368,7 +375,9 @@ GammaFamily <- function(scale = 1, shape = 1, trafo){
                    return(list(fct1, fct2))}
     L2derivSymm <- FunSymmList(OddSymmetric(SymmCenter = scale*shape),
                                NonSymmetric())
-    L2derivDistr <- UnivarDistrList((Gammad(scale = 1, shape = shape) - 
+    L2derivDistr <- NULL
+    if(withL2derivDistr)
+       L2derivDistr <- UnivarDistrList((Gammad(scale = 1, shape = shape) -
                                             shape)/scale, 
                                     (log(Gammad(scale = 1, shape = shape)) - 
                                             digamma(shape)))
@@ -422,7 +431,7 @@ GammaFamily <- function(scale = 1, shape = 1, trafo){
 ##################################################################
 ## Beta family   :: new  08/08 P.R.
 ##################################################################
-BetaFamily <- function(shape1 = 1, shape2 = 1, trafo){ 
+BetaFamily <- function(shape1 = 1, shape2 = 1, trafo, withL2derivDistr = TRUE){
     name <- "Beta family"
     distribution <- Beta(shape1=shape1, shape2 = shape2)
     distrSymm <- NoSymmetry()
@@ -457,7 +466,9 @@ BetaFamily <- function(shape1 = 1, shape2 = 1, trafo){
                         list(shape1 = shape1, shape2 = shape2))
                    return(list(fct1, fct2))}
     L2derivSymm <- FunSymmList(NonSymmetric(), NonSymmetric())
-    L2derivDistr <- UnivarDistrList(log(Beta(shape1 = shape1, shape2 = shape2))-
+    L2derivDistr <- NULL
+    if(withL2derivDistr)
+       L2derivDistr <- UnivarDistrList(log(Beta(shape1 = shape1, shape2 = shape2))-
                                         digamma(shape1)+digamma(shape1+shape2), 
                                     log(Beta(shape1 = shape2, shape2 = shape1))-
                                         digamma(shape2)+digamma(shape1+shape2))

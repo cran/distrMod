@@ -13,7 +13,7 @@ L2ParamFamily <- function(name, distribution = Norm(), distrSymm,
                           L2derivSymm, L2derivDistr, L2derivDistrSymm,
                           FisherInfo.fct,
                           FisherInfo = FisherInfo.fct(param),
-                          .returnClsName = NULL){
+                          .returnClsName = NULL, .withMDE = TRUE){
      
     if(missing(name))
         name <- "L_2 differentiable parametric family of probability measures"
@@ -115,7 +115,8 @@ L2ParamFamily <- function(name, distribution = Norm(), distrSymm,
                L2derivDistrSymm = L2DSymm,
                FisherInfo.fct = Ffct,
                FisherInfo = FInfo,
-               .returnClsName = rtn),
+               .returnClsName = rtn,
+               .withMDE = wMDE0),
           list(N = name,
                D = distribution,
                DS = distrSymm,
@@ -130,7 +131,8 @@ L2ParamFamily <- function(name, distribution = Norm(), distrSymm,
                L2DSymm = L2derivDistrSymm,
                Ffct = FisherInfo.fct,
                FInfo = FisherInfo,
-               rtn = .returnClsName))
+               rtn = .returnClsName,
+               wMDE0 =.withMDE))
  
 
     if(is.null(.returnClsName))
@@ -152,7 +154,7 @@ L2ParamFamily <- function(name, distribution = Norm(), distrSymm,
     L2Fam@FisherInfo <- FisherInfo
     if(!is.null(startPar)) L2Fam@startPar <- startPar
     if(!is.null(makeOKPar)) L2Fam@makeOKPar <- makeOKPar
-
+    L2Fam@.withMDE <- .withMDE
     return(L2Fam)
 }
 
@@ -163,7 +165,14 @@ setMethod("L2deriv", signature(object = "L2ParamFamily",
            param = "ParamFamParameter"), 
            function(object, param) object@L2deriv.fct(param))
 setMethod("L2derivSymm", "L2ParamFamily", function(object) object@L2derivSymm)
-setMethod("L2derivDistr", "L2ParamFamily", function(object) object@L2derivDistr)
+setMethod("L2derivDistr", "L2ParamFamily", function(object){
+                             ob <- object@L2derivDistr
+                             if(is.call(ob)){
+                                   ob <- eval(ob)
+                                   eval.parent(object@L2derivDistr <- ob)
+                             }
+                             return(ob)
+                             })
 setMethod("L2derivDistrSymm", "L2ParamFamily", function(object) object@L2derivDistrSymm)
 setMethod("FisherInfo", signature(object = "L2ParamFamily", param = "missing"),
            function(object) object@FisherInfo)
@@ -187,6 +196,11 @@ setMethod("checkL2deriv", "L2ParamFamily",
             print(consist)
             cat("precision of Fisher information - relativ error [%]:\n")
             print(100*consist/FI)
+        }
+
+        if(out){
+           cat("condition of Fisher information:\n")
+           print(kappa(FI))
         }
 
         prec <- max(abs(cent), abs(consist))

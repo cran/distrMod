@@ -6,7 +6,7 @@ MDEstimator <- function(x, ParamFamily, distance = KolmogorovDist,
                         startPar = NULL,  Infos, 
                         trafo = NULL, penalty = 1e20,
                         validity.check = TRUE, asvar.fct, na.rm = TRUE,
-                        ...){
+                        ..., .withEvalAsVar = TRUE){
 
     ## preparation: getting the matched call
     es.call <- match.call()
@@ -43,7 +43,8 @@ MDEstimator <- function(x, ParamFamily, distance = KolmogorovDist,
                               trafo = trafo, 
                               res.name = paste("Minimum", dist.name, 
                                                "estimate", sep = " "), 
-                              call = quote(es.call)))
+                              call = quote(es.call),
+                              .withEvalAsVar = .withEvalAsVar))
 
     if(!missing(asvar.fct))   argList <- c(argList, asvar.fct = asvar.fct)
     if(!is.null(dots))  argList <- c(argList, dots)

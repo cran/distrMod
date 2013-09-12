@@ -19,7 +19,7 @@ L2ParamFamily(name, distribution = Norm(), distrSymm,
                            return(function(x) {x-theta})},
               L2derivSymm, L2derivDistr, L2derivDistrSymm, 
               FisherInfo.fct, FisherInfo = FisherInfo.fct(param),
-              .returnClsName = NULL)
+              .returnClsName = NULL, .withMDE = TRUE)
 }
 \arguments{
   \item{name}{ character string: name of the family }
@@ -67,8 +67,14 @@ L2ParamFamily(name, distribution = Norm(), distrSymm,
    \item{.returnClsName}{ the class name of the return value; by default this
    argument is \code{NULL} whereupon the return class will be 
    \code{L2ParamFamily}; but, internally, this generating function is also 
-   used to produce objects of class \code{BinomialFamily}, \code{PoisFamily}
-   \code{GammaFamily}, \code{BetaFamily}.} 
+   used to e.g. produce objects of class \code{BinomialFamily}, \code{PoisFamily}
+   \code{GammaFamily}, \code{BetaFamily}.}
+    \item{.withMDE}{ logical of length 1: Tells R how to use the function from
+    slot \code{startPar} in case of a \code{kStepEstimator}---use it as is or
+    to compute the starting point for a minimum distance estimator which in
+    turn then serves as starting point for \code{roptest} / \code{robest}
+    (from package \pkg{ROptEst}). If \code{TRUE} (default) the latter
+    alternative is used. Ignored if \pkg{ROptEst} is not used.}
 }
 \details{
   If \code{name} is missing, the default 

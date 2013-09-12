@@ -1,3 +1,9 @@
+.isUnitMatrix <- function(m){
+### checks whether m is unit matrix
+              m.row <- nrow(m)
+              isTRUE(all.equal(m, diag(m.row), check.attributes = FALSE))
+              }
+
 .deleteDim <- function(x){
      attribs <- attributes(x)
      attribs$dim <- NULL
@@ -63,12 +69,6 @@
         }
  ### end of borrowed code  
 
-
-.isUnitMatrix <- function(m){                                                                  
-### checks whether m is unit matrix
-              m.row <- nrow(m)
-              isTRUE(all.equal(m, diag(m.row), check.attributes = FALSE))
-              }
 
 .validTrafo <- function(trafo, dimension, dimensionwithN){
 ##checks whether trafo is valid
@@ -238,7 +238,7 @@
    psi.0 <- function(x) psi(x) - E1
    psi.01 <- function(x) psi.0(x)/E3
    if(withplot)
-       { windows()
+       { dev.new() #windows()
          plot(x.seq, psi.01(x.seq),
                      type = if(is(distr,"DiscreteDistribution")) "p" else "l")
        }
@@ -285,7 +285,8 @@
          assign("Delta0", Delta0, envir=env.i)
          assign("Delta1", Delta1, envir=env.i)
          if(withplot){ 
-           windows()
+           dev.new()
+           #windows()
            plot(x.seq, sapply(x.seq,Map.Delta[[i]]),
                      type = if(is(distr,"DiscreteDistribution")) "p" else "l")
          }
@@ -361,7 +362,7 @@
    psi.01 <- as(solve(E3)%*%psi.0,"EuclRandVariable")
    if(withplot)
       { for(i in 1:Dim)
-         { windows()
+         { dev.new()
            plot(x.mu.seq, sapply(x.mu.seq,psi.01@Map[[i]]),
                      type = if(is(distr,"DiscreteDistribution")) "p" else "l")
          }}

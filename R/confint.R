@@ -14,14 +14,14 @@ setMethod("confint", signature(object="Estimate", method="missing"),
           function(object, method, level = 0.95) {
    objN <- paste(deparse(substitute(object)),sep="",collapse="")
 
-   if(is.null(object@asvar))
-      { cat(gettextf("Slot 'asvar' of object %s has not (yet) been filled.\n",
-            objN))
-        return(NULL) }
-
-
-    sd0 <- sqrt(diag(as.matrix(object@asvar))/object@samplesize)
-    names(sd0) <- names(object@estimate)
+   asm <- asvar(object)
+   if(is.null(asm)){
+      cat(gettextf("Slot 'asvar' of object %s has not (yet) been filled.\n",
+          objN))
+      return(NULL)
+   }
+   sd0 <- sqrt(diag(asm)/object@samplesize)
+   names(sd0) <- names(object@estimate)
 
 ### code borrowed from confint.default from package stats
     a <- (1 - level)/2

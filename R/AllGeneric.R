@@ -31,9 +31,6 @@ confint <- function(object, method, ...)
 if(!isGeneric("distrSymm")){
     setGeneric("distrSymm", function(object) standardGeneric("distrSymm"))
 }
-if(!isGeneric("distribution")){
-    setGeneric("distribution", function(object) standardGeneric("distribution"))
-}
 if(!isGeneric("props")){
     setGeneric("props", function(object) standardGeneric("props"))
 }
@@ -201,9 +198,6 @@ if(!isGeneric("criterion<-")){
 }
 if(!isGeneric("completecases")){
   	     setGeneric("completecases", function(object) standardGeneric("completecases"))
-}
-if(!isGeneric("samplesize")){
-    setGeneric("samplesize", function(object, ...) standardGeneric("samplesize"))
 }
 if(!isGeneric("asvar")){
     setGeneric("asvar", function(object) standardGeneric("asvar"))

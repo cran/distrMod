@@ -7,12 +7,15 @@
   represents a Gamma family.
 }
 \usage{
-GammaFamily(scale = 1, shape = 1, trafo)
+GammaFamily(scale = 1, shape = 1, trafo, withL2derivDistr = TRUE)
 }
 \arguments{
   \item{scale}{ positive real: scale parameter }
   \item{shape}{ positive real: shape parameter }
   \item{trafo}{ matrix: transformation of the parameter }
+  \item{withL2derivDistr}{logical: shall the distribution of the L2 derivative
+      be computed? Defaults to \code{TRUE}; setting it to \code{FALSE}
+      speeds up computations.}
 }
 \details{
   The slots of the corresponding L2 differentiable 

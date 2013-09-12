@@ -51,6 +51,9 @@ QuadFormNorm <- function(x, A) sqrt(colSums(x*(A %*% x)))
 setClassUnion("MatrixorFunction", c("matrix", "OptionalFunction"))
 ## matrix, numeric or NULL -- a class for covariance slots
 setClassUnion("OptionalNumericOrMatrix", c("OptionalNumeric", "matrix"))
+setClassUnion("OptionalNumericOrMatrixOrCall", c("OptionalNumericOrMatrix", "call"))
+## DistrList or NULL -- a class for slot L2DerivDistr below
+setClassUnion("OptionalDistrListOrCall", c("DistrList", "NULL", "call"))
 
 ################################
 ##
@@ -140,7 +143,9 @@ setClass("ParamFamily",
                            modifyParam = "function",
                            fam.call = "call",
                            startPar = "function",
-                           makeOKPar = "function"
+                           makeOKPar = "function",
+                           .withMDE = "logical",
+                           .withEvalAsVar = "logical"
                            ### <- new !!! (not in thesis!)
                            ### a function with argument theta
                            ###  returning distribution P_theta
@@ -153,7 +158,8 @@ setClass("ParamFamily",
                       props = character(0),
                       makeOKPar = function(param)param,
                       startPar = function(x) {},
-                      param = new("ParamFamParameter", main = 0, trafo = matrix(1))),
+                      param = new("ParamFamParameter", main = 0, trafo = matrix(1)),
+                      .withMDE = TRUE, .withEvalAsVar = TRUE),
             contains = "ProbFamily")
 
 
@@ -163,10 +169,11 @@ setClass("L2ParamFamily",
             representation(L2deriv = "EuclRandVarList",
                            L2deriv.fct = "function", ## new: a function in theta which produces L2deriv
                            L2derivSymm = "FunSymmList",
-                           L2derivDistr = "DistrList",
+                           L2derivDistr = "OptionalDistrListOrCall",
                            L2derivDistrSymm = "DistrSymmList",
                            FisherInfo = "PosSemDefSymmMatrix",
-                           FisherInfo.fct = "function" ## new: a function in theta which produces FisherInfo
+                           FisherInfo.fct = "function", ## new: a function in theta which produces FisherInfo
+                           .withEvalL2derivDistr = "logical"
                            ),
             prototype(name = "L_2 differentiable parametric family of probability measures",
                       distribution = new("Norm"),
@@ -184,7 +191,8 @@ setClass("L2ParamFamily",
                       L2derivDistr = UnivarDistrList(new("Norm")),
                       L2derivDistrSymm = new("DistrSymmList"),
                       FisherInfo.fct = function(theta)return(1),
-                      FisherInfo = new("PosDefSymmMatrix")),
+                      FisherInfo = new("PosDefSymmMatrix"),
+                      .withEvalL2derivDistr = TRUE),
             contains = "ParamFamily",
             validity = function(object){
                 if(is(object@distribution, "UnivariateCondDistribution"))
@@ -407,14 +415,14 @@ setClass("Estimate",
                         estimate = "ANY",
                         samplesize = "numeric",
                         completecases = "logical",
-                        asvar = "OptionalNumericOrMatrix",
+                        asvar = "OptionalNumericOrMatrixOrCall",
                         Infos = "matrix",
                         estimate.call = "call",
                         nuis.idx = "OptionalNumeric",
                         fixed = "OptionalNumeric",
                         trafo = "list",
                         untransformed.estimate = "ANY",
-                        untransformed.asvar = "OptionalNumericOrMatrix"),
+                        untransformed.asvar = "OptionalNumericOrMatrixOrCall"),
          prototype(name = "Estimate",
                    estimate = numeric(0),
                    samplesize = numeric(0),

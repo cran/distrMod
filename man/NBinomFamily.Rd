@@ -11,14 +11,17 @@
 }
 \usage{
 NbinomFamily(size = 1, prob = 0.5, trafo)
-NbinomwithSizeFamily(size = 1, prob = 0.5, trafo)
-NbinomMeanSizeFamily(size = 1, mean = 0.5, trafo) 
+NbinomwithSizeFamily(size = 1, prob = 0.5, trafo, withL2derivDistr = TRUE)
+NbinomMeanSizeFamily(size = 1, mean = 0.5, trafo, withL2derivDistr = TRUE )
 }
 \arguments{
   \item{size}{ number of trials }
   \item{prob}{ probability of success }
   \item{mean}{ alternative parameter for negative binomial parameter}
   \item{trafo}{ function in \code{param} or matrix: transformation of the parameter }
+  \item{withL2derivDistr}{logical: shall the distribution of the L2 derivative
+      be computed? Defaults to \code{TRUE}; setting it to \code{FALSE}
+      speeds up computations.}
 }
 \details{
   The slots of the corresponding L2 differentiable 

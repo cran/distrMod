@@ -9,7 +9,7 @@
 \usage{
 Estimator(x, estimator, name, Infos, asvar = NULL, nuis.idx,
           trafo = NULL, fixed = NULL, asvar.fct, na.rm = TRUE, ...,
-          ParamFamily = NULL)
+          ParamFamily = NULL, .withEvalAsVar = TRUE)
 }
 \arguments{
   \item{x}{ (empirical) data }
@@ -32,6 +32,10 @@ Estimator(x, estimator, name, Infos, asvar = NULL, nuis.idx,
   \item{\dots}{ further arguments to \code{estimator}.}
   \item{ParamFamily}{an optional object of class \code{ParamFamily}. Passed on
      to \code{asvar.fct} to compute asymptotic variances.}
+  \item{.withEvalAsVar}{logical: shall slot \code{asVar} be evaluated
+                   (if \code{asvar.fct} is given) or
+                   just the call be returned?}
+
 }
 \details{
   The argument \code{criterion} has to be a function with arguments the 

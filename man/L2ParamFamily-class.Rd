@@ -82,7 +82,9 @@
       object of class \code{"FunSymmList"}:
       symmetry of the maps included in \code{L2deriv}. }
     \item{\code{L2derivDistr}}{
-      object of class \code{"UnivarDistrList"}:
+      object of class \code{"OptionalDistrListOrCall"} (i.e., \code{NULL} or
+      an object of class \code{"DistrList"} or the respective call to generate
+      the latter object): if non-null and non-call, a
       list which includes the distribution of \code{L2deriv}. }
     \item{\code{L2derivDistrSymm}}{
       object of class \code{"DistrSymmList"}:
@@ -96,6 +98,9 @@
     \item{\code{FisherInfo}}{
       object of class \code{"PosDefSymmMatrix"}:
       Fisher information of the family. }
+    \item{\code{.withEvalL2derivDistr}}{
+      logical  of length one: if \code{TRUE} slot \code{L2derivDistr} gets
+      evaluated, otherwise it is only kept as call. }
 }}
 \section{Extends}{
 Class \code{"ParamFamily"}, directly.\cr

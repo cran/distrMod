@@ -60,9 +60,15 @@ setMethod("addInfo<-", "Estimate",
 setMethod("samplesize", "Estimate", function(object, onlycompletecases = TRUE)
   	    object@samplesize+(1-onlycompletecases)*sum(object@completecases==FALSE))
 setMethod("completecases", "Estimate", function(object) object@completecases)
-setMethod("asvar", "Estimate", function(object)
-                if(!is.null(object@asvar))
-                    as.matrix(object@asvar))
+setMethod("asvar", "Estimate", function(object){
+                if(is.null(object@asvar)) return(NULL)
+                asvar0 <- object@asvar
+                if(is.call(asvar0)) asvar0 <- eval(asvar0)
+                if(is.null(asvar0)) return(NULL)
+                asvar0 <- as.matrix(asvar0)
+                eval.parent(substitute(object@asvar <- asvar0))
+                return(asvar0)
+})
 
 setReplaceMethod("asvar", "Estimate", 
                   function(object, value){ 
@@ -76,10 +82,14 @@ setReplaceMethod("asvar", "Estimate",
           }
           object})
 
-setMethod("untransformed.asvar", "Estimate", function(object) 
-           if(!is.null(object@untransformed.asvar))
-               as.matrix(object@untransformed.asvar)
-           else NULL    )
+setMethod("untransformed.asvar", "Estimate", function(object){
+                asvar0 <- object@untransformed.asvar
+                if(is.null(asvar0)) return(NULL)
+                if(is.call(asvar0)) asvar0 <- eval(asvar0)
+                asvar0 <- as.matrix(asvar0)
+                eval.parent(substitute(object@untransformed.asvar<-asvar0))
+                return(asvar0)
+                })
 
 
 setMethod("nuisance", "Estimate", function(object) { 

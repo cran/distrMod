@@ -154,11 +154,13 @@ setMethod("show", "Estimate",
         trafo.mat <- object@trafo$mat
         trafo.fct <- object@trafo$fct
         
-        if(!is.null(object@asvar)){
+        asvar0 <- if(!is.null(object@asvar)) asvar(object) else NULL
 
-           sd0 <- sqrt(diag(object@asvar)/object@samplesize)
-           if(!is.null(object@untransformed.asvar) && all(!is.na(object@untransformed.asvar)))
-                untransformed.sd0 <- sqrt(diag(object@untransformed.asvar)/object@samplesize)
+        if(!is.null(asvar0)){
+           sd0 <- sqrt(diag(asvar0)/object@samplesize)
+           if(!is.null(untransformed.asvar(object)) &&
+                    all(!is.na(untransformed.asvar(object))))
+                untransformed.sd0 <- sqrt(diag(untransformed.asvar(object))/object@samplesize)
            else untransformed.sd0 <- NULL
            
            if(getdistrModOption("show.details")!="minimal")
@@ -201,7 +203,7 @@ setMethod("show", "Estimate",
 
            if(getdistrModOption("show.details")!="minimal"){
                cat(gettextf("asymptotic (co)variance (multiplied with samplesize):\n"))
-               print(object@asvar[,])
+               print(asvar(object)[,])
               }
 
            if(getdistrModOption("show.details")=="maximal"){
@@ -213,9 +215,9 @@ setMethod("show", "Estimate",
                       cat(gettextf("untransformed estimate:\n"))
                       print(object@untransformed.estimate, quote = FALSE)
                    }
-                   if(!is.null(object@untransformed.asvar)){
+                   if(!is.null(untransformed.asvar(object))){
                       cat(gettextf("asymptotic (co)variance of untransformed estimate (multiplied with samplesize):\n"))
-                      print(object@untransformed.asvar[,])
+                      print(untransformed.asvar(object)[,])
                      }
                    }
             }

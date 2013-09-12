@@ -3,7 +3,7 @@
 ###############################################################################
 Estimator <- function(x, estimator, name, Infos, asvar = NULL, nuis.idx,
                       trafo = NULL, fixed = NULL, asvar.fct, na.rm = TRUE, ...,
-                      ParamFamily = NULL){
+                      ParamFamily = NULL, .withEvalAsVar = TRUE){
 
     name.est <- paste(deparse(substitute(estimator)),sep="",collapse="")     
     es.call <- match.call()
@@ -72,12 +72,20 @@ Estimator <- function(x, estimator, name, Infos, asvar = NULL, nuis.idx,
     
     asvar <- NULL
 
-    if(!missing(asvar.fct)){
+    if(!missing(asvar.fct) &&!is.null(asvar.fct)){
        PFam <- NULL
-       if(!is.null(ParamFamily)) PFam <- modifyModel(ParamFamily, param)
-       asvar.try <- try(asvar.fct(L2Fam = PFam, param = param, ...),
-                         silent=TRUE)
-       if(!is(asvar.try,"try-error")) asvar <- asvar.try
+       if(!is.null(ParamFamily))
+           PFam <- modifyModel(ParamFamily, param, .withL2derivDistr = FALSE)
+       asvar.tfct <- function(PFam, param){
+           asvar.try <- try(asvar.fct(L2Fam = PFam, param = param, ...),
+                            silent = TRUE)
+           as0 <- if(is(asvar.try,"try-error")) NULL else asvar.try
+           return(as0)
+       }
+       asvar <- if(.withEvalAsVar) asvar.tfct(PFam, param) else{
+                  substitute(do.call(asfct, args=list(PF,pa)),
+                                list(asfct = asvar.tfct, PF = PFam, pa = param))
+                  }
     }
     res@asvar <- asvar
     res@untransformed.asvar <- asvar
@@ -118,9 +126,19 @@ trafoEst <- function(fct, estimator){
        estimate <- fctv$fval
        trafm <- fctv$mat
        if(!is.null(asvar)){
-           asvar <- trafm%*%asvar[idm,idm]%*%t(trafm)
-           rownames(asvar) <- colnames(asvar) <- c(names(estimate))
-          }
+           asvar.trfct <- function(tfm, asvm, nms){
+              asvar.. <- tfm%*%asvm%*%t(tfm)
+              rownames(asvar..) <- colnames(asvar..) <- c(nms)
+              return(asvar..)
+           }
+           if(is.call(asvar)){
+              asvar <- substitute(do.call(asfct, args=list(trafm0,asvm0,nms0)),
+                          list(asfct = asvar.trfct, trafm0 = trafm,
+                               asvm0 = asvar[idm,idm], nms0 = names(estimate)))
+           }else{
+              asvar <- asvar.trfct(trafm,asvar[idm,idm],names(estimate))
+           }
+       }
     }
   estimator@estimate <- estimate
   estimator@asvar <- asvar
