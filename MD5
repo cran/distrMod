@@ -1,5 +1,5 @@
-986516d2cd3bcbabca933a9f8582d916 *DESCRIPTION
-d66bdd7d50cf4581f9962959c3acb6fd *NAMESPACE
+d5e356150df4cfc54011b62a5101d87a *DESCRIPTION
+1e862012f5db0f2f8d9d37b4d19bceea *NAMESPACE
 aac3fcd0a02427a61bb639bef5a9c3d1 *R/0distrModOptions.R
 5a10c4c562a3ffd3b83f6484c1d20312 *R/0distrModUtils.R
 bf2400cd5566d0c11559c4116bffaa9c *R/AllClass.R
@@ -24,7 +24,7 @@ b46dd5294c877bb79109df96992ff083 *R/MLEstimator.R
 21f3937b4d1e13d31a0d83919da8d93a *R/ParamFamily.R
 ea4c15ce85962c9beec88a2031390504 *R/ProbFamily.R
 b69a103d2a4679c4cc0eb67e319d296a *R/RiskType.R
-620461442cad288e44a8b62be7d6f7a9 *R/SimpleL2ParamFamilies.R
+a905224988b1851e29e62057bb62a450 *R/SimpleL2ParamFamilies.R
 08f7ff71f8549ff304d82408bf92a9d0 *R/Symmetry.R
 fd63afbd385f7dc43c744b8f21ad0af1 *R/alphaTransp.R
 f572e7321eff069c2ff0079fdfc0a7ed *R/confint.R
@@ -36,16 +36,17 @@ df2de7b3112c0d3cc652643227c0b76e *R/norms.R
 7604ad9fc3beb13077e15364a978c608 *R/qqplot.R
 e786bc132652e24c3eecc608189f1ec0 *R/setAs.R
 e222ff1900aace9855970f0b84c9c9f3 *R/validParameter.R
+2c019f14302f4a16bdcd61c608b8b091 *build/vignette.rds
 e05b2a9efa784fcdb5f4891ba01c128e *demo/00Index
 0f6c5c6c05327be76837632c1197351c *demo/censoredPois.R
 bf3a58725125f652e738a8c00029d809 *demo/modelExp3.R
 e5e7a4d65a543c1ed32e51eb091824af *inst/CITATION
 7807200d24258ffcf22f0c27079ff23f *inst/MASKING
-59da76bbf0e2d7a2851354bb199311c7 *inst/NEWS
+489e7c31798144747991e1871706420f *inst/NEWS
 a98e43049c266add98d10985812c363f *inst/TOBEDONE
 3b724309639b1c7dcd15b1804dd38832 *inst/doc/distrMod.R
 85a68cc7d68250c8151eae5ec2cd0091 *inst/doc/distrMod.Rnw
-6b6b98d59cdb798a5da165f7bfa278f8 *inst/doc/distrMod.pdf
+097052dfc3eb1d6009d4f31cfbb519b3 *inst/doc/distrMod.pdf
 1e89fe402bd24aca5668a3be022fdb65 *inst/scripts/BetaFam.R
 952d5b03b93fb4f60067f1134967cecb *inst/scripts/PoisFam.R
 252332c41ea02f54b71d3f2eb2626a69 *inst/scripts/censoredPois.R
@@ -166,9 +167,9 @@ ded044c74aae1a1a795fe96dff482b54 *man/trFiCov-class.Rd
 d2230442d0c9cae04670a93e26162c18 *man/trafo-methods.Rd
 a07049d5d32c24964b12535f041ad366 *man/trafoEst.Rd
 b2298b63e2f7e888cd250c145f2b23c6 *man/validParameter-methods.Rd
+561f75bcc9eaf0a1e9c028a592823b2b *tests/Examples/distrMod-Ex.Rout.save
 af8a3e9fbcd485009b8a2c19b719fdbc *vignettes/Estimate.pdf
 a54e71853ce8414aac6bbe476698b6b4 *vignettes/ParamFamParameter.pdf
 82b64527729401dd8e1d51b3113ce97d *vignettes/ProbFamily.pdf
-3ba3467f071dcd6505a77910f4c6b869 *vignettes/Rplots.pdf
 85a68cc7d68250c8151eae5ec2cd0091 *vignettes/distrMod.Rnw
 5276edc3f619a4aea6f5b9b096d7103b *vignettes/distrMod.bib

@@ -3,8 +3,10 @@ import("MASS")
 import("distr")
 import("distrEx")
 import("RandVar")
-
+importFrom("startupmsg", "buildStartupMessage")
+importFrom("startupmsg", "infoShow")
 importFrom("stats4","profile")
+importFrom("sfsmisc","D1ss","D2ss")
 exportClasses("MatrixorFunction", "OptionalNumericOrMatrixOrCall",
               "OptionalDistrListOrCall", "OptionalNumericOrMatrix", 
 			  "ShowDetails",
