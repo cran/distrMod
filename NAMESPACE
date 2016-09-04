@@ -1,4 +1,10 @@
 import("methods")
+importFrom("grDevices", "col2rgb", "dev.new", "rgb")
+importFrom("graphics", "abline", "legend", "lines", "mtext", "par",
+           "points", "text", "title")
+importFrom("stats", "aggregate", "approxfun", "complete.cases",
+           "dbinom", "dnbinom", "dnorm", "dpois", "na.omit", "optim",
+           "optimize", "ppoints", "qchisq", "qnbinom", "qnorm")
 import("MASS")
 import("distr")
 import("distrEx")
@@ -6,7 +12,8 @@ import("RandVar")
 importFrom("startupmsg", "buildStartupMessage")
 importFrom("startupmsg", "infoShow")
 importFrom("stats4","profile")
-importFrom("sfsmisc","D1ss","D2ss")
+importFrom("sfsmisc", "D2ss", "D1ss")
+
 exportClasses("MatrixorFunction", "OptionalNumericOrMatrixOrCall",
               "OptionalDistrListOrCall", "OptionalNumericOrMatrix", 
 			  "ShowDetails",
@@ -62,7 +69,7 @@ exportMethods("startPar", "makeOKPar")
 exportMethods("scaleshapename", "scalename", "LogDeriv")
 exportMethods("coerce", "profile", "locscalename", "scaleshapename<-")
 exportMethods("mleCalc", "mceCalc")
-exportMethods("qqplot")
+exportMethods("qqplot", "returnlevelplot", ".checkEstClassForParamFamily")
 export("distrModMASK")
 export("trafoEst")
 export("distrModOptions", "distrModoptions", "getdistrModOption",
@@ -85,4 +92,4 @@ export("NormScaleUnknownLocationFamily", "NormLocationUnknownScaleFamily")
 export("L2LocationUnknownScaleFamily", "L2ScaleUnknownLocationFamily")
 export("meRes", "get.criterion.fct")
 export("addAlphTrsp2col")
-export(".deleteDim",".isUnitMatrix")
+export(".deleteDim",".isUnitMatrix", ".CvMMDCovariance")

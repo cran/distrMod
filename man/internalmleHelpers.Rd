@@ -13,7 +13,7 @@ These functions are used internally by functions \code{MCEstimator} and
 \code{MLEstimator} in package ``distrMod''.}
 
 \usage{
-.negLoglikelihood(x, Distribution, ...)
+.negLoglikelihood(x, Distribution, ..., dropZeroDensity = TRUE)
 .process.meCalcRes(res, PFam, trafo, res.name, call, asvar.fct, check.validity,
                    ..., .withEvalAsVar = TRUE)
 .callParamFamParameter(PFam, theta, idx, nuis, fixed)
@@ -44,6 +44,9 @@ These functions are used internally by functions \code{MCEstimator} and
   \item{.withEvalAsVar}{logical: shall slot \code{asVar} be evaluated
                    (if \code{asvar.fct} is given) or
                    just the call be returned?}
+  \item{dropZeroDensity}{logical of length 1; shall observations with
+     density zero be dropped? Optimizers like \code{optim} require finite
+     values, so get problems when negative loglikelihood is evaluated. }
 }
 
 \details{
@@ -80,7 +83,7 @@ or if necessary a corresponding subclass.}
 }
 
 \author{
-  Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}
+  Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}
 }
 
 \seealso{

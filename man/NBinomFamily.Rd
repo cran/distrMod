@@ -41,7 +41,7 @@ NbinomMeanSizeFamily(size = 1, mean = 0.5, trafo, withL2derivDistr = TRUE )
   R Package distrMod: S4 Classes and Methods for
   Probability Models. To appear in Journal of Statistical Software.
 }
-\author{Peter Ruckdeschel \email{peter.ruckdeschel@itwm.fraunhofer.de}}
+\author{Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}}
 %\note{}
 \seealso{\code{\link{L2ParamFamily-class}}, \code{\link[distr]{Nbinom-class}}}
 \examples{

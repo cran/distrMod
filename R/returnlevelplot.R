@@ -1,39 +1,9 @@
 ################################################################
-# QQ - Plot functions in package distrMod
+# return level - Plot functions in package distrMod
 ################################################################
 
-### to be written into the respective MASKING files....
 
-
-## helper into distrMod
-.labelprep <- function(x,y,lab.pts,col.lbl,cex.lbl,adj.lbl,which.lbs,which.Order,order.traf){
-      n <- length(x)
-      rx <- rank(x)
-      xys <- cbind(x,y[rx])
-      if(is.null(which.lbs)) which.lbs <- 1:n
-      oN0 <- order(x,decreasing=TRUE)
-      if(!is.null(order.traf)){
-          oN0 <- order(order.traf(x),decreasing=TRUE)
-      }
-      oN0b <- oN0 %in% which.lbs
-      oN0 <- oN0[oN0b]
-      oN <- oN0
-      if(!is.null(which.Order))
-          oN <- oN0[which.Order]
-      x0 <- xys[oN,1]
-      y0 <- xys[oN,2]
-      
-      col.lbl <- col.lbl[rx]
-      lab.pts <- lab.pts[rx]
-      cex.lbl <- cex.lbl[rx]
-      adj.lbl <- adj.lbl[rx]
-      return(list(x0=x0,y0=y0,lab=lab.pts[oN],col=col.lbl[oN],cex=cex.lbl[oN],adj=adj.lbl[oN]))
-}
-
-
-
-
-setMethod("qqplot", signature(x = "ANY",
+setMethod("returnlevelplot", signature(x = "ANY",
                               y = "UnivariateDistribution"),
     function(x,    ### observations
              y,    ### distribution
@@ -44,8 +14,12 @@ setMethod("qqplot", signature(x = "ANY",
              withConf.sim = withConf,   ### shall simultaneous confidence lines be plotted
              plot.it = TRUE,    ### shall be plotted at all (inherited from stats::qqplot)
              datax = FALSE,     ### as in qqnorm
+             MaxOrPOT = c("Max","POT"), ### used for block maxima or points over threshold
+             npy = 365, ### number of observations per year
+             threshold = if(is(y,"GPareto")) NA else 0,
              xlab = deparse(substitute(x)), ## x-label
              ylab = deparse(substitute(y)), ## y-label
+             main = "",
              ...,                 ## further parameters
              width = 10,          ## width (in inches) of the graphics device opened
              height = 5.5,        ## height (in inches) of the graphics device opened}
@@ -80,7 +54,7 @@ setMethod("qqplot", signature(x = "ANY",
              col.pch = par("col"),## color for the plotted symbols
              cex.lbl = par("cex"),## magnification factor for the plotted observation labels
              col.lbl = par("col"),## color for the plotted observation labels
-             adj.lbl = par("adj"),## adj parameter for the plotted observation labels
+             adj.lbl = NULL,      ## adj parameter for the plotted observation labels
              alpha.trsp = NA,     ## alpha transparency to be added afterwards
              jit.fac = 0,         ## jittering factor used for discrete distributions
              jit.tol = .Machine$double.eps, ## tolerance for jittering: if distance 
@@ -98,15 +72,9 @@ setMethod("qqplot", signature(x = "ANY",
              withSubst = TRUE
     ){ ## return value as in stats::qqplot
 
+    MaxOrPOT <- match.arg(MaxOrPOT)
     mc <- match.call(call = sys.call(sys.parent(1)))
     xcc <- as.character(deparse(mc$x))
-    ycc <- as.character(deparse(mc$y))
-    if(missing(xlab)){ xlab <- mc$xlab <- xcc}
-    if(missing(ylab)){ ylab <- mc$ylab <- ycc}
-    mcl <- as.list(mc)[-1]
-    force(x)
-    if(is.null(mcl$datax)) datax <- FALSE
-    if(!datax){ mcl$ylab <- xlab; mcl$xlab <- ylab}
 
    .mpresubs <- if(withSubst){
                    function(inx) 
@@ -115,19 +83,68 @@ setMethod("qqplot", signature(x = "ANY",
                             as.character(date()), 
                             xcc))
                }else function(inx)inx
-    xj <- x
+
+    if(missing(xlab)) mc$xlab <- paste(gettext("Return level of"),
+                                       as.character(deparse(mc$x)))
+    if(missing(ylab)) mc$ylab <- gettext("Return period (years)")
+    if(missing(main)) mc$main <- gettext("Return level plot")
+    mcl <- as.list(mc)[-1]
+    mcl$datax <- NULL
+    mcl$MaxOrPOT <- NULL
+    mcl$npy <- NULL
+    mcl$withSweave <- NULL
+    mcl$mfColRow <- NULL
+    mcl$type <-NULL
+    mcl$debug <- NULL
+    mcl$added.points.CI <- NULL
+    if(is.null(mcl$datax)) datax <- FALSE
+    force(x)
+
+    thresh0 <- threshold 
+    if(is(y,"GPareto")){ 
+       if(is.na(threshold)) thresh0 <- location(y)
+       y <- y - thresh0
+       x <- x + thresh0
+    }              
+
+    xj <- sort(x)
     if(any(.isReplicated(x, jit.tol))&&jit.fac>0)
        xj[.isReplicated(x, jit.tol)] <- jitter(x[.isReplicated(x, jit.tol)], factor=jit.fac)
 
+    xj <- sort(xj)
     ord.x <- order(xj)
 
-    pp <- ppoints(n)
-    yc <- q(y)(pp)
+    p2rl <- function(pp){
+               pp <- p(y)(pp)
+               return(if(MaxOrPOT=="Max") -1/log(pp) else  1/(1-pp)/npy)
+    }
 
-    yc.o <- yc
+    pp <- ppoints(length(xj))
+    yc.o <- q(y)(pp)
+    ycl <- p2rl(yc.o)
+
+    ### extend range somewhat
+#    pyn <- p(y)(10^(seq(-1, 3.75 + log10(npy), by = 0.1)))
+    xyall <- force(sort(unique(c(yc.o,x,
+                    q(y)(c(seq(0.01, 0.09, by = 0.01),(1:9)/10,
+                         0.95, 0.99, 0.995, 0.999))
+                         ))))
+    rxyall  <- (max(xyall)-min(xyall))*0.6
+    rxymean <- (max(xyall)+min(xyall))/2
+
+    xyallc  <- seq(from=rxymean-rxyall,to=rxymean+rxyall, length.out=400)
+#    print(xyallc)
+    pxyall  <- p(y)(xyallc)
+#    print(pxyall)
+
+    pxyallc <- p2rl(xyallc)
+     xyallc <-  xyallc[pxyall>0.00001 & pxyall<0.99999]
+    pxyallc <- pxyallc[pxyall>0.00001 & pxyall<0.99999]
+
+#    print(cbind(pxyallc,xyallc))
 
     if("support" %in% names(getSlots(class(y))))
-       yc <- sort(jitter(yc, factor=jit.fac))
+       ycl <- sort(jitter(ycl, factor=jit.fac))
 
     alp.v <- .makeLenAndOrder(alpha.trsp,ord.x)
     alp.t <- function(x,a1) if(is.na(x)) x else addAlphTrsp2col(x,a1)
@@ -135,7 +152,6 @@ setMethod("qqplot", signature(x = "ANY",
              function(x,a) x else function(x,a) mapply(x,alp.t,a1=a)
     cex.pch <- .makeLenAndOrder(cex.pch,ord.x)
     cex.lbl <- .makeLenAndOrder(cex.lbl,ord.x)
-    adj.lbl <- .makeLenAndOrder(adj.lbl,ord.x)
     col.pch <- alp.f(.makeLenAndOrder(col.pch,ord.x),alp.v)
     col.lbl <- alp.f(.makeLenAndOrder(col.lbl,ord.x),alp.v)
 
@@ -164,24 +180,9 @@ setMethod("qqplot", signature(x = "ANY",
 
     if(n!=length(x)) withLab <- FALSE
 
-    if(datax){ 
-      mcl$x <- xj
-      mcl$y <- yc
-    }else{
-      mcl$y <- xj
-      mcl$x <- yc
-    }
     mcl <- .deleteItemsMCL(mcl)
     mcl$cex <- cex.pch
     mcl$col <- col.pch
-
-    mcl$xlab <- .mpresubs(mcl$xlab)
-    mcl$ylab <- .mpresubs(mcl$ylab)
-
-    if (!is.null(eval(mcl$main)))
-        mcl$main <- .mpresubs(eval(mcl$main))
-    if (!is.null(eval(mcl$sub)))
-        mcl$sub <- .mpresubs(eval(mcl$sub))
 
     if (!withSweave){
            devNew(width = width, height = height)
@@ -191,29 +192,52 @@ setMethod("qqplot", signature(x = "ANY",
 
     if(mfColRow) opar1 <- par(mfrow = c(1,1), no.readonly = TRUE)
 
-    ret <- do.call(stats::qqplot, args=mcl)
-    lbprep <- NULL
+    ret <- list(x=xj,y=ycl)
+
+    if(plot.it){
+       xallc1 <- sort(c(xj,xyallc))
+       yallc1 <- sort(c(ycl,pxyallc))
+       mcl$x <- mcl$y <- NULL
+       if(datax){
+          mcl$xlab <- xlab
+          mcl$ylab <- ylab
+          do.call(plot, c(list(x=xallc1, y=yallc1, log="y",type="n"),mcl))
+          do.call(points, c(list(x=xj, y=ycl), mcl))
+    #       ret <- do.call(stats::qqplot, args=mcl0, log="y", ylim = c(0.1,1000))
+       }else{
+          mcl$ylab <- xlab
+          mcl$xlab <- ylab
+          do.call(plot, c(list(x=yallc1, y=xallc1, log="x",type="n"),mcl))
+          do.call(points, c(list(x=ycl, y=xj),mcl))
+       }
+    }
+
     if(withLab&& plot.it){
-       lbprep <- .labelprep(xj,yc,lab.pts,
-                            col.lbl,cex.lbl, adj.lbl,which.lbs,which.Order,order.traf)
+       lbprep <- .labelprep(xj,yc.o,lab.pts,
+                            col.lbl,cex.lbl,which.lbs,which.Order,order.traf)
+       lbprep$y0 <- p2rl(lbprep$y0)
        xlb0 <- if(datax) lbprep$x0 else lbprep$y0
        ylb0 <- if(datax) lbprep$y0 else lbprep$x0
        text(x = xlb0, y = ylb0, labels = lbprep$lab,
-            cex = lbprep$cex, col = lbprep$col, adj = lbprep$adj)
+            cex = lbprep$cex, col = lbprep$col, adj = adj.lbl)
     }
 
-    qqb <- NULL
     if(withIdLine){
-       if(plot.it) abline(0,1,col=col.IdL,lty=lty.IdL,lwd=lwd.IdL)
+       if(plot.it){
+          if(datax){
+             lines(xyallc,pxyallc,col=col.IdL,lty=lty.IdL,lwd=lwd.IdL)
+          }else{
+             lines(pxyallc,xyallc,col=col.IdL,lty=lty.IdL,lwd=lwd.IdL)
+          }
+       }
+       qqb <- NULL
        if(#is(y,"AbscontDistribution")&&
        withConf){
-          xy <- unique(sort(c(x,yc.o)))
+
           if(added.points.CI){
-             mxy <- min(xy); Mxy <- max(xy)
-             mnxy <- (mxy+Mxy)/2
-             sxy <- (Mxy-mxy)/2*1.1
-             xyn <- seq(mnxy-sxy,mnxy+sxy,length.out=500)
-             xy <- unique(sort(c(xy,xyn)))
+             xy <- unique(sort(c(x,xj,xyallc,yc.o)))
+          }else{
+             xy <- unique(sort(c(x,xj,yc.o)))
           }
           xy <- xy[!.NotInSupport(xy,y)]
           lxy <- length(xy)
@@ -234,49 +258,26 @@ setMethod("qqplot", signature(x = "ANY",
              }
           }
 
-        qqplotInfo <- list(xy.0=xy, y.0=y, datax = datax, 
-                         withConf.pw=withConf.pw, 
-                         withConf.sim=withConf.sim, 
-                         alpha.CI=alpha.CI ,
-                         col.pCI = col.pCI , lty.pCI = lty.pCI , 
-                         lwd.pCI = lwd.pCI , pch.pCI = pch.pCI, 
-                         cex.pCI = cex.pCI , 
-                         col.sCI = col.sCI , lty.sCI = lty.sCI , 
-                         lwd.sCI = lwd.sCI , pch.sCI = pch.sCI, 
-                         cex.sCI = cex.sCI , 
-                         n = n , 
-                         exact.sCI = exact.sCI, exact.pCI = exact.pCI,
-                  nosym.pCI = nosym.pCI, with.legend = with.legend,
-                  legend.bg = legend.bg, legend.pos = legend.pos,
-                  legend.cex = legend.cex, legend.pref = legend.pref,
-                  legend.postf = legend.postf, legend.alpha = legend.alpha, 
-                  debug = debug,
-                  args.stats.qqplot = mcl,
-                  withLab = withLab,
-                  lbprep = lbprep
-                  )
+        #qqb <- qqbounds(sort(unique(xy)),y,alpha.CI,n,withConf.pw, withConf.sim,
+        #                   exact.sCI,exact.pCI,nosym.pCI, debug = debug)
+        #qqb$crit <- p2rl(qqb$crit)
         if(plot.it){
-          qqb <- .confqq(xy, y, datax=datax, withConf.pw, withConf.sim, alpha.CI,
+          qqb <- .confqq(xy, y, datax, withConf.pw, withConf.sim, alpha.CI,
                       col.pCI, lty.pCI, lwd.pCI, pch.pCI, cex.pCI,
                       col.sCI, lty.sCI, lwd.sCI, pch.sCI, cex.sCI,
                   n, exact.sCI = exact.sCI, exact.pCI = exact.pCI,
                   nosym.pCI = nosym.pCI, with.legend = with.legend,
                   legend.bg = legend.bg, legend.pos = legend.pos,
                   legend.cex = legend.cex, legend.pref = legend.pref,
-                  legend.postf = legend.postf, legend.alpha = legend.alpha, debug = debug)
-        }else{
-           qqb <- qqbounds(sort(unique(xy)),y,alpha.CI,n,withConf.pw, withConf.sim,
-                           exact.sCI,exact.pCI,nosym.pCI, debug = debug)
-        }
+                  legend.postf = legend.postf, legend.alpha = legend.alpha,
+                  qqb0=NULL, transf0=p2rl, debug = debug)
        }
-    }
-    qqplotInfo <- c(ret, qqplotInfo, qqb)
-    class(qqplotInfo) <- c("qqplotInfo","DiagnInfo")
-    return(invisible(qqplotInfo))
+    }}
+    return(invisible(c(ret,qqb)))
     })
 
 ## into distrMod
-setMethod("qqplot", signature(x = "ANY",
+setMethod("returnlevelplot", signature(x = "ANY",
                               y = "ProbFamily"), function(x, y,
                               n = length(x), withIdLine = TRUE, withConf = TRUE,
     withConf.pw  = withConf,  withConf.sim = withConf,
@@ -284,19 +285,19 @@ setMethod("qqplot", signature(x = "ANY",
     ylab = deparse(substitute(y)), ...){
 
     mc <- match.call(call = sys.call(sys.parent(1)))
-    if(missing(xlab)) mc$xlab <- as.character(deparse(mc$x))
-    if(missing(ylab)) mc$ylab <- as.character(deparse(mc$y))
+    if(missing(xlab)) mc$xlab <- paste(gettext("Return Level of"), as.character(deparse(mc$x)))
+    if(missing(ylab)) mc$ylab <- paste(gettext("Return Period at"), as.character(deparse(mc$y)))
     mcl <- as.list(mc)[-1]
 
     mcl$y <- yD <- y@distribution
     if(!is(yD,"UnivariateDistribution"))
        stop("Not yet implemented.")
 
-    return(invisible(do.call(getMethod("qqplot", signature(x="ANY", y="UnivariateDistribution")),
+    return(invisible(do.call(getMethod("returnlevelplot", signature(x="ANY", y="UnivariateDistribution")),
             args=mcl)))
     })
 
-setMethod("qqplot", signature(x = "ANY",
+setMethod("returnlevelplot", signature(x = "ANY",
                               y = "Estimate"), function(x, y,
                               n = length(x), withIdLine = TRUE, withConf = TRUE,
     withConf.pw  = withConf,  withConf.sim = withConf,
@@ -304,8 +305,7 @@ setMethod("qqplot", signature(x = "ANY",
     ylab = deparse(substitute(y)), ...){
 
     mc <- match.call(call = sys.call(sys.parent(1)))
-    if(missing(xlab)) mc$xlab <- as.character(deparse(mc$x))
-    if(missing(ylab)) mc$ylab <- as.character(deparse(mc$y))
+    if(missing(xlab)) mc$xlab <- paste(gettext("Return Level of"), as.character(deparse(mc$x)))
     mcl <- as.list(mc)[-1]
 
     param <- ParamFamParameter(main=untransformed.estimate(y), nuisance=nuisance(y),
@@ -321,7 +321,8 @@ setMethod("qqplot", signature(x = "ANY",
 
     PFam0 <- modifyModel(PFam, param)
     mcl$y <- PFam0
-    return(invisible(do.call(getMethod("qqplot", signature(x="ANY", y="ProbFamily")),
+    if(missing(ylab)) mc$ylab <- paste(gettext("Return Period at fitted"), name(PFam0))
+
+    return(invisible(do.call(getMethod("returnlevelplot", signature(x="ANY", y="ProbFamily")),
             args=mcl)))
     })
-

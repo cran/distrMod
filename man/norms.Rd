@@ -15,7 +15,7 @@ QuadFormNorm(x,A)}
 }
 
 \value{the columnwise evaluated norms}
-\author{Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
+\author{Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}}
 %\note{}
 \seealso{\code{\link{onesidedBias-class}}}
 \examples{

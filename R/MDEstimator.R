@@ -24,15 +24,16 @@ MDEstimator <- function(x, ParamFamily, distance = KolmogorovDist,
 
     if(paramDepDist) dots$thetaPar <-NULL
 
+    distanceFctWithoutVal <- function(e1,e2,check.validity=NULL,...) distance(e1,e2,...)
     ## manipulation of the arg list to method mceCalc
-    argList <- c(list(x = x, PFam = ParamFamily, criterion = distance,
+    argList <- c(list(x = x, PFam = ParamFamily, criterion = distanceFctWithoutVal,
                    startPar = startPar, penalty = penalty, 
                    crit.name = dist.name, withthetaPar = paramDepDist))
 
     if(missing(validity.check)) validity.check <- TRUE
        argList$validity.check <- validity.check
     if(missing(Infos))      Infos <- NULL
-    argList <- c(argList, Infos = Infos)
+    argList <- c(argList, Infos = Infos, check.validity = validity.check )
     if(!is.null(dots))      argList <- c(argList, dots)
     ## call to mceCalc
     res0 <- do.call(mceCalc, argList)
@@ -44,7 +45,8 @@ MDEstimator <- function(x, ParamFamily, distance = KolmogorovDist,
                               res.name = paste("Minimum", dist.name, 
                                                "estimate", sep = " "), 
                               call = quote(es.call),
-                              .withEvalAsVar = .withEvalAsVar))
+                              .withEvalAsVar = .withEvalAsVar,
+                              check.validity = validity.check))
 
     if(!missing(asvar.fct))   argList <- c(argList, asvar.fct = asvar.fct)
     if(!is.null(dots))  argList <- c(argList, dots)
@@ -55,6 +57,6 @@ MDEstimator <- function(x, ParamFamily, distance = KolmogorovDist,
     res <- do.call(.process.meCalcRes, argList)
 
     res@completecases <- completecases
-    return(res)
+    return(.checkEstClassForParamFamily(ParamFamily,res))
 }
 

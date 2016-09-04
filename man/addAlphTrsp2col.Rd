@@ -10,7 +10,7 @@
 }
 \value{a color in rgb coordinates}
 %\references{}
-\author{Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
+\author{Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}}
 %\note{}
 \examples{
   addAlphTrsp2col(rgb(1,0.3,0.03), 25)

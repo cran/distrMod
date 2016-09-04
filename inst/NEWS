@@ -8,20 +8,74 @@
  information)
 
 ##############
-v 2.5.x
+v 2.6
 ##############
 
 user-visible CHANGES:
 + title changed to title style / capitalization
++ introduced dropZeroDensity argument to ML estimators 
++ arguments panel.first, panel.last for plot-methods can now be lists
++ introduced returnlevelplot, a generalization of the respective
+  diagnostic plot facility of package ismev
++ qqplot and returnlevelplot gain pattern substitution like plot in 
+  titles and x/y axis lables
++ pattern substitution can now be switched on and off in all plot 
+  functions according to argument withSubst
+  
+GENERAL ENHANCEMENTS:
 
-minor changes to pass CRAN checks
+under the hood:
++ zero dropping (see argument 'dropZeroDensity' above)
+  --Optimizers like optim require finite values, so get problems when 
+  negative loglikelihood is evaluated, so optionally, and by default,
+  values with density/likelihood 0 are dropped from optimization
++ removed ::: internal dependencies (within distr-Fam of pkgs) by copying 
+  respective routines
++ qqplot:
+   * (already there for a while) gains ability to interchange x- and y-
+      axis by argument 'datax' for compatibility with other qqplots 
+   * gains new methods for object of class "Estimate" (which could also be 
+     seen as "fitted" objects...)
+   * additional argument added.points.CI to allow for  additional evaluation 
+     points for the confidence intervals in the range of the seen data	 
+   * now by default has datax = TRUE
+   * fixed issue with labeling
+   * issues with datax fixed
+   * gains argument jit.tol to allow jittering to take place also for
+     continuous observations, if observations are "too" close to each other
++ returnlevelplot
+   * similar as qqplot as to additional methods
+   * returnlevelplot now gains an argument threshold for POT
+   * set datax argument in case it is missing in returnlevelplot ...	  
+   * issues with datax fixed
+   * gains argument jit.tol to allow jittering to take place also for
+     continuous observations, if observations are "too" close to each other
++ new internal method  .checkEstClassForParamFamily-method to be called 
+  immediately before returning an Estimate object (in functions Estimator(), 
+  MCEstimator(), MDEstimator(), MLEstimator()); this allows to return an
+  object of S4 class specific to the resp. parametric family (by means of
+  S4 method dispatch); this is used in pkg 'RobExtremes' to produce, e.g., 
+  objects of class "GEVMCEstimate", i.e. which inherit from both 
+  "MCEstimate" and "GEVEstimate", so that a diag-method for 
+  "GEVEstimate" becomes available for this class.
++ enhanced imports in DESCRIPTION by explicating second order imports
++ helper function .isReplicated gains an optional argument tol
+
+  BUGFIXES:
+
+
++ fixed an issue with MDEstimator and validParameter
++ fixed issue with slot withPosRestr in ParamFamParameter.R 
++ fixed issue with check.validity (reported by B.Spangl)
++ fixed some minor issue in existsPIC (in case we get 0 matrix, and less strict tolerance) 
++ fixed issue with returnlevelplot discovered by B. Spangl -- points had not been ordered 
++ fixed CIs for qqplot and returnlevelplot
 
 ##############
 v 2.5
 ##############
 
 user-visible CHANGES:
-+ title changed to title style / capitalization
 
 GENERAL ENHANCEMENTS:
 + cleaned DESCRIPTION and NAMESPACE file as to Imports/Depends

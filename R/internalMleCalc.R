@@ -2,14 +2,17 @@
 #################### m[l,c]eCalc
 
 ### not exported:
-.negLoglikelihood <- function(x, Distribution, ...){
+.negLoglikelihood <- function(x, Distribution, ..., dropZeroDensity = TRUE){
            dots <- list(...)
            dots$thetaPar <- NULL
           ### increase accuracy:
            if(Distribution@.withSim||!.inArgs("log",d(Distribution)))
-               res <- -sum(log(do.call(Distribution@d,args = c(list(x),dots) )))
+               res0 <- log(do.call(Distribution@d,args = c(list(x),dots) ))
            else
-               res <- -sum(do.call(Distribution@d,args = c(list(x,log = TRUE), dots) ))
+               res0 <- do.call(Distribution@d,args = c(list(x,log = TRUE), dots) )
+           m <- -min(res0[is.finite(res0)])*1e20
+           if(dropZeroDensity) res0 <- res0[is.finite(res0)]-sum(res0==-Inf)*max(m,1e200)
+           res <- -sum(res0,na.rm=TRUE)
            return(res)
     }
 
@@ -143,8 +146,6 @@
 
 ##########################################################################
 
-## caching to speed up things:
-.inArgs <- distr:::.inArgs
 
 .callParamFamParameter <- function(PFam, theta, idx, nuis, fixed){
 

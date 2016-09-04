@@ -84,7 +84,7 @@ slots of classes to be filled with varying types. In particular
 
 %\section{Methods}{}
 %\references{}
-\author{Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
+\author{Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}}
 %\note{}
 \seealso{\code{\link[methods:BasicClasses]{numeric-class}},
 \code{\link[methods:BasicClasses]{matrix-class}},

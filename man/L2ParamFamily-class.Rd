@@ -154,7 +154,7 @@ Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
              main = FALSE, inner = TRUE, sub = FALSE, 
              col.inner = par("col.main"), cex.inner = 0.8, 
              bmar = par("mar")[1], tmar = par("mar")[3], ...,
-             mfColRow = TRUE, to.draw.arg = NULL)
+             mfColRow = TRUE, to.draw.arg = NULL, withSubst = TRUE)
       } where \describe{
         \item{x}{object of class \code{"L2ParamFamily"}}
         \item{withSweave}{logical: if \code{TRUE} (for working with \command{Sweave}) 
@@ -191,18 +191,35 @@ Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
                          \code{dimnr} running through the number of rows of the 
                          trafo matrix.
                          }
+       \item{withSubst}{logical; if \code{TRUE} (default) pattern substitution for
+          titles and lables is used; otherwise no substitution is used. }
+
        \item{\dots}{addtional arguments for \code{plot} --- see 
                \code{\link[graphics]{plot}}, 
                \code{\link[graphics]{plot.default}}, 
                \code{\link[stats]{plot.stepfun}} }
 
       } 
-      if \code{\dots} contains argument \code{ylim}, this may either be
+      If \code{\dots} contains argument \code{ylim}, this may either be
       as in \code{plot.default} (i.e. a vector of length 2) or a vector of 
       length 4, where the first two elements are the values for \code{ylim} 
       in panels "d.c" and "d.d", and the last
       two elements are the values for \code{ylim} resp. \code{xlim} in panels 
       "p", "p.c", "p.d" and "q", "q.c", "q.d".
+      In all title and axis label arguments, if \code{withSubst} is \code{TRUE},
+      the following patterns are substituted:
+      \describe{
+         \item{\code{"\%C"}}{class of argument \code{x}}
+         \item{\code{"\%A"}}{deparsed argument \code{x}}
+         \item{\code{"\%D"}}{time/date-string when the plot was generated}
+      }
+
+In addition, argument \code{\dots} may contain arguments \code{panel.first},
+\code{panel.last}, i.e., hook expressions to be evaluated at the very beginning
+and at the very end of each panel (within the then valid coordinates).
+To be able to use these hooks for each panel individually, they may also be
+lists of expressions (of the same length as the number of panels and
+run through in the same order as the panels).
     }
 
 
@@ -217,7 +234,7 @@ Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
   Bayreuth: Dissertation.
 }
 \author{Matthias Kohl \email{Matthias.Kohl@stamats.de},\cr
-Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
+Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}}
 %\note{}
 \seealso{\code{\link{L2ParamFamily}}, \code{\link{ParamFamily-class}}}
 \examples{

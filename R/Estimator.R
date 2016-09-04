@@ -144,5 +144,7 @@ trafoEst <- function(fct, estimator){
   estimator@asvar <- asvar
   estimator@trafo <- list(fct = fct, mat = fctv$mat)
 
-  return(estimator)
+  return(.checkEstClassForParamFamily(ParamFamily,estimator))
 }
+
+

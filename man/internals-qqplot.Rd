@@ -9,7 +9,7 @@
 These functions are used internally by qqplot of package distrMod.}
 
 \usage{
-.labelprep(x,y,lab.pts,col.lbl,cex.lbl,which.lbs,which.Order,order.traf)
+.labelprep(x,y,lab.pts,col.lbl,cex.lbl,adj.lbl,which.lbs,which.Order,order.traf)
 }
 
 
@@ -18,6 +18,7 @@ These functions are used internally by qqplot of package distrMod.}
 \item{y}{a (numeric) vector of same length as \code{x}}
 \item{cex.lbl}{magnification factor for the plotted observation labels}
 \item{col.lbl}{color for the plotted observation labels}
+\item{adj.lbl}{adj parameter for the plotted observation labels}
 \item{lab.pts}{character or \code{NULL}; observation labels to be used}
 \item{which.lbs}{integer or \code{NULL}; which observations shall be labelled}
 \item{which.Order}{integer or \code{NULL}; which of the ordered (remaining) observations shall be labelled}
@@ -26,8 +27,9 @@ These functions are used internally by qqplot of package distrMod.}
 
 \details{
 \code{.labelprep} prepares the labels for later output:
-first we (optionally) select some indices among \code{x} according
-to \code{which.lbs}, then orders both \code{x} and \code{y} according to the
+first some indices among \code{x} according
+to \code{which.lbs} are (optionally) selected, 
+then orders both \code{x} and \code{y} according to the
 order of the remaining (optionally transformed by \code{order.traf}) values of
 \code{x} (decreasing); finally only the order statistics (w.r.t. the preceding
 ordering) as specified in \code{which.Order} are returned;
@@ -43,11 +45,12 @@ respectively thinned out.
 \code{lab} (the thinned out and ordered vector of labels \code{lab.pts}),
 \code{col} (the thinned out and ordered vector of colors \code{col.lbs}),
 \code{cex} (the thinned out and ordered vector of magnification factors \code{cex.lbs}).
+\code{adj} (the thinned out and ordered vector of adjacencies \code{adj.lbs}).
 }
 }
 
 \author{
-  Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de},
+  Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de},
 }
 
 \seealso{\code{\link[stats]{ks.test}}, \code{\link[distr]{qqplot}}

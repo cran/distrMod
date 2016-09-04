@@ -18,7 +18,7 @@ setMethod("modifyModel", signature(model = "ParamFamily", param = "ParamFamParam
                               props = props0,
                               startPar = startPar0,
                               makeOKPar = makeOKPar0,
-                              modifyParam = modifyParam0,
+                              modifyParam = modifyParam0
                            ),
                       list(   name0 = M@name,
                               distribution0 = M@distribution,
@@ -27,7 +27,7 @@ setMethod("modifyModel", signature(model = "ParamFamily", param = "ParamFamParam
                               props0 = M@props,
                               startPar0 = M@startPar,
                               makeOKPar0 = M@startPar,
-                              modifyParam0 = M@modifyParam,
+                              modifyParam0 = M@modifyParam
                           )
                       ))
           else{

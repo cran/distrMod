@@ -22,7 +22,7 @@ BetaFamily(shape1 = 1, shape2 = 1, trafo, withL2derivDistr = TRUE)
   parameteric family are filled.
 }
 \value{Object of class \code{"L2ParamFamily"}}
-\author{Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
+\author{Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}}
 %\note{}
 \seealso{\code{\link{L2ParamFamily-class}}, \code{\link[distr]{Beta-class}}}
 \examples{

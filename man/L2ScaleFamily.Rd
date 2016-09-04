@@ -72,7 +72,7 @@ L2ScaleFamily(scale = 1, loc = 0,  name, centraldistribution = Norm(),
   Bayreuth: Dissertation.
 }
 \author{Matthias Kohl \email{Matthias.Kohl@stamats.de},\cr
-Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
+Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}}
 %\note{}
 \seealso{\code{\link{L2ScaleFamily-class}}}
 \examples{

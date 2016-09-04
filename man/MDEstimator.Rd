@@ -70,11 +70,11 @@ MDEstimator(x, ParamFamily, distance = KolmogorovDist, dist.name,
     Rieder, H. (1994) \emph{Robust Asymptotic Statistics}. New York: Springer.
 }
 \author{Matthias Kohl \email{Matthias.Kohl@stamats.de},\cr
-        Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
+        Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}}
 %\note{}
 \seealso{\code{\link{ParamFamily-class}}, \code{\link{ParamFamily}}, 
          \code{\link{MCEstimator}}, \code{\link{MCEstimate-class}},
-          \code{\link[MASS]{fitdistr}} }
+          \code{\link[MASS]{fitdistr}}, \code{\link{.CvMMDCovariance}}}
 \examples{
 ## (empirical) Data
 x <- rgamma(50, scale = 0.5, shape = 3)
@@ -90,9 +90,7 @@ MDEstimator(x = x, ParamFamily = G, distance = CvMDist)
 
 ## von Mises minimum distance estimator with default mu
 MDEstimator(x = x, ParamFamily = G, distance = CvMDist,
-            asvar.fct = distrMod:::.CvMMDCovariance)
-#*** variance routine is still in testing phase so not yet
-#*** exported to namespace
+            asvar.fct = .CvMMDCovariance)
 ## von Mises minimum distance estimator with mu = N(0,1)
 MDEstimator(x = x, ParamFamily = G, distance = CvMDist, mu = Norm())
 

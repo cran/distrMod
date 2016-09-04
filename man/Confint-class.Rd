@@ -127,7 +127,7 @@ identity) in form of its function code respectively of its derivative matrix.
 has been borrowed from \code{confint.default} in package \pkg{stats}.}
 
 %\references{}
-\author{Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
+\author{Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}}
 %\note{}
 \seealso{\code{\link{Estimator}}, \code{\link{confint}}, \code{\link{Estimate-class}},
 \code{\link{trafo-methods}}}

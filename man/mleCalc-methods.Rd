@@ -23,7 +23,7 @@ mleCalc(x, PFam, ...)
                    Infos = NULL, validity.check = TRUE,
                    withthetaPar = FALSE,\dots)
 \S4method{mleCalc}{numeric,ParamFamily}(x, PFam, startPar = NULL, 
-                   penalty = 1e20, Infos = NULL,
+                   penalty = 1e20, dropZeroDensity = TRUE, Infos = NULL,
                     validity.check = TRUE, \dots)
 \S4method{mleCalc}{numeric,BinomFamily}(x, PFam, \dots)
 \S4method{mleCalc}{numeric,PoisFamily}(x, PFam, \dots)
@@ -46,6 +46,9 @@ mleCalc(x, PFam, ...)
                may be missing}
   \item{validity.check}{logical: shall return parameter value be checked for
     validity?}
+  \item{dropZeroDensity}{logical of length 1; shall observations with
+     density zero be dropped? Optimizers like \code{optim} require finite
+     values, so get problems when negative loglikelihood is evaluated. }
   \item{\dots}{additional argument(s) for \code{optim} / \code{optimize}}
 }
 \value{

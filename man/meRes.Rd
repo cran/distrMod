@@ -67,6 +67,6 @@ get.criterion.fct(theta, Data, ParamFam, criterion.ff, fun, ...)
 \item{samplesize}{numeric}
 }
 
-\author{Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
+\author{Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}}
 \keyword{models}
 

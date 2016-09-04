@@ -12,7 +12,7 @@
 MLEstimator(x, ParamFamily, startPar = NULL, 
             Infos, trafo = NULL, penalty = 1e20,
             validity.check = TRUE, na.rm = TRUE, ...,
-            .withEvalAsVar = TRUE)
+            .withEvalAsVar = TRUE, dropZeroDensity = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -36,6 +36,9 @@ MLEstimator(x, ParamFamily, startPar = NULL,
   \item{.withEvalAsVar}{logical: shall slot \code{asVar} be evaluated
                    (if \code{asvar.fct} is given) or
                    just the call be returned?}
+  \item{dropZeroDensity}{logical of length 1; shall observations with
+     density zero be dropped? Optimizers like \code{optim} require finite
+     values, so get problems when negative loglikelihood is evaluated. }
 }
 \details{
   The function uses \code{\link{mleCalc}}
@@ -49,7 +52,7 @@ MLEstimator(x, ParamFamily, startPar = NULL,
 }
 %\references{  }
 \author{Matthias Kohl \email{Matthias.Kohl@stamats.de},\cr
-        Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
+        Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}}
 %\note{}
 \seealso{\code{\link{ParamFamily-class}}, \code{\link{ParamFamily}}, 
          \code{\link{MCEstimator}}, \code{\link{MCEstimate-class}},

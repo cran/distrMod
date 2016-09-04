@@ -29,9 +29,11 @@ MCEstimator <- function(x, ParamFamily, criterion, crit.name,
        argList$validity.check <- validity.check
     if(missing(Infos))      Infos <- NULL
     argList <- c(argList, Infos = Infos)
-    if(missing(crit.name)) crit.name <- ""               
+    argList <- c(argList, check.validity = validity.check )
+    if(missing(crit.name)) crit.name <- ""
     argList <- c(argList, crit.name = crit.name)               
     if(!is.null(dots))      argList <- c(argList, dots)
+
 
     ## call to mceCalc
     res0 <- do.call(mceCalc, argList)
@@ -46,7 +48,8 @@ MCEstimator <- function(x, ParamFamily, criterion, crit.name,
                               res.name = paste("Minimum", crit.name, 
                                                "estimate", sep=" ", collapse=""), 
                               call = quote(es.call),
-                              .withEvalAsVar=.withEvalAsVar))
+                              .withEvalAsVar=.withEvalAsVar,
+                              check.validity = validity.check))
 
     if(!is.null(asv))   argList <- c(argList, asvar.fct = asv)
     if(!is.null(dots))  argList <- c(argList, dots)
@@ -55,5 +58,5 @@ MCEstimator <- function(x, ParamFamily, criterion, crit.name,
     res <- do.call(.process.meCalcRes, argList)
     res@completecases <- completecases
     
-    return(res)
+    return(.checkEstClassForParamFamily(ParamFamily,res))
 }

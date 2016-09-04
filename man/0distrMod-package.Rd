@@ -4,25 +4,27 @@
 \docType{package}
 
 \title{
-distrMod -- probability models
+distrMod -- Object Oriented Implementation of Probability Models
 }
 \description{
-Based on the packages \pkg{distr} and \pkg{distrEx} package \pkg{distrMod} 
-provides a flexible framework which allows computation of estimators like 
+Based on the packages \pkg{distr} and \pkg{distrEx} package \pkg{distrMod}
+provides a flexible framework which allows computation of estimators like
 maximum likelihood or minimum distance estimators for probability models.
 }
 
 \details{
 \tabular{ll}{
 Package: \tab distrMod \cr
-Version: \tab 2.5 \cr
-Date: \tab 2013-09-11 \cr
-Depends: \tab R(>= 2.6.0), methods, startupmsg, distr(>= 2.2), distrEx(>=
-2.2), RandVar(>= 0.6.3), MASS, stats4 \cr
-LazyLoad: \tab yes \cr
+Version: \tab 2.6 \cr
+Date: \tab 2016-04-23 \cr
+Depends: \tab R(>= 2.14.0), distr(>= 2.5.2), distrEx(>= 2.4), RandVar(>= 0.6.3), MASS, stats4,
+        methods \cr
+Imports: \tab startupmsg, sfsmisc, graphics, stats, grDevices \cr
+Suggests: \tab ismev, evd, RobExtremes \cr
+ByteCompile: \tab yes \cr
 License: \tab LGPL-3 \cr
 URL: \tab http://distr.r-forge.r-project.org/\cr
-SVNRevision: \tab 904 \cr
+SVNRevision: \tab 1104 \cr
 }}
 
 \section{Classes}{
@@ -32,18 +34,18 @@ SVNRevision: \tab 904 \cr
 ##########################
 ProbFamily classes
 ##########################
-slots: [<name>(<class>)] 
+slots: [<name>(<class>)]
 name(character), distribution(Distribution),
 distrSym(DistributionSymmetry), props(character)
 
 "ProbFamily"
-|>"ParamFamily"     [*] 
+|>"ParamFamily"     [*]
 additional slots:
 param(ParamFamParameter), modifyParam(function),
 startPar(function), makeOKPar(function), fam.call(call)
 |>|>"L2ParamFamily" [*]
 additional slots:
-L2deriv(EuclRandVarList), L2deriv.fct(function), 
+L2deriv(EuclRandVarList), L2deriv.fct(function),
 L2derivSymm(FunSymmList), L2derivDistr(DistrList),
 L2derivDistrSymm(DistrSymmList), FisherInfo(PosSemDefSymmMatrix),
 FisherInfo.fct(function)
@@ -59,14 +61,14 @@ LogDeriv(function)
 additional slots:
 locscalename(character)
 |>|>|>|>|>"L2LocationFamily"            [*]
-|>|>|>|>|>|>"NormLocationFamily"        [*] 
+|>|>|>|>|>|>"NormLocationFamily"        [*]
 |>|>|>|>|>"L2ScaleFamily"               [*]
-|>|>|>|>|>|>"NormScaleFamily"           [*] 
-|>|>|>|>|>|>"ExpScaleFamily"            [*] 
-|>|>|>|>|>|>"LnormScaleFamily"          [*] 
+|>|>|>|>|>|>"NormScaleFamily"           [*]
+|>|>|>|>|>|>"ExpScaleFamily"            [*]
+|>|>|>|>|>|>"LnormScaleFamily"          [*]
 |>|>|>|>|>"L2LocationScaleFamily"       [*]
-|>|>|>|>|>|>"NormLocationScaleFamily"   [*] 
-|>|>|>|>|>|>"CauchyLocationScaleFamily" [*] 
+|>|>|>|>|>|>"NormLocationScaleFamily"   [*]
+|>|>|>|>|>|>"CauchyLocationScaleFamily" [*]
 
 and a (virtual) class union "L2ScaleUnion"  between
    "L2LocationScaleUnion"  and "L2ScaleShapeUnion"
@@ -83,7 +85,7 @@ trafo(MatrixorFunction)
 Class unions
 ##########################
 "MatrixorFunction" = union("matrix", "OptionalFunction")
-"PrintDetails" = union("Estimate", "Confint", 
+"PrintDetails" = union("Estimate", "Confint",
                    "PosSemDefSymmMatrix",
                    "ParamFamParameter", "ParamFamily")
 
@@ -187,14 +189,14 @@ slots:
 name(character), estimate(ANY),
 samplesize(numeric), asvar(OptionalMatrix),
 Infos(matrix), nuis.idx(OptionalNumeric)
-fixed.estimate(OptionalNumeric), 
+fixed.estimate(OptionalNumeric),
 estimate.call(call), trafo(list[of function, matrix]),
-untransformed.estimate(ANY), 
+untransformed.estimate(ANY),
 untransformed.asvar(OptionalMatrix)
 criterion.fct(function), method(character),
 
 "Estimate"
-|>"MCEstimate", 
+|>"MCEstimate",
 Additional slots:
 criterion(numeric)
 
@@ -204,7 +206,7 @@ Confidence interval class
 slots:
 type(character), confint(array),
 estimate.call(call), name.estimate(character),
-trafo.estimate(list[of function, matrix]), 
+trafo.estimate(list[of function, matrix]),
 nuisance.estimate(OptionalNumeric)
 "Confint"
 
@@ -212,7 +214,7 @@ nuisance.estimate(OptionalNumeric)
 }
 \section{Methods}{
 besides accessor and replacement functions, we have
-methods 
+methods
 
 \code{solve}, \code{sqrt} for matrices
 \code{checkL2deriv}, \code{existsPIC} for class \code{L2ParamFamily}
@@ -221,7 +223,7 @@ methods
 \code{validParameter} for classes \code{ParamFamily}, \code{L2ScaleFamily},
 \code{L2LocationFamily}, and \code{L2LocationScaleFamily}
 
-\code{modifyModel} for the pairs of classes 
+\code{modifyModel} for the pairs of classes
 \code{L2ParamFamily} and \code{ParamFamParameter},
 \code{L2LocationFamily} and \code{ParamFamParameter},
 \code{L2ScaleFamily} and \code{ParamFamParameter},
@@ -254,7 +256,7 @@ Management of global options:
 check for ker of matrix: "isKerAinKerB"
 
 particular norms: "EuclideanNorm", "QuadFormNorm"
-onesided bias: "positiveBias", "negativeBias", 
+onesided bias: "positiveBias", "negativeBias",
 
 Estimators:
 "Estimator", "MCEstimator", "MLEstimator", "MDEstimator"
@@ -267,63 +269,63 @@ some special normal models:
 }}
 
 \note{
-Some functions of packages \pkg{stats}, \pkg{base} have intentionally been masked, 
+Some functions of packages \pkg{stats}, \pkg{base} have intentionally been masked,
 but completely retain their functionality --- see \code{distrModMASK()}.
 
-If any of the packages \pkg{stats4}, \pkg{fBasics} is to be used  
-together with \pkg{distrMod}, the latter must be attached \emph{after} any of the 
-first mentioned. Otherwise \code{confint()} defined as \emph{method} 
-in \pkg{distrMod} may get masked.\cr  To re-mask, you 
-may use  \code{confint <- distrMod::confint}. 
+If any of the packages \pkg{stats4}, \pkg{fBasics} is to be used
+together with \pkg{distrMod}, the latter must be attached \emph{after} any of the
+first mentioned. Otherwise \code{confint()} defined as \emph{method}
+in \pkg{distrMod} may get masked.\cr  To re-mask, you
+may use  \code{confint <- distrMod::confint}.
 See also \code{distrModMASK()}
 }
 
 \author{
-Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de},\cr 
+Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de},\cr
 Matthias Kohl \email{Matthias.Kohl@stamats.de}\cr
 
-\emph{Maintainer:} Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}
+\emph{Maintainer:} Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}
 }
 
 \references{
 M. Kohl and P. Ruckdeschel (2010):
 R Package distrMod: S4 Classes and Methods for Probability Models.
-Journal of Statistical Software, 35(10), 1-27. 
+Journal of Statistical Software, 35(10), 1-27.
 \url{http://www.jstatsoft.org/v35/i10/}
 (see also \code{vignette("distrMod")})
 
 
 P. Ruckdeschel, M. Kohl, T. Stabla, F. Camphausen (2006):
-S4 Classes for Distributions, \emph{R News}, \emph{6}(2), 2-6. 
+S4 Classes for Distributions, \emph{R News}, \emph{6}(2), 2-6.
 \url{http://CRAN.R-project.org/doc/Rnews/Rnews_2006-2.pdf}
 
-A vignette for packages \pkg{distr}, \pkg{distrSim}, \pkg{distrTEst}, and 
-\pkg{distrEx} is included into the mere documentation package \pkg{distrDoc} 
-and may be called by 
+A vignette for packages \pkg{distr}, \pkg{distrSim}, \pkg{distrTEst}, and
+\pkg{distrEx} is included into the mere documentation package \pkg{distrDoc}
+and may be called by
 \code{require("distrDoc");vignette("distr")}
 }
 
 \section{Start-up-Banner}{
-You may suppress the start-up banner/message completely by setting 
-\code{options("StartupBanner"="off")} somewhere before loading this 
+You may suppress the start-up banner/message completely by setting
+\code{options("StartupBanner"="off")} somewhere before loading this
 package by \code{library} or \code{require} in your R-code / R-session.
 
-If option \code{"StartupBanner"} is not defined (default) or setting    
-\code{options("StartupBanner"=NULL)} or  
-\code{options("StartupBanner"="complete")} the complete start-up banner is 
+If option \code{"StartupBanner"} is not defined (default) or setting
+\code{options("StartupBanner"=NULL)} or
+\code{options("StartupBanner"="complete")} the complete start-up banner is
 displayed.
 
-For any other value of option \code{"StartupBanner"} 
+For any other value of option \code{"StartupBanner"}
 (i.e., not in \code{c(NULL,"off","complete")})
 only the version information is displayed.
 
-The same can be achieved by wrapping the \code{library} or \code{require} 
-call into either \code{suppressStartupMessages()} or 
-\code{onlytypeStartupMessages(.,atypes="version")}. 
+The same can be achieved by wrapping the \code{library} or \code{require}
+call into either \code{suppressStartupMessages()} or
+\code{onlytypeStartupMessages(.,atypes="version")}.
 
 As for general \code{packageStartupMessage}'s, you may also suppress all
-the start-up banner by wrapping the \code{library} or \code{require} 
-call into \code{suppressPackageStartupMessages()} from 
+the start-up banner by wrapping the \code{library} or \code{require}
+call into \code{suppressPackageStartupMessages()} from
 \pkg{startupmsg}-version 0.5 on.
 }
 

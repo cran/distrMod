@@ -22,7 +22,7 @@
              sc <- NULL
              if(is(try(sc <- param["scale"], silent=TRUE),"try-error"))
                 if(is(object,"L2LocationScaleUnion"))
-                   try(sc <- param[locationscale(object)["scale"]],silent=TRUE)
+                   try(sc <- param[scalename(object)["scale"]],silent=TRUE)
              if(!is.null(sc) && !is.na(sc)) if(sc <= tol) return(FALSE)
              if(!all(is.finite(param))) return(FALSE)
              return(TRUE)})

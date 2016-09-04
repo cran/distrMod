@@ -202,7 +202,7 @@
   \eqn{\tau(\theta)=D\,\theta}{tau(theta)=D * theta}.\cr
 }
 \author{Matthias Kohl \email{Matthias.Kohl@stamats.de},\cr
-Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
+Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}}
 \note{
 The pretty-printing code for methods \code{show} and \code{print} 
 has been borrowed from \code{print.fitdistr} in package \pkg{MASS} by B.D. Ripley.

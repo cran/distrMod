@@ -63,7 +63,7 @@ MCEstimator(x, ParamFamily, criterion, crit.name,
  computing the criterion differently for different parameter values.}
 %\references{  }
 \author{Matthias Kohl \email{Matthias.Kohl@stamats.de},\cr
-        Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
+        Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}}
 %\note{}
 \seealso{\code{\link{ParamFamily-class}}, \code{\link{ParamFamily}}, 
          \code{\link{MCEstimate-class}} }

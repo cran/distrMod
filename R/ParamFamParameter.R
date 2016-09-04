@@ -2,8 +2,7 @@
 ## generating function
 ParamFamParameter <- function(name, main = numeric(0), nuisance, fixed, trafo,
                   ..., .returnClsName = NULL){
-
-    mc <- as.list(match.call(expand.dots=TRUE))
+    mc <- as.list(match.call(expand.dots=FALSE))
     if(missing(name))
         name <- "parameter of a parametric family of probability measures"
     if(missing(nuisance))
@@ -36,13 +35,13 @@ ParamFamParameter <- function(name, main = numeric(0), nuisance, fixed, trafo,
        mat <- pmatch(nms,"withPosRestr")
        ws <- lS <- TRUE
        if(1 %in% mat){
-          PFP@withPosRestr <- mc$...[[which(mat==1)]]
+          PFP@withPosRestr <- eval(mc$...[[which(mat==1)]],sys.parent(1))
           ws <- FALSE
        }
        nms0 <- which(nms=="")
        if(length(nms0)){
            if(ws){
-              PFP@withPosRestr <- mc$...[[nms0[1]]]
+              PFP@withPosRestr <- eval(mc$...[[nms0[1]]],sys.parent(1))
               ws <- FALSE
               nms0 <- nms0[-1]
            }

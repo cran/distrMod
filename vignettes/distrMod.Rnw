@@ -74,7 +74,7 @@ Jakob-Kienzle-Strasse 17\\
   Fraunhofer-ITWM\\ 
   Fraunhofer-Platz 1\\ 
   67663 Kaiserslautern, Germany\\
-  E-mail: \email{Peter.Ruckdeschel@itwm.fraunhofer.de}
+  E-mail: \email{peter.ruckdeschel@uni-oldenburg.de}
 }
 %% It is also possible to add a telephone and fax number
 %% before the e-mail in the following format:

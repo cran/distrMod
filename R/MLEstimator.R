@@ -7,7 +7,8 @@
 MLEstimator <- function(x, ParamFamily, startPar = NULL, 
                         Infos, trafo = NULL, penalty = 1e20,
                         validity.check = TRUE, na.rm = TRUE,
-                        ..., .withEvalAsVar = TRUE){
+                        ..., .withEvalAsVar = TRUE,
+                        dropZeroDensity = TRUE){
 
     ## preparation: getting the matched call
     es.call <- match.call()
@@ -24,12 +25,12 @@ MLEstimator <- function(x, ParamFamily, startPar = NULL,
 
     ## manipulation of the arg list to method mceCalc
     argList <- c(list(x = x, PFam = ParamFamily, startPar = startPar, 
-                      penalty = penalty))
+                      penalty = penalty, dropZeroDensity = dropZeroDensity ))
 
-    if(missing(validity.check)) validity.check <- TRUE
-       argList$validity.check <- validity.check
     if(missing(Infos))      Infos <- NULL
         argList <- c(argList, Infos = Infos)
+    if(missing(validity.check)) validity.check <- TRUE
+       argList$validity.check <- validity.check
     if(!is.null(dots))      argList <- c(argList, dots)
 
     ## call to mleCalc
@@ -42,7 +43,8 @@ MLEstimator <- function(x, ParamFamily, startPar = NULL,
     
     argList <- list(res0, PFam = ParamFamily, trafo = trafo,
                       res.name = "Maximum likelihood estimate",
-                      call = quote(es.call), .withEvalAsVar=.withEvalAsVar)
+                      call = quote(es.call), .withEvalAsVar=.withEvalAsVar,
+                      check.validity = validity.check )
 
     if(!is.null(asv))   argList <- c(argList, asvar.fct = asv)
     if(!is.null(dots))  argList <- c(argList, dots)
@@ -55,5 +57,5 @@ MLEstimator <- function(x, ParamFamily, startPar = NULL,
     res@name <- "Maximum likelihood estimate"
     res@completecases <- completecases
     
-    return(res)
+    return(.checkEstClassForParamFamily(ParamFamily,res))
 }

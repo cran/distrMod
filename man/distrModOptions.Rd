@@ -52,7 +52,7 @@ just a synonym to \code{distrModoptions}.
 }}
 %\references{}
 \author{Matthias Kohl \email{Matthias.Kohl@stamats.de},\cr
-        Peter Ruckdeschel \email{Peter.Ruckdeschel@itwm.fraunhofer.de}}
+        Peter Ruckdeschel \email{peter.ruckdeschel@uni-oldenburg.de}}
 %\note{}
 \seealso{\code{\link[base]{options}}, \code{\link[base:options]{getOption}},
 \code{\link[distr]{distroptions}}, \code{\link[distr:distroptions]{getdistrOption}}}

@@ -26,7 +26,7 @@ setMethod("confint", signature(object="Estimate", method="missing"),
 ### code borrowed from confint.default from package stats
     a <- (1 - level)/2
     a <- c(a, 1 - a)
-    pct <- stats:::format.perc(a, 3)
+    pct <- format.perc(a, 3)
     fac <- qnorm(a)
     ci <- array(NA, dim = c(length(object@estimate), 2),
                 dimnames = list(names(object@estimate), pct)
