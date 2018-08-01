@@ -41,6 +41,7 @@ plot(Z, cex.inner = 0.9)
 ###################################################
 p(Z)(0.4)
 q(Z)(0.3)
+## in RStudio or Jupyter IRKernel, use q.l(.)(.) instead of q(.)(.)
 r(Z)(5)
 
 
@@ -169,6 +170,7 @@ mtrafo <- function(x){
 ### code chunk number 14: mad-const
 ###################################################
 (mad.const <- 1/q(myD)(0.75))
+## in RStudio or Jupyter IRKernel, use q.l(.)(.) instead of q(.)(.)
 
 
 ###################################################

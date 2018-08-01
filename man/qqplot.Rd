@@ -9,8 +9,8 @@ qqplot(x, y, ...)
     plot.it = TRUE, datax = FALSE, xlab = deparse(substitute(x)),
     ylab = deparse(substitute(y)),
     ..., width = 10, height = 5.5, withSweave = getdistrOption("withSweave"),
-    mfColRow = TRUE, n.CI = n, withLab = FALSE, lab.pts = NULL, which.lbs = NULL,
-    which.Order = NULL, order.traf = NULL, 
+    mfColRow = TRUE, n.CI = n, with.lab = FALSE, lab.pts = NULL, which.lbs = NULL,
+    which.Order = NULL, which.nonlbs = NULL, attr.pre = FALSE, order.traf = NULL,
     col.IdL = "red", lty.IdL = 2, lwd.IdL = 2, alpha.CI = .95,
     exact.pCI = (n<100), exact.sCI = (n<100), nosym.pCI = FALSE,
     col.pCI = "orange", lty.pCI = 3, lwd.pCI = 2, pch.pCI = par("pch"),
@@ -18,7 +18,9 @@ qqplot(x, y, ...)
     col.sCI = "tomato2", lty.sCI = 4, lwd.sCI = 2, pch.sCI = par("pch"),
     cex.sCI = par("cex"), added.points.CI = TRUE,
     cex.pch = par("cex"), col.pch = par("col"),
-    cex.lbl = par("cex"), col.lbl = par("col"), adj.lbl = par("adj"),
+    cex.pts = 1, col.pts = par("col"), pch.pts = 19,
+    cex.npts = 1, col.npts = grey(.5), pch.npts = 20,
+    cex.lbs = par("cex"), col.lbs = par("col"), adj.lbs = par("adj"),
     alpha.trsp = NA, jit.fac = 0, jit.tol = .Machine$double.eps,
     check.NotInSupport = TRUE, col.NotInSupport = "red",
     with.legend = TRUE, legend.bg = "white",
@@ -64,11 +66,19 @@ class \code{"ProbFamily"}.}
         no extra device is opened and height/width are not set}
 \item{mfColRow}{shall default partition in panels be used --- defaults to \code{TRUE}}
 \item{n.CI}{numeric; number of points to be used for confidence interval}
-\item{withLab}{logical; shall observation labels be plotted in?}
+\item{with.lab}{logical; shall observation labels be plotted in?}
 \item{lab.pts}{character or \code{NULL}; observation labels to be used}
+\item{attr.pre}{logical; do graphical attributes for plotted data refer
+                  to indices prior (\code{TRUE}) or posterior to selection
+                  via arguments \code{which.lbs}, \code{which.Order}, \code{which.nonlbs}
+                  (\code{FALSE})? }
 \item{which.lbs}{integer or \code{NULL}; which observations shall be labelled}
 \item{which.Order}{integer or \code{NULL}; which of the ordered (remaining)
 observations shall be labelled}
+\item{which.nonlbs}{indices of the observations which should be plotted but
+        not labelled; either an integer vector with the indices of the observations
+          to be plotted into graph or \code{NULL} --- then all non-labelled
+          observations are plotted.}
 \item{order.traf}{function or \code{NULL}; an optional trafo by which the
 observations are ordered (as order(trafo(obs)).}
 \item{col.IdL}{color for the identity line}
@@ -94,13 +104,35 @@ pointwise CI}
 simultaneous CI}
 \item{added.points.CI}{logical; should CIs be plotted through additional points
       (and not only through data points)? }
-\item{cex.pch}{magnification factor for the plotted symbols}
-\item{col.pch}{color for the plotted symbols}
-\item{cex.lbl}{magnification factor for the plotted observation labels}
-\item{col.lbl}{color for the plotted observation labels}
-\item{adj.lbl}{adj parameter for the plotted observation labels}
+\item{cex.pch}{magnification factor for the plotted symbols (for backward
+          compatibility); it is ignored once \code{col.pts} is specified.}
+\item{col.pch}{color for the plotted symbols (for backward compatibility); it is
+          ignored once \code{col.pts} is specified.}
+\item{cex.pts}{size of the points of the second argument plotted, can be a vector;
+      if argument \code{attr.pre} is \code{TRUE}, it is recycled to the length
+      of all observations and determines the sizes of all plotted symbols,
+      i.e., the selection is done within this argument; in this case argument
+      \code{col.npts} is ignored. If \code{attr.pre} is \code{FALSE},
+      \code{cex.pts} is recycled to the number of the observations selected
+      for labelling and refers to the index ordering after the
+      selection. Then argument \code{cex.npts} deteremines the sizes
+      of the shown but non-labelled observations as given in argument
+      \code{which.nonlbs}.}
+\item{col.pts}{color of the points of the second argument plotted, can
+         be a vector as in \code{cex.pts} (with \code{col.npts} as counterpart).}
+\item{pch.pts}{symbol of the points of the second argument plotted, can
+         be a vector as in \code{cex.pts} (with \code{pch.npts} as counterpart).}
+\item{col.npts}{color of the non-labelled points of the \code{data} argument
+     plotted; (may be a vector).}
+\item{pch.npts}{symbol of the non-labelled points of the \code{data} argument
+         plotted (may be a vector).}
+\item{cex.npts}{size of the non-labelled points of the \code{data} argument
+                 plotted (may be a vector).}
+\item{cex.lbs}{magnification factor for the plotted observation labels}
+\item{col.lbs}{color for the plotted observation labels}
+\item{adj.lbs}{adj parameter for the plotted observation labels}
 \item{alpha.trsp}{alpha transparency to be added ex post to colors
-        \code{col.pch} and \code{col.lbl}; if one-dim and NA all colors are
+        \code{col.pch} and \code{col.lbs}; if one-dim and NA all colors are
         left unchanged. Otherwise, with usual recycling rules \code{alpha.trsp}
         gets shorted/prolongated to length the data-symbols to be plotted.
         Coordinates of this vector \code{alpha.trsp} with NA are left unchanged,
@@ -144,54 +176,12 @@ in \code{support(y)}?}
 }
 }
 \value{
-  A list of elements containing the information needed to compute the 
-  respective QQ plot, in particular it extends the elements of the 
-  return value of function \code{\link[stats:qqnorm]{qqplot}} 
-  from package \pkg{stats}, i.e., a
-  list with components \code{x} and \code{y} for x and y coordinates
-  of the plotted points; this list is of S3 class 
-  \code{c("qqplotInfo","DiagnInfo")}, and more specifically it contains
+    As for function \code{\link[stats:qqnorm]{qqplot}} from package \pkg{stats}: a
+  list with components
 \item{x}{The x coordinates of the points that were/would be plotted}
   \item{y}{The corresponding quantiles of the second distribution,
            \emph{including \code{\link{NA}}s}.}
-           
- \item{xy.0}{xy} 
- \item{y.0}{y}
- \item{datax}{argument \code{datax} from the call.} 
- \item{withConf.pw}{argument \code{withConf.pw} from the call.} 
- \item{withConf.sim}{argument \code{withConf.sim} from the call.} 
- \item{alpha.CI}{argument \code{alpha.CI } from the call.}
- \item{col.pCI}{argument \code{col.pCI} from the call.} 
- \item{lty.pCI}{argument \code{lty.pCI} from the call.} 
- \item{lwd.pCI}{argument \code{lwd.pCI} from the call.} 
- \item{pch.pCI}{argument \code{pch.pCI} from the call.} 
- \item{cex.pCI}{argument \code{cex.pCI} from the call.} 
- \item{col.sCI}{argument \code{col.sCI} from the call.} 
- \item{lty.sCI}{argument \code{lty.sCI} from the call.} 
- \item{lwd.sCI}{argument \code{lwd.sCI} from the call.} 
- \item{pch.sCI}{argument \code{pch.sCI} from the call.} 
- \item{cex.sCI}{argument \code{cex.sCI} from the call.} 
- \item{n}{argument \code{n} from the call.} 
- \item{exact.sCI}{argument \code{exact.sCI} from the call.}
- \item{exact.pCI}{argument \code{exact.pCI} from the call.}
- \item{nosym.pCI}{argument \code{nosym.pCI} from the call.}
- \item{with.legend}{argument \code{with.legend} from the call.}
- \item{legend.bg}{argument \code{legend.bg} from the call.}
- \item{legend.pos}{argument \code{legend.pos} from the call.}
- \item{legend.cex}{argument \code{legend.cex} from the call.} 
- \item{legend.pref}{argument \code{legend.pref} from the call.}
- \item{legend.postf}{argument \code{legend.postf} from the call.} 
- \item{legend.alpha}{argument \code{legend.alpha} from the call.} 
- \item{debug}{argument \code{debug} from the call.}
- \item{args.stats.qqplot}{the arguments of the call to \code{mcl} from the call.}
- \item{withLab}{argument \code{withLab} from the call to
- \code{stats::qqplot} from within this QQ plot method.}
- \item{lbprep}{the return value of the label preparation from within
-               this function, i.e., a list with elements 
-      \code{x0}, \code{y0}, \code{lab}, \code{col}, \code{cex}, 
-      \code{adj}.}
-
- \item{crit}{A matrix with the lower and upper confidence bounds
+  \item{crit}{A matrix with the lower and upper confidence bounds
                (computed by \code{qqbounds}).}
   \item{err}{logical vector of length 2.}
   (elements \code{crit} and \code{err} are taken from the return
@@ -239,10 +229,10 @@ are also valid for this signature.}
 }
 \examples{
 set.seed(123)
-x <- rnorm(40,mean=5,sd=sqrt(10))
-qqplot(x, Chisq(df=5))
-NF <- NormLocationScaleFamily(mean=5, sd=30^.5)
-qqplot(x, NF)
+x <- rnorm(40,mean=15,sd=30)
+qqplot(x, Chisq(df=15))
+NF <- NormLocationScaleFamily(mean=15, sd=30)
+qqplot(x, NF, with.lab=TRUE, which.Order=1:5, cex.lbs=1.3)
 mlE <- MLEstimator(x, NF)
 qqplot(x, mlE)
 }

@@ -8,6 +8,39 @@
  information)
 
 ##############
+v 2.7
+##############
+
+user-visible CHANGES:
++ replaced http://CRAN... by https://CRAN... (also in CITATION and similar files) 
++ new wrapper to MDEstimator: CvMMDEstimator, KolmogorovMDEstimator, TotalVarMDEstimator, 
+  HellingerMDEstimator
++ exported .CvMMDCovariance in distrMod
++ added call to return value of qqplot
++ qqplot and returnlevelplot have adopted the same argument naming (and selection paradigm) 
+  as the other diagnostic plots (IC-plot, comparePlot, infoPlot) in pkg RobAStBase:
+    the suffix is .lbs instead of .lbl, 
+	changed argument name withLab to with.lab
+	the attributes of shown points have ending .pts
+	the observations are classed into three groups:
+	  - the labelled observations selected through which.lbs and which.Order
+	  - the shown non labelled observations (which are not in the previous set)
+	    selected by which.nonlbs
+	  - the non-shown observations (the remaining ones not contained in the former 2 grps)
+	-> point attributes may either refer to prior selection or to post-selection in
+       which case we have .npts variants	
++ returnlevelplot now accepts a log argument for the y axis (helpful for Pareto distributions, see script...)
+	 
+under the hood:
++ wherever possible also use q.l internally instead of q to 
+  provide functionality in IRKernel
++ fixed omegahat.net issue (raised by K.Hornik,(24.10.2016, 18:08)
+
+bug fixes:
++ Estimate method for returnlevelplot was passing the wrong xlab
++ the selection mechanism had to be revised (lacked a passage through ranks)
+
+##############
 v 2.6
 ##############
 
@@ -64,7 +97,6 @@ under the hood:
   BUGFIXES:
 
 
-+ fixed an issue with MDEstimator and validParameter
 + fixed issue with slot withPosRestr in ParamFamParameter.R 
 + fixed issue with check.validity (reported by B.Spangl)
 + fixed some minor issue in existsPIC (in case we get 0 matrix, and less strict tolerance) 

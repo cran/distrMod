@@ -17,6 +17,7 @@
 \alias{d,ProbFamily-method}
 \alias{p,ProbFamily-method}
 \alias{q,ProbFamily-method}
+\alias{q.l,ProbFamily-method}
 
 \title{Family of probability measures}
 \description{Class of families of probability measures.}
@@ -64,6 +65,9 @@
       to slot \code{p} of slot \code{"Distribution"}.}
     \item{q}{\code{signature(object = "ProbFamily")}: wrapped accessor
       to slot \code{q} of slot \code{"Distribution"}.}
+    \item{q.l}{\code{signature(object = "ProbFamily")}: wrapped accessor
+      to slot \code{q} of slot \code{"Distribution"} -- for compatibility
+      with RStudio or Jupyter IRKernel / synonymous to \code{q}.}
   }
 }
 %\references{}

@@ -16,8 +16,8 @@
              lowerTruncQuantile = getdistrExOption("ElowerTruncQuantile"), 
              upperTruncQuantile = getdistrExOption("EupperTruncQuantile"), 
                          IQR.fac = getdistrExOption("IQR.fac")){
-  low0 <- q(distr)(lowerTruncQuantile)
-  upp0 <- q(distr)(upperTruncQuantile,lower.tail=FALSE)
+  low0 <- q.l(distr)(lowerTruncQuantile)
+  upp0 <- q.l(distr)(upperTruncQuantile,lower.tail=FALSE)
   me <- median(distr)
   s1 <- IQR(distr)
   low1 <- me - IQR.fac * s1 
@@ -103,69 +103,58 @@
    N1 <- 2*N+1
    odd <- (1:N1)%%2==1
 
-   ## shift L2family to a parameter value as given in main(param)
    param0 <- L2Fam@param
    dim0 <- dimension(param0)
+#   print(param0)
    paramP <- param0
    paramP@main <- main(param)
    paramP@trafo <- diag(dim0)
+#   print(paramP)
    L2Fam <- modifyModel(L2Fam, paramP)
 
+#   print(L2deriv(L2Fam)[[1]]@Map)
    distr <- L2Fam@distribution
    
    ### get a sensible integration range:
-   if(is(distr,"DiscreteDistribution")){
-       x.seq0 <- x.seq <- support(distr)
-       low <- min(x.seq)
-       up <- max(x.seq) 
-   }else{
-   ### get a sensible integration range:
-       low0 <- q(distr)(TruncQuantile) 
-       up0 <- q(distr)(TruncQuantile, lower.tail = FALSE) 
-       m0 <- median(distr); s0 <- IQR(distr)
-       low1 <- m0 - IQR.fac * s0
-       up1  <- m0 + IQR.fac * s0
-       low <- max(low0,low1); up <- min(up0,up1)
-       if(is(distr,"AbscontDistribution")){
-          x.seq0 <- seq(low, up, length = N1)
-          h0 <- x.seq0[1:2]%*%c(-1,1)
-          x.seq <- x.seq0[odd]
-       }else{ 
-          x.seq0 <- x.seq <- seq(low,up, length = N)
-       }
-   }
+   low0 <- q.l(distr)(TruncQuantile)
+   up0 <- q.l(distr)(TruncQuantile, lower.tail = FALSE)
+   m0 <- median(distr); s0 <- IQR(distr)
+   low1 <- m0 - IQR.fac * s0
+   up1  <- m0 + IQR.fac * s0
+   low <- max(low0,low1); up <- min(up0,up1)
 
-   ## similar for mu
-   if(missing(mu)){
-      mu <- distr
-      low.mu <- low
-      up.mu <- up
-      x.mu.seq <- x.seq
-      if(is(distr,"AbscontDistribution")){
-         x.mu.seq0 <- x.seq0
-         h0.mu <- h0
-      }   
-   }else{
-     if(is(distr,"DiscreteDistribution")){
-       x.mu.seq <- support(mu)
-       low.mu <- min(x.mu.seq)
-       up.mu <- max(x.mu.seq)
-     }else{ 
-       low0.mu <- q(mu)(TruncQuantile) 
-       up0.mu <- q(mu)(TruncQuantile, lower.tail = FALSE) 
-       m0.mu <- median(mu); s0.mu <- IQR(mu)
-       low1.mu <- m0.mu - IQR.fac * s0.mu
-       up1.mu  <- m0.mu + IQR.fac * s0.mu
-       low.mu <- max(low0.mu,low1.mu); up.mu <- min(up0.mu,up1.mu)
-       if(is(mu,"AbscontDistribution")){
-           x.mu.seq0 <- seq(low.mu, up.mu, length = N1)
-           h0.mu <- x.mu.seq0[1:2]%*%c(-1,1)
-           x.mu.seq <- x.mu.seq0[odd]
-       }else{ 
-           x.mu.seq <- seq(low.mu, up.mu, length = N)
+   ### get a sensible integration range:
+   if(missing(mu)) mu <- distr
+   low0.mu <- q.l(mu)(TruncQuantile)
+   up0.mu <- q.l(mu)(TruncQuantile, lower.tail = FALSE)
+   m0.mu <- median(mu); s0.mu <- IQR(mu)
+   low1.mu <- m0.mu - IQR.fac * s0.mu
+   up1.mu  <- m0.mu + IQR.fac * s0.mu
+   low.mu <- max(low0.mu,low1.mu); up.mu <- min(up0.mu,up1.mu)
+
+
+   if(is(distr,"DiscreteDistribution"))
+       x.seq <-support(distr)
+   else
+       {if(is(distr,"AbscontDistribution")){
+           x.seq0 <- seq(low, up, length = N1)
+           h0 <- diff(x.seq0[2:1])
+           x.seq <- x.seq0[odd]
+          }else{ 
+           x.seq <- seq(low,up, length = N)
+          }
        }
-     }
-   }
+   if(is(mu,"DiscreteDistribution"))
+       x.mu.seq <- support(mu)
+   else
+       {if(is(mu,"AbscontDistribution")){
+           x.mu.seq0 <- seq(low.mu, up.mu, length = N1)
+           h0.mu <- diff(x.mu.seq0[2:1])
+           x.mu.seq <- x.mu.seq0[odd]
+          }else{ 
+           x.mu.seq <- seq(low.mu, up.mu, length = N)
+          }
+       }
    
    L2deriv <- L2deriv(L2Fam)[[1]]
 #   y.seq <- sapply(x.seq, function(x) evalRandVar(L2deriv, x))
@@ -188,35 +177,30 @@
                  d(distr)(x.seq0)
       Delta0 <-  h0*.csimpsum(Delta0x)   
    }else{
-      if(is(distr,"DiscreteDistribution")){
-         Delta0x <- sapply(x.seq0, function(x) 
-                                evalRandVar(L2deriv, x)) * 
-                    d(distr)(x.seq0)
-         Delta0 <- cumsum(Delta0x)           
-      }else{
-         L2x  <- function(x,y)  (x<=y)*evalRandVar(L2deriv, x)
-         Delta0 <- sapply(x.seq, function(Y){ fct <- function(x) L2x(x,y=Y)
+      L2x  <- function(x,y)  (x<=y)*evalRandVar(L2deriv, x)
+      Delta0 <- sapply(x.seq, function(Y){ fct <- function(x) L2x(x,y=Y)
                                         return(E(object=distr, fun = fct))})
-      }                                  
    }
  #  print(Delta0)
    Delta1 <- approxfun(x.seq, Delta0, yleft = 0, yright = 0)
    if(is(distr,"DiscreteDistribution"))         
       Delta <- function(x) Delta1(x) * (x %in% support(distr))
-   else  Delta <- Delta1
-#   print(Delta(x.seq))
+   else  Delta <- function(x) Delta1(x)
+ #  print(Delta(x.seq))
  #  print(Delta(rnorm(100)))
 
    ## J = Var_Ptheta Delta
+   J1 <- E(object=distr, fun = Delta)
 #   print(J1)
+   Delta.0 <- function(x) Delta(x) - J1
  #  print(Delta.0(x.seq))
  #  print(Delta.0(r(distr)(100))^2)
    #J <- distrExIntegrate(function(x) d(distr)(x)*Delta.0(x)^2, lower=low, upper=up)
-   J <- E(object=distr, fun = function(x) Delta(x)^2 )
+   J <- E(object=distr, fun = function(x) Delta.0(x)^2 )
 #   print(J)
    
    ### CvM-IC phi
-   phi <- function(x) Delta(x)/J
+   phi <- function(x) Delta.0(x)/J
 
    ## integrand phi x Ptheta in formula (51) [ibid]
    phi1 <- function(x) phi(x) * p(distr)(x)
@@ -251,14 +235,13 @@
    psi.01 <- function(x) psi.0(x)/E3
    if(withplot)
        { dev.new() #windows()
-         
          plot(x.seq, psi.01(x.seq),
                      type = if(is(distr,"DiscreteDistribution")) "p" else "l")
        }
    E4 <- E(object=distr, fun = function(x) psi.01(x)^2)
    psi.01 <- EuclRandVariable(Map = list(psi.01), Domain = Reals())
 
-#   print(list(E1,E2,E4,E2-E4))
+#   print(list(E2,E4,E2-E4))
 
       }else{
 
@@ -396,7 +379,7 @@ P0 <- PoisFamily();.CvMMDCovariance(P0,par=ParamFamParameter("lambda",1), withpl
 B0 <- BinomFamily(size=8, prob=0.3);.CvMMDCovariance(B0,par=ParamFamParameter("",.3), withplot=TRUE)
 N0 <- NormLocationFamily();.CvMMDCovariance(N0,par=ParamFamParameter("",0), withplot=TRUE, N = 200)
 C0 <- L2LocationFamily(central=Cauchy());.CvMMDCovariance(C0,par=ParamFamParameter("",0), withplot=TRUE, N = 200)
-N1 <- NormScaleFamily(); re=.CvMMDCovariance(N1,par=ParamFamParameter("",1), withpreIC,withplot=TRUE, N = 200)
+N1 <- NormScaleFamily(); re=.CvMMDCovariance(N1,par=ParamFamParameter("",1), withICwithplot=TRUE, N = 200)
 NS <- NormLocationScaleFamily();paramP <- ParamFamParameter(name = "locscale", main = c("loc"=0,"scale"=1),trafo = diag(2));
       .CvMMDCovariance(NS,par=paramP, withplot=TRUE, N = 100)
 cls <- CauchyLocationScaleFamily();.CvMMDCovariance(cls,par=ParamFamParameter("",0:1), withplot=TRUE, N = 200)
@@ -607,17 +590,19 @@ system.time(print(.CvMMDCovariance(Els,par=ParamFamParameter("",0:1), N = 100)))
     mcl$which.Order <- mcl$order.traf  <- NULL
     mcl$col.pch <- mcl$cex.pch  <- mcl$jit.fac <- NULL
     mcl$col.lbl <- mcl$cex.lbl  <- mcl$adj.lbl <- NULL
-    mcl$exp.cex2.pch <- mcl$exp.cex2.lbl <- NULL
-    mcl$exp.fadcol.pch <- mcl$exp.fadcol.lbl <- NULL
+    mcl$col.lbs <- mcl$cex.lbs  <- mcl$adj.lbs <- NULL
+    mcl$exp.cex2.pch <- mcl$exp.cex2.lbl <- mcl$exp.cex2.lbs <- NULL
+    mcl$exp.fadcol.pch <- mcl$exp.fadcol.lbl <- mcl$exp.fadcol.lbs <- NULL
     mcl$nosym.pCI <- mcl$n.CI <- mcl$n.adj <- NULL
     mcl$legend.cex <- mcl$with.legend <- mcl$legend.bg <- NULL
     mcl$legend.pos <- mcl$legend.pref <- mcl$legend.postf <- NULL
     mcl$legend.alpha <- NULL
     mcl$withSweave <- NULL
     mcl$mfColRow <- NULL
-    mcl$debug <- NULL
+    mcl$debug <- mcl$with.lab <- mcl$MaxOrPOT <- NULL
     mcl$added.points.CI <- NULL
-
+    mcl$pch.pts <- mcl$pch.npts <- mcl$cex.pts <- mcl$cex.npts <- NULL
+    mcl$col.pts <- mcl$col.npts <- mcl$which.nonlbs <- mcl$attr.pre <- NULL
 mcl}
 
 ## helpers
@@ -635,8 +620,8 @@ mcl}
 
 .NotInSupport <- function(x,D){
   if(length(x)==0) return(logical(0))
-  nInSupp <- which(x < q(D)(0))
-  nInSupp <- unique(sort(c(nInSupp,which(x > q(D)(1)))))
+  nInSupp <- which(x < q.l(D)(0))
+  nInSupp <- unique(sort(c(nInSupp,which(x > q.l(D)(1)))))
 
   nInSuppo <-
       if("support" %in% names(getSlots(class(D))))
@@ -664,7 +649,7 @@ mcl}
 
   lx[.NotInSupport(x,D)] <- 4
 
-  idx.0 <- ((x>q(D)(1)) | (x<q(D)(0)))
+  idx.0 <- ((x>q.l(D)(1)) | (x<q.l(D)(0)))
   iG <- rep(FALSE,length(x))
 
   if(is(D, "DiscreteDistribution")){

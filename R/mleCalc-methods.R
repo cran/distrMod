@@ -121,6 +121,7 @@ setMethod("mceCalc", signature(x = "numeric", PFam = "ParamFamily"),
                   else  names(theta) <- names(main(ParamFamily))
                   distr.new <- try(ParamFamily@modifyParam(theta), silent = TRUE)
                   argList <- c(list(Data, distr.new), dots)
+                  argList$check.validity <- NULL
                   if(withthetaPar) argList <- c(argList, list(thetaPar = theta))
                   if(is(distr.new,"try.error")){
                       crit0 <- penalty

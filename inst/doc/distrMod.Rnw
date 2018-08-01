@@ -160,7 +160,7 @@ see Sections~\ref{modelsec} and \ref{estsec} for more details.
 
 \textbf{Availability } The current version of package~\pkg{distrMod} is 2.2
 and can be found on the Comprehensive \proglang{R} Archive Network at 
-\url{http://CRAN.R-project.org/package=distrMod}. The development version of the distr-family is located at R-Forge; 
+\url{https://CRAN.R-project.org/package=distrMod}. The development version of the distr-family is located at R-Forge;
 see~\citet{RForge}.
 % -----------------------------------------------------------------------------
 \subsection{Running examples}\label{examples}
@@ -328,7 +328,7 @@ information ${\cal I}_\theta$. In most cases,
 $\Lambda_\theta=\frac{d}{d\theta} \log p_\theta$ (the classical scores) 
 for $p_\theta$ the density of $P_\theta$ w.r.t.\ Lebesgue or counting measure.
 \par
-One of the strengths of \proglang{R} (or more accurately of \proglang{S}) right 
+One of the strengths of \proglang{R} (or more accurately of \proglang{S}) right
 from the introduction of \proglang{S}3 in \citet{B:C:W:88} is that models, more 
 specifically [generalized] linear models (see functions \code{lm} and \code{glm} 
 in package \pkg{stats}) may be explicitly formulated in terms of the language.
@@ -350,7 +350,7 @@ interface, but this will hopefully be done in the future.
 
 \textbf{Packages \pkg{distr} and \pkg{distrEx} } Much of our infrastructure
 relies on our \proglang{R} packages \pkg{distr} and \pkg{distrEx} available on
-\href{http://cran.r-project.org/}{\tt CRAN}.
+\href{https://cran.r-project.org/}{\tt CRAN}.
 Package \pkg{distr}, see~\citet{distr,distrTeach}, aims to provide a conceptual
 treatment of distributions by means of \proglang{S}4 classes. A mother class 
 \code{Distribution} is introduced with slots for a parameter and for functions 
@@ -381,6 +381,7 @@ and \code{ q}.
 <<exam11, eval = TRUE>>=
 p(Z)(0.4)
 q(Z)(0.3)
+## in RStudio or Jupyter IRKernel, use q.l(.)(.) instead of q(.)(.)
 r(Z)(5)
 @
 %----------------------------------------------------------------------------
@@ -745,6 +746,7 @@ Due to symmetry about the location parameter, this constant is just the inverse
 of the upper quartile of the central distribution, obtainable via
 <<mad-const, echo = TRUE, eval = TRUE>>=
 (mad.const <- 1/q(myD)(0.75))
+## in RStudio or Jupyter IRKernel, use q.l(.)(.) instead of q(.)(.)
 @
 %\end{Rem}
 % -----------------------------------------------------------------------------

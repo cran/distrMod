@@ -9,20 +9,25 @@
 These functions are used internally by qqplot of package distrMod.}
 
 \usage{
-.labelprep(x,y,lab.pts,col.lbl,cex.lbl,adj.lbl,which.lbs,which.Order,order.traf)
+.labelprep(x,y,lab.pts,col.lbs,cex.lbs,adj.lbs,which.lbs,
+           which.Order,order.traf, which.nonlbs)
 }
 
 
 \arguments{
 \item{x}{a (numeric) vector}
 \item{y}{a (numeric) vector of same length as \code{x}}
-\item{cex.lbl}{magnification factor for the plotted observation labels}
-\item{col.lbl}{color for the plotted observation labels}
-\item{adj.lbl}{adj parameter for the plotted observation labels}
+\item{cex.lbs}{magnification factor for the plotted observation labels}
+\item{col.lbs}{color for the plotted observation labels}
+\item{adj.lbs}{adjustment factor for the plotted observation labels}
 \item{lab.pts}{character or \code{NULL}; observation labels to be used}
 \item{which.lbs}{integer or \code{NULL}; which observations shall be labelled}
 \item{which.Order}{integer or \code{NULL}; which of the ordered (remaining) observations shall be labelled}
 \item{order.traf}{function or \code{NULL}; an optional trafo by which the observations are ordered (as order(trafo(obs)).}
+\item{which.nonlbs}{indices of the observations which should be plotted but
+       not labelled; either an integer vector with the indices of the observations
+          to be plotted into graph or \code{NULL} --- then all non-labelled
+          observations are plotted.}
 }
 
 \details{
@@ -44,8 +49,9 @@ respectively thinned out.
 \code{y0} (the thinned out and ordered vector \code{y}),
 \code{lab} (the thinned out and ordered vector of labels \code{lab.pts}),
 \code{col} (the thinned out and ordered vector of colors \code{col.lbs}),
-\code{cex} (the thinned out and ordered vector of magnification factors \code{cex.lbs}).
-\code{adj} (the thinned out and ordered vector of adjacencies \code{adj.lbs}).
+\code{cex} (the thinned out and ordered vector of magnification factors \code{cex.lbs}),
+\code{ord} (the (ordered according to y) indices of the observations selected for labelling),
+\code{ns} (the (ordered) indices of the selected non-labelled observations).
 }
 }
 

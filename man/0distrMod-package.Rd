@@ -15,16 +15,17 @@ maximum likelihood or minimum distance estimators for probability models.
 \details{
 \tabular{ll}{
 Package: \tab distrMod \cr
-Version: \tab 2.6 \cr
-Date: \tab 2016-04-23 \cr
+Version: \tab 2.7.0 \cr
+Date: \tab 2018-07-30 \cr
 Depends: \tab R(>= 2.14.0), distr(>= 2.5.2), distrEx(>= 2.4), RandVar(>= 0.6.3), MASS, stats4,
         methods \cr
 Imports: \tab startupmsg, sfsmisc, graphics, stats, grDevices \cr
-Suggests: \tab ismev, evd, RobExtremes \cr
+Suggests: \tab ismev, evd\cr
+Enhances: RobExtremes\cr
 ByteCompile: \tab yes \cr
 License: \tab LGPL-3 \cr
 URL: \tab http://distr.r-forge.r-project.org/\cr
-SVNRevision: \tab 1104 \cr
+VCS/SVNRevision: \tab 1186 \cr
 }}
 
 \section{Classes}{
@@ -291,13 +292,13 @@ Matthias Kohl \email{Matthias.Kohl@stamats.de}\cr
 M. Kohl and P. Ruckdeschel (2010):
 R Package distrMod: S4 Classes and Methods for Probability Models.
 Journal of Statistical Software, 35(10), 1-27.
-\url{http://www.jstatsoft.org/v35/i10/}
+\url{https://www.jstatsoft.org/v35/i10/}
 (see also \code{vignette("distrMod")})
 
 
 P. Ruckdeschel, M. Kohl, T. Stabla, F. Camphausen (2006):
 S4 Classes for Distributions, \emph{R News}, \emph{6}(2), 2-6.
-\url{http://CRAN.R-project.org/doc/Rnews/Rnews_2006-2.pdf}
+\url{https://CRAN.R-project.org/doc/Rnews/Rnews_2006-2.pdf}
 
 A vignette for packages \pkg{distr}, \pkg{distrSim}, \pkg{distrTEst}, and
 \pkg{distrEx} is included into the mere documentation package \pkg{distrDoc}

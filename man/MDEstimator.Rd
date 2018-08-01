@@ -1,5 +1,9 @@
 \name{MDEstimator}
 \alias{MDEstimator}
+\alias{CvMMDEstimator}
+\alias{KolmogorovMDEstimator}
+\alias{TotalVarMDEstimator}
+\alias{HellingerMDEstimator}
 
 \title{ Function to compute minimum distance estimates }
 \description{
@@ -8,9 +12,21 @@
 }
 \usage{
 MDEstimator(x, ParamFamily, distance = KolmogorovDist, dist.name, 
-            paramDepDist = FALSE, startPar = NULL,  Infos, trafo = NULL,
+            paramDepDist = FALSE, startPar = NULL, Infos, trafo = NULL,
             penalty = 1e20, validity.check = TRUE, asvar.fct, na.rm = TRUE,
             ..., .withEvalAsVar = TRUE)
+CvMMDEstimator(x, ParamFamily, paramDepDist = FALSE, startPar = NULL, Infos, 
+            trafo = NULL, penalty = 1e20, validity.check = TRUE, 
+            asvar.fct = .CvMMDCovariance, na.rm = TRUE, ..., .withEvalAsVar = TRUE)
+KolmogorovMDEstimator(x, ParamFamily, paramDepDist = FALSE, startPar = NULL, Infos, 
+            trafo = NULL, penalty = 1e20, validity.check = TRUE, asvar.fct, 
+            na.rm = TRUE, ..., .withEvalAsVar = TRUE)
+TotalVarMDEstimator(x, ParamFamily, paramDepDist = FALSE, startPar = NULL, Infos, 
+            trafo = NULL, penalty = 1e20, validity.check = TRUE, asvar.fct, 
+            na.rm = TRUE, ..., .withEvalAsVar = TRUE)
+HellingerMDEstimator(x, ParamFamily, paramDepDist = FALSE, startPar = NULL, Infos, 
+            trafo = NULL, penalty = 1e20, validity.check = TRUE, asvar.fct, 
+            na.rm = TRUE, ..., .withEvalAsVar = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -54,6 +70,9 @@ MDEstimator(x, ParamFamily, distance = KolmogorovDist, dist.name,
   and possibly \code{\dots}; e.g. \code{KolmogorovDist} (default), 
   \code{TotalVarDist} or \code{HellingerDist}. Uses \code{\link{mceCalc}}
   for method dispatch.
+
+  The functions \code{CvMMDEstimator}, \code{KolmogorovMDEstimator}, \code{TotalVarMDEstimator}, 
+  and \code{HellingerMDEstimator} are aliases where the distance is fixed.
 }
 \value{
   An object of S4-class \code{"MCEstimate"} which inherits from class 
@@ -74,7 +93,7 @@ MDEstimator(x, ParamFamily, distance = KolmogorovDist, dist.name,
 %\note{}
 \seealso{\code{\link{ParamFamily-class}}, \code{\link{ParamFamily}}, 
          \code{\link{MCEstimator}}, \code{\link{MCEstimate-class}},
-          \code{\link[MASS]{fitdistr}}, \code{\link{.CvMMDCovariance}}}
+          \code{\link[MASS]{fitdistr}} }
 \examples{
 ## (empirical) Data
 x <- rgamma(50, scale = 0.5, shape = 3)
@@ -84,19 +103,27 @@ G <- GammaFamily(scale = 1, shape = 2)
 
 ## Kolmogorov(-Smirnov) minimum distance estimator
 MDEstimator(x = x, ParamFamily = G, distance = KolmogorovDist)
+## or
+KolmogorovMDEstimator(x = x, ParamFamily = G)
 
 ## von Mises minimum distance estimator with default mu
 MDEstimator(x = x, ParamFamily = G, distance = CvMDist)
 
+\dontrun{
 ## von Mises minimum distance estimator with default mu
 MDEstimator(x = x, ParamFamily = G, distance = CvMDist,
             asvar.fct = .CvMMDCovariance)
+## or
+CvMMDEstimator(x = x, ParamFamily = G)
+
 ## von Mises minimum distance estimator with mu = N(0,1)
 MDEstimator(x = x, ParamFamily = G, distance = CvMDist, mu = Norm())
 
 ## Total variation minimum distance estimator
 ## gamma distributions are discretized
 MDEstimator(x = x, ParamFamily = G, distance = TotalVarDist)
+## or
+TotalVarMDEstimator(x = x, ParamFamily = G)
 ## or smoothing of emprical distribution (takes some time!)
 #MDEstimator(x = x, ParamFamily = G, distance = TotalVarDist, asis.smooth.discretize = "smooth")
 
@@ -104,9 +131,12 @@ MDEstimator(x = x, ParamFamily = G, distance = TotalVarDist)
 ## gamma distributions are discretized
 distroptions(DistrResolution = 1e-10)
 MDEstimator(x = x, ParamFamily = G, distance = HellingerDist, startPar = c(1,2))
+## or
+HellingerMDEstimator(x = x, ParamFamily = G, startPar = c(1,2))
 distroptions(DistrResolution = 1e-6) # default
 ## or smoothing of emprical distribution (takes some time!)
-#MDEstimator(x = x, ParamFamily = G, distance = HellingerDist, asis.smooth.discretize = "smooth")
+MDEstimator(x = x, ParamFamily = G, distance = HellingerDist, asis.smooth.discretize = "smooth")
+}
 }
 \keyword{univar}
 \keyword{robust}

@@ -27,10 +27,12 @@ setMethod("returnlevelplot", signature(x = "ANY",
              ##               (for working with \command{Sweave}) no extra device is opened and height/width are not set
              mfColRow = TRUE,     ## shall we use panel partition mfrow=c(1,1)?
              n.CI = n,            ## number of points to be used for CI
-             withLab = FALSE,     ## shall observation labels be plotted in
+             with.lab = FALSE,     ## shall observation labels be plotted in
              lab.pts = NULL,      ## observation labels to be used
              which.lbs = NULL,    ## which observations shall be labelled
              which.Order = NULL,  ## which of the ordered (remaining) observations shall be labelled
+             which.nonlbs = NULL, ## which of the non-labelled observations shall be plotted
+             attr.pre = FALSE,    ## do indices refer to order pre or post ordering
              order.traf = NULL,   ## an optional trafo; by which the observations are ordered (as order(trafo(obs))
              col.IdL = "red",     ## color for the identity line
              lty.IdL = 2,         ## line type for the identity line
@@ -50,11 +52,17 @@ setMethod("returnlevelplot", signature(x = "ANY",
              pch.sCI = par("pch"),## symbol for points (for discrete mass points) in simultaneous CI
              cex.sCI = par("cex"),## magnification factor for points (for discrete mass points) in simultaneous CI
              added.points.CI = TRUE, ## should the CIs be drawn through additional points?
-             cex.pch = par("cex"),## magnification factor for the plotted symbols
-             col.pch = par("col"),## color for the plotted symbols
-             cex.lbl = par("cex"),## magnification factor for the plotted observation labels
-             col.lbl = par("col"),## color for the plotted observation labels
-             adj.lbl = NULL,      ## adj parameter for the plotted observation labels
+             cex.pch = par("cex"),## magnification factor for the plotted symbols (for backward compatibility only, cex.pts in the sequel)
+             col.pch = par("col"),## color for the plotted symbols (for backward compatibility only, col.pts in the sequel)
+             cex.pts = 1,         ## magnification factor for labelled shown observations
+             col.pts = par("col"),## color for labelled shown observations
+             pch.pts = 19,        ## symbol for labelled shown observations
+             cex.npts = 1,        ## magnification factor for non-labelled shown observations
+             col.npts = grey(.5), ## color for non-labelled shown observations
+             pch.npts = 20,       ## symbol for non-labelled shown observations
+             cex.lbs = par("cex"),## magnification factor for the plotted observation labels
+             col.lbs = par("col"),## color for the plotted observation labels
+             adj.lbs = par("adj"),## adj parameter for the plotted observation labels
              alpha.trsp = NA,     ## alpha transparency to be added afterwards
              jit.fac = 0,         ## jittering factor used for discrete distributions
              jit.tol = .Machine$double.eps, ## tolerance for jittering: if distance 
@@ -84,9 +92,8 @@ setMethod("returnlevelplot", signature(x = "ANY",
                             xcc))
                }else function(inx)inx
 
-    if(missing(xlab)) mc$xlab <- paste(gettext("Return level of"),
-                                       as.character(deparse(mc$x)))
-    if(missing(ylab)) mc$ylab <- gettext("Return period (years)")
+    if(missing(xlab)){mc$xlab <-  paste(gettext("Return level of"), xcc)}
+    if(missing(ylab)){mc$ylab <-  gettext("Return period (years)")}
     if(missing(main)) mc$main <- gettext("Return level plot")
     mcl <- as.list(mc)[-1]
     mcl$datax <- NULL
@@ -107,12 +114,16 @@ setMethod("returnlevelplot", signature(x = "ANY",
        x <- x + thresh0
     }              
 
+    rank0x <- rank(x)
+
     xj <- sort(x)
+
     if(any(.isReplicated(x, jit.tol))&&jit.fac>0)
        xj[.isReplicated(x, jit.tol)] <- jitter(x[.isReplicated(x, jit.tol)], factor=jit.fac)
 
+    rank1x <- rank(xj)[rank0x]
+    ind.x <- order(xj)
     xj <- sort(xj)
-    ord.x <- order(xj)
 
     p2rl <- function(pp){
                pp <- p(y)(pp)
@@ -120,13 +131,13 @@ setMethod("returnlevelplot", signature(x = "ANY",
     }
 
     pp <- ppoints(length(xj))
-    yc.o <- q(y)(pp)
+    yc.o <- q.l(y)(pp)
     ycl <- p2rl(yc.o)
 
     ### extend range somewhat
 #    pyn <- p(y)(10^(seq(-1, 3.75 + log10(npy), by = 0.1)))
     xyall <- force(sort(unique(c(yc.o,x,
-                    q(y)(c(seq(0.01, 0.09, by = 0.01),(1:9)/10,
+                    q.l(y)(c(seq(0.01, 0.09, by = 0.01),(1:9)/10,
                          0.95, 0.99, 0.995, 0.999))
                          ))))
     rxyall  <- (max(xyall)-min(xyall))*0.6
@@ -146,43 +157,126 @@ setMethod("returnlevelplot", signature(x = "ANY",
     if("support" %in% names(getSlots(class(y))))
        ycl <- sort(jitter(ycl, factor=jit.fac))
 
-    alp.v <- .makeLenAndOrder(alpha.trsp,ord.x)
+#-------------------------------------------------------------------------------
+    alp.v <- .makeLenAndOrder(alpha.trsp,ind.x)
     alp.t <- function(x,a1) if(is.na(x)) x else addAlphTrsp2col(x,a1)
     alp.f <- if(length(alpha.trsp)==1L && is.na(alpha.trsp))
              function(x,a) x else function(x,a) mapply(x,alp.t,a1=a)
-    cex.pch <- .makeLenAndOrder(cex.pch,ord.x)
-    cex.lbl <- .makeLenAndOrder(cex.lbl,ord.x)
-    col.pch <- alp.f(.makeLenAndOrder(col.pch,ord.x),alp.v)
-    col.lbl <- alp.f(.makeLenAndOrder(col.lbl,ord.x),alp.v)
 
-    if(withLab){
-      if(is.null(lab.pts)) lab.pts <- paste(ord.x)
-      else lab.pts <- .makeLenAndOrder(lab.pts,ord.x)
+    if(missing(cex.lbs)) cex0.lbs <- par("cex")
+    cex0.lbs <- .makeLenAndOrder(cex.lbs,ind.x)
+    if(missing(adj.lbs)) adj0.lbs <- par("adj")
+    adj0.lbs <- .makeLenAndOrder(adj.lbs,ind.x)
+    if(missing(col.lbs)) col0.lbs <- par("col")
+    col0.lbs <- alp.f(.makeLenAndOrder(col.lbs,ind.x),alp.v)
+    if(missing(lab.pts)||is.null(lab.pts)) lab0.pts <- ind.x else
+      lab0.pts <- .makeLenAndOrder(lab.pts,ind.x)
+
+    lbprep <- .labelprep(x = x, y = yc.o[rank1x], lab.pts = lab0.pts,
+                         col.lbs = col0.lbs, cex.lbs = cex0.lbs,
+                         adj.lbs = adj0.lbs, which.lbs = which.lbs,
+                         which.Order = which.Order, order.traf = order.traf,
+                         which.nonlbs = which.nonlbs)
+
+    n.ns <- length(lbprep$ns)
+    n.s <- length(lbprep$ord)
+
+    shown <- c(lbprep$ord,lbprep$ns)
+
+    xs <- x[shown]
+    ycs <- (ycl[rank1x])[shown]
+
+    ordx <- order(xs)
+    xso <- xs[ordx]
+    ycso <- ycs[ordx]
+
+    if(missing(cex.pch)) cex.pch <- par("cex")
+    if(missing(col.pch)) col.pch <- par("col")
+    if(missing(cex.pts)) cex.pts <- if(missing(cex.pch)) 1 else cex.pch
+    if(missing(col.pts)) col.pts <- if(missing(col.pch)) par("col") else col.pch
+    if(missing(pch.pts)) pch.pts <- 19
+    if(missing(cex.npts)) cex.npts <- 1
+    if(missing(col.npts)) col.npts <- par("col")
+    if(missing(pch.npts)) pch.npts <- 20
+
+    if(with.lab) lab.pts <- lbprep$lab.pts
+    if(attr.pre){
+       if(with.lab){
+          col.lbs <- lbprep$col.lbs
+          cex.lbs <- lbprep$cex.lbs
+          adj.lbs <- lbprep$adj.lbs
+       }
+       cex.pts <- .makeLenAndOrder(cex.pts,ind.x)
+       col.pts <- alp.f(.makeLenAndOrder(col.pts,ind.x),alp.v)
+       pch.pts <- .makeLenAndOrder(pch.pts,ind.x)
+       cex.pts <- cex.pts[shown]
+       col.pts <- col.pts[shown]
+       pch.pts <- pch.pts[shown]
+    }else{
+       ind.s <- 1:n.s
+       ind.ns <- 1:n.ns
+       if(with.lab){
+          if(missing(lab.pts)||is.null(lab.pts)) lab.pts <- ind.ns else
+             lab.pts <- .makeLenAndOrder(lab.pts,ind.ns)
+          if(missing(cex.lbs)) cex.lbs <- par("cex")
+          cex.lbs <- (.makeLenAndOrder(cex.lbs,ind.s))
+          if(missing(adj.lbs)) adj.lbs <- par("adj")
+          adj.lbs <- (.makeLenAndOrder(adj.lbs,ind.s))
+          if(missing(col.lbs)) col.lbs <- par("col")
+          col.lbs <- (alp.f(.makeLenAndOrder(col.lbs,ind.s),alp.v[lbprep$ord]))
+       }
+       cex.pts <- .makeLenAndOrder(cex.pts,ind.s)
+       col.pts <- alp.f(.makeLenAndOrder(col.pts,ind.s),alp.v[lbprep$ord])
+       pch.pts <- .makeLenAndOrder(pch.pts,ind.s)
+       cex.npts <- .makeLenAndOrder(cex.npts,ind.ns)
+       col.npts <- alp.f(.makeLenAndOrder(col.npts,ind.ns),alp.v[lbprep$ns])
+       pch.npts <- .makeLenAndOrder(pch.npts,ind.ns)
+       col.pts <- c(col.pts,col.npts)
+       cex.pts <- c(cex.pts,cex.npts)
+       pch.pts <- c(pch.pts,pch.npts)
     }
+    cex.pts <- cex.pts[ordx]
+    col.pts <- col.pts[ordx]
+    pch.pts <- pch.pts[ordx]
+
+#-------------------------------------------------------------------------------
 
     if(check.NotInSupport){
-       xo <- x[ord.x]
-       nInSupp <- which(xo < q(y)(0))
+       xo <- xso #x[ord.x]
+       nInSupp <- which(xo < q.l(y)(0))
 
-       nInSupp <- unique(sort(c(nInSupp,which( xo > q(y)(1)))))
+       nInSupp <- unique(sort(c(nInSupp,which( xo > q.l(y)(1)))))
        if("support" %in% names(getSlots(class(y))))
           nInSupp <- unique(sort(c(nInSupp,which( ! xo %in% support(y)))))
        if("gaps" %in% names(getSlots(class(y))))
           nInSupp <- unique(sort(c(nInSupp,which( .inGaps(xo,gaps(y))))))
        if(length(nInSupp)){
-          col.pch[nInSupp] <- col.NotInSupport
-          if(withLab)
-#             col.lbl[ord.x[nInSupp]] <- col.NotInSupport
-             col.lbl[nInSupp] <- col.NotInSupport
+#          col.pch[nInSupp] <- col.NotInSupport
+          col.pts[nInSupp] <- col.NotInSupport
+          if(with.lab)
+#             col.lbs[ord.x[nInSupp]] <- col.NotInSupport
+             col.lbs[nInSupp] <- col.NotInSupport
        }
     }
 
-
-    if(n!=length(x)) withLab <- FALSE
+    if(n < length(x)){
+       with.lab <- FALSE
+       nos <- length(shown)
+       idx <- sample(1:nos,size=n,replace=FALSE)
+       cex.pts <- cex.pts[idx]
+       col.pts <- col.pts[idx]
+       pch.pts <- pch.pts[idx]
+       xso <- xso[idx]
+       ycso <- ycso[idx]
+    }
 
     mcl <- .deleteItemsMCL(mcl)
-    mcl$cex <- cex.pch
-    mcl$col <- col.pch
+    mcl$pch <- pch.pts
+    mcl$cex <- cex.pts
+    mcl$col <- col.pts
+
+    mc$xlab <- .mpresubs(mcl$xlab)
+    mc$ylab <- .mpresubs(mcl$ylab)
 
     if (!withSweave){
            devNew(width = width, height = height)
@@ -198,28 +292,32 @@ setMethod("returnlevelplot", signature(x = "ANY",
        xallc1 <- sort(c(xj,xyallc))
        yallc1 <- sort(c(ycl,pxyallc))
        mcl$x <- mcl$y <- NULL
+       logs <- if(datax) "y" else "x"
+       if(!is.null(mcl$log)){
+           if(grepl("y", eval(mcl$log))) logs <- "xy"
+           if(grepl("x",eval(mcl$log)))
+              warning("The x axis is logarithmic anyway.")
+           mcl$log <- NULL
+       }
        if(datax){
-          mcl$xlab <- xlab
-          mcl$ylab <- ylab
-          do.call(plot, c(list(x=xallc1, y=yallc1, log="y",type="n"),mcl))
-          do.call(points, c(list(x=xj, y=ycl), mcl))
-    #       ret <- do.call(stats::qqplot, args=mcl0, log="y", ylim = c(0.1,1000))
+          mcl$xlab <- mc$xlab
+          mcl$ylab <- mc$ylab
+          do.call(plot, c(list(x=xallc1, y=yallc1, log=logs,type="n"),mcl))
+          do.call(points, c(list(x=xso, y=ycso), mcl))
        }else{
-          mcl$ylab <- xlab
-          mcl$xlab <- ylab
-          do.call(plot, c(list(x=yallc1, y=xallc1, log="x",type="n"),mcl))
-          do.call(points, c(list(x=ycl, y=xj),mcl))
+          mcl$ylab <- mc$xlab
+          mcl$xlab <- mc$ylab
+          do.call(plot,  c(list(x=yallc1, y=xallc1, log=logs,type="n"),mcl))
+          do.call(points, c(list(x=ycso, y=xso), mcl))
        }
     }
 
-    if(withLab&& plot.it){
-       lbprep <- .labelprep(xj,yc.o,lab.pts,
-                            col.lbl,cex.lbl,which.lbs,which.Order,order.traf)
+    if(with.lab&& plot.it){
        lbprep$y0 <- p2rl(lbprep$y0)
        xlb0 <- if(datax) lbprep$x0 else lbprep$y0
        ylb0 <- if(datax) lbprep$y0 else lbprep$x0
        text(x = xlb0, y = ylb0, labels = lbprep$lab,
-            cex = lbprep$cex, col = lbprep$col, adj = adj.lbl)
+            cex = lbprep$cex, col = lbprep$col, adj = adj.lbs)
     }
 
     if(withIdLine){
@@ -285,8 +383,10 @@ setMethod("returnlevelplot", signature(x = "ANY",
     ylab = deparse(substitute(y)), ...){
 
     mc <- match.call(call = sys.call(sys.parent(1)))
-    if(missing(xlab)) mc$xlab <- paste(gettext("Return Level of"), as.character(deparse(mc$x)))
-    if(missing(ylab)) mc$ylab <- paste(gettext("Return Period at"), as.character(deparse(mc$y)))
+    mcx <- as.character(deparse(mc$x))
+    mcy <- as.character(deparse(mc$y))
+    if(missing(xlab)) mc$xlab <- paste(gettext("Return Level of"), mcx)
+    if(missing(ylab)) mc$ylab <- paste(gettext("Return Period at"), mcy)
     mcl <- as.list(mc)[-1]
 
     mcl$y <- yD <- y@distribution
@@ -305,6 +405,9 @@ setMethod("returnlevelplot", signature(x = "ANY",
     ylab = deparse(substitute(y)), ...){
 
     mc <- match.call(call = sys.call(sys.parent(1)))
+    mc1 <- match.call(call = sys.call(sys.parent(1)), expand.dots=FALSE)
+    mcx <- as.character(deparse(mc$x))
+    mcy <- as.character(deparse(mc$y))
     if(missing(xlab)) mc$xlab <- paste(gettext("Return Level of"), as.character(deparse(mc$x)))
     mcl <- as.list(mc)[-1]
 
@@ -321,7 +424,7 @@ setMethod("returnlevelplot", signature(x = "ANY",
 
     PFam0 <- modifyModel(PFam, param)
     mcl$y <- PFam0
-    if(missing(ylab)) mc$ylab <- paste(gettext("Return Period at fitted"), name(PFam0))
+    if(missing(ylab)) mcl$ylab <- paste(gettext("Return Period at fitted"), name(PFam0), "\n -- fit by ", mcy)
 
     return(invisible(do.call(getMethod("returnlevelplot", signature(x="ANY", y="ProbFamily")),
             args=mcl)))

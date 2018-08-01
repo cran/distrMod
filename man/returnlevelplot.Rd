@@ -12,8 +12,8 @@ returnlevelplot(x, y, ...)
     ylab = deparse(substitute(y)),
     main = "",
     ..., width = 10, height = 5.5, withSweave = getdistrOption("withSweave"),
-    mfColRow = TRUE, n.CI = n, withLab = FALSE, lab.pts = NULL, which.lbs = NULL,
-    which.Order = NULL, order.traf = NULL, 
+    mfColRow = TRUE, n.CI = n, with.lab = FALSE, lab.pts = NULL, which.lbs = NULL,
+    which.Order = NULL, which.nonlbs = NULL, attr.pre = FALSE, order.traf = NULL,
     col.IdL = "red", lty.IdL = 2, lwd.IdL = 2, alpha.CI = .95,
     exact.pCI = (n<100), exact.sCI = (n<100), nosym.pCI = FALSE,
     col.pCI = "orange", lty.pCI = 3, lwd.pCI = 2, pch.pCI = par("pch"),
@@ -21,7 +21,9 @@ returnlevelplot(x, y, ...)
     col.sCI = "tomato2", lty.sCI = 4, lwd.sCI = 2, pch.sCI = par("pch"),
     cex.sCI = par("cex"), added.points.CI = TRUE,
     cex.pch = par("cex"), col.pch = par("col"),
-    cex.lbl = par("cex"), col.lbl = par("col"), adj.lbl = NULL,
+    cex.pts = 1, col.pts = par("col"), pch.pts = 19,
+    cex.npts = 1, col.npts = grey(.5), pch.npts = 20,
+    cex.lbs = par("cex"), col.lbs = par("col"), adj.lbs = par("adj"),
     alpha.trsp = NA, jit.fac = 0,  jit.tol = .Machine$double.eps,
     check.NotInSupport = TRUE, col.NotInSupport = "red",
     with.legend = TRUE, legend.bg = "white",
@@ -77,11 +79,19 @@ class \code{"ProbFamily"}.}
         no extra device is opened and height/width are not set}
 \item{mfColRow}{shall default partition in panels be used --- defaults to \code{TRUE}}
 \item{n.CI}{numeric; number of points to be used for confidence interval}
-\item{withLab}{logical; shall observation labels be plotted in?}
+\item{with.lab}{logical; shall observation labels be plotted in?}
 \item{lab.pts}{character or \code{NULL}; observation labels to be used}
+\item{attr.pre}{logical; do graphical attributes for plotted data refer
+                  to indices prior (\code{TRUE}) or posterior to selection
+                  via arguments \code{which.lbs}, \code{which.Order}, \code{which.nonlbs}
+                  (\code{FALSE})? }
 \item{which.lbs}{integer or \code{NULL}; which observations shall be labelled}
 \item{which.Order}{integer or \code{NULL}; which of the ordered (remaining)
 observations shall be labelled}
+\item{which.nonlbs}{indices of the observations which should be plotted but
+        not labelled; either an integer vector with the indices of the observations
+          to be plotted into graph or \code{NULL} --- then all non-labelled
+          observations are plotted.}
 \item{order.traf}{function or \code{NULL}; an optional trafo by which the
 observations are ordered (as order(trafo(obs)).}
 \item{col.IdL}{color for the identity line}
@@ -107,13 +117,35 @@ pointwise CI}
 simultaneous CI}
 \item{added.points.CI}{logical; should CIs be plotted through additional points
       (and not only through data points)? }
-\item{cex.pch}{magnification factor for the plotted symbols}
-\item{col.pch}{color for the plotted symbols}
-\item{cex.lbl}{magnification factor for the plotted observation labels}
-\item{col.lbl}{color for the plotted observation labels}
-\item{adj.lbl}{adj parameter for the plotted observation labels}
+\item{cex.pch}{magnification factor for the plotted symbols (for backward
+          compatibility); it is ignored once \code{col.pts} is specified.}
+\item{col.pch}{color for the plotted symbols (for backward compatibility); it is
+          ignored once \code{col.pts} is specified.}
+\item{cex.pts}{size of the points of the second argument plotted, can be a vector;
+      if argument \code{attr.pre} is \code{TRUE}, it is recycled to the length
+      of all observations and determines the sizes of all plotted symbols,
+      i.e., the selection is done within this argument; in this case argument
+      \code{col.npts} is ignored. If \code{attr.pre} is \code{FALSE},
+      \code{cex.pts} is recycled to the number of the observations selected
+      for labelling and refers to the index ordering after the
+      selection. Then argument \code{cex.npts} deteremines the sizes
+      of the shown but non-labelled observations as given in argument
+      \code{which.nonlbs}.}
+\item{col.pts}{color of the points of the second argument plotted, can
+         be a vector as in \code{cex.pts} (with \code{col.npts} as counterpart).}
+\item{pch.pts}{symbol of the points of the second argument plotted, can
+         be a vector as in \code{cex.pts} (with \code{pch.npts} as counterpart).}
+\item{col.npts}{color of the non-labelled points of the \code{data} argument
+     plotted; (may be a vector).}
+\item{pch.npts}{symbol of the non-labelled points of the \code{data} argument
+         plotted (may be a vector).}
+\item{cex.npts}{size of the non-labelled points of the \code{data} argument
+                 plotted (may be a vector).}
+\item{cex.lbs}{magnification factor for the plotted observation labels}
+\item{col.lbs}{color for the plotted observation labels}
+\item{adj.lbs}{adj parameter for the plotted observation labels}
 \item{alpha.trsp}{alpha transparency to be added ex post to colors
-        \code{col.pch} and \code{col.lbl}; if one-dim and NA all colors are
+        \code{col.pch} and \code{col.lbs}; if one-dim and NA all colors are
         left unchanged. Otherwise, with usual recycling rules \code{alpha.trsp}
         gets shorted/prolongated to length the data-symbols to be plotted.
         Coordinates of this vector \code{alpha.trsp} with NA are left unchanged,
@@ -201,7 +233,7 @@ are also valid for this signature.}
 }
 \references{
   ismev: An   Introduction to Statistical Modeling of Extreme Values. R package
-  version 1.39. http://CRAN.R-project.org/package=ismev; original S functions
+  version 1.39. https://CRAN.R-project.org/package=ismev; original S functions
   written by Janet E. Heffernan with R port and R documentation provided by
   Alec G. Stephenson. (2012).
 
@@ -222,6 +254,19 @@ are also valid for this signature.}
 returnlevelplot(r(Norm(15,sqrt(30)))(40), Chisq(df=15))
 ### more could be seen after installing RobExtremes and ismev
 #
-}
+if(require(RobExtremes) && require(ismev)){
+
+ data(portpirie)
+ gevfit <- gev.fit(portpirie[,2]) ## taken from example from ismev::gev.fit
+ GEVF <- GEVFamily(scale=gevfit$mle[2],shape=gevfit$mle[3],loc=gevfit$mle[1])
+ erg <- returnlevelplot(portpirie[,2], GEVF)
+ print(erg)
+ returnlevelplot(portpirie[,2], GEVF, datax=TRUE)
+
+ data(rain)
+ gpdfit <- gpd.fit(rain,10) ## taken from example from ismev::gpd.fit
+ GPDF <- GParetoFamily(scale=gpdfit$mle[1],shape=gpdfit$mle[2],loc=10)
+ returnlevelplot(rain, GPDF, MaxOrPOT="POT", xlim=c(1e-1,1e3))
+}}
 \keyword{hplot}
 \keyword{distribution}

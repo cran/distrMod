@@ -1,5 +1,5 @@
 import("methods")
-importFrom("grDevices", "col2rgb", "dev.new", "rgb")
+importFrom("grDevices", "col2rgb", "dev.new", "rgb", "grey")
 importFrom("graphics", "abline", "legend", "lines", "mtext", "par",
            "points", "text", "title")
 importFrom("stats", "aggregate", "approxfun", "complete.cases",
@@ -55,7 +55,7 @@ exportMethods("existsPIC")
 exportMethods("modifyModel")
 exportMethods("norm",  "QuadForm<-", "QuadForm", "fct", 
               "fct<-", "normtype", "normtype<-")
-exportMethods("r", "d", "p", "q", 
+exportMethods("r", "d", "p", "q", "q.l",
               "estimate", "estimate.call", "samplesize.estimate", "call.estimate",
               "name.estimate", "trafo.estimate", "nuisance.estimate", 
               "fixed.estimate", "Infos", "Infos<-", "addInfo<-",
@@ -73,7 +73,9 @@ exportMethods("qqplot", "returnlevelplot", ".checkEstClassForParamFamily")
 export("distrModMASK")
 export("trafoEst")
 export("distrModOptions", "distrModoptions", "getdistrModOption",
-       "Estimator", "MCEstimator", "MLEstimator", "MDEstimator")
+       "Estimator", "MCEstimator", "MLEstimator", "MDEstimator",
+       "CvMMDEstimator", "KolmogorovMDEstimator", "TotalVarMDEstimator", 
+       "HellingerMDEstimator")
 export("NonSymmetric", "EvenSymmetric", "OddSymmetric", "FunSymmList") 
 export("ParamFamParameter", "ParamFamily", "L2ParamFamily",
        "BinomFamily", "PoisFamily", "NbinomFamily", "NormLocationFamily",
@@ -92,4 +94,4 @@ export("NormScaleUnknownLocationFamily", "NormLocationUnknownScaleFamily")
 export("L2LocationUnknownScaleFamily", "L2ScaleUnknownLocationFamily")
 export("meRes", "get.criterion.fct")
 export("addAlphTrsp2col")
-export(".deleteDim",".isUnitMatrix", ".CvMMDCovariance")
+export(".deleteDim",".isUnitMatrix",".CvMMDCovariance")

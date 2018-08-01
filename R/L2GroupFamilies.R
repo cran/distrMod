@@ -333,7 +333,7 @@ L2LocationScaleFamily <- function(loc = 0, scale = 1, name,
     }
 
     mad.const <- 1/ if (is(distrSymm, "NoSymmetry")) 
-                        mad(centraldistribution) else q(centraldistribution)(.75)
+                        mad(centraldistribution) else q.l(centraldistribution)(.75)
     
     param0 <- c(loc, scale)
     names(param0) <- locscalename

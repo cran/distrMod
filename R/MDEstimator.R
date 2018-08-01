@@ -60,3 +60,51 @@ MDEstimator <- function(x, ParamFamily, distance = KolmogorovDist,
     return(.checkEstClassForParamFamily(ParamFamily,res))
 }
 
+CvMMDEstimator <- function(x, ParamFamily, paramDepDist = FALSE,
+                           startPar = NULL, Infos,
+                           trafo = NULL, penalty = 1e20,
+                           validity.check = TRUE, asvar.fct = .CvMMDCovariance, 
+                           na.rm = TRUE, ..., .withEvalAsVar = TRUE){
+  MDEstimator(x = x, ParamFamily = ParamFamily, distance = CvMDist,
+              paramDepDist = paramDepDist, startPar = startPar,  Infos = Infos,
+              trafo = trafo, penalty = penalty, validity.check = validity.check,
+              asvar.fct = asvar.fct, na.rm = na.rm,
+              ..., .withEvalAsVar = .withEvalAsVar)
+}
+
+KolmogorovMDEstimator <- function(x, ParamFamily, paramDepDist = FALSE,
+                           startPar = NULL, Infos,
+                           trafo = NULL, penalty = 1e20,
+                           validity.check = TRUE, asvar.fct, na.rm = TRUE, ...,
+                           .withEvalAsVar = TRUE){
+  MDEstimator(x = x, ParamFamily = ParamFamily, distance = KolmogorovDist,
+              paramDepDist = paramDepDist, startPar = startPar,  Infos = Infos,
+              trafo = trafo, penalty = penalty, validity.check = validity.check,
+              asvar.fct = asvar.fct, na.rm = na.rm,
+              ..., .withEvalAsVar = .withEvalAsVar)
+}
+
+TotalVarMDEstimator <- function(x, ParamFamily, paramDepDist = FALSE,
+                           startPar = NULL, Infos,
+                           trafo = NULL, penalty = 1e20,
+                           validity.check = TRUE, asvar.fct, na.rm = TRUE, ...,
+                           .withEvalAsVar = TRUE){
+  MDEstimator(x = x, ParamFamily = ParamFamily, distance = TotalVarDist,
+              paramDepDist = paramDepDist, startPar = startPar,  Infos = Infos,
+              trafo = trafo, penalty = penalty, validity.check = validity.check,
+              asvar.fct = asvar.fct, na.rm = na.rm,
+              ..., .withEvalAsVar = .withEvalAsVar)
+}
+
+HellingerMDEstimator <- function(x, ParamFamily, paramDepDist = FALSE,
+                           startPar = NULL, Infos,
+                           trafo = NULL, penalty = 1e20,
+                           validity.check = TRUE, asvar.fct, na.rm = TRUE, ...,
+                           .withEvalAsVar = TRUE){
+  MDEstimator(x = x, ParamFamily = ParamFamily, distance = HellingerDist,
+              paramDepDist = paramDepDist, startPar = startPar,  Infos = Infos,
+              trafo = trafo, penalty = penalty, validity.check = validity.check,
+              asvar.fct = asvar.fct, na.rm = na.rm,
+              ..., .withEvalAsVar = .withEvalAsVar)
+}
+

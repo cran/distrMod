@@ -6,28 +6,42 @@
 
 
 ## helper into distrMod
-.labelprep <- function(x,y,lab.pts,col.lbl,cex.lbl,adj.lbl,which.lbs,which.Order,order.traf){
+.labelprep <- function(x,y,lab.pts,col.lbs,cex.lbs,adj.lbs,which.lbs,which.Order,order.traf, which.nonlbs){
       n <- length(x)
-      rx <- rank(x)
-      xys <- cbind(x,y[rx])
-      if(is.null(which.lbs)) which.lbs <- 1:n
-      oN0 <- order(x,decreasing=TRUE)
-      if(!is.null(order.traf)){
-          oN0 <- order(order.traf(x),decreasing=TRUE)
-      }
-      oN0b <- oN0 %in% which.lbs
-      oN0 <- oN0[oN0b]
-      oN <- oN0
-      if(!is.null(which.Order))
-          oN <- oN0[which.Order]
-      x0 <- xys[oN,1]
-      y0 <- xys[oN,2]
+      ind0 <- 1:n
+      # first selection  with which.lbs
+      ind1 <- ind0
+      if(!is.null(which.lbs)) ind1 <- ind0[ind0%in%which.lbs]
+
+      # second selection with which.Order
+      n1 <- length(ind1)
+      x1 <- x[ind1]
+      rk1.0 <- rank(x1)
+      if(!is.null(order.traf)) rk1 <- rank(order.traf(x1))
+      rk1 <- n1+1-rk1.0
+      #
+      ind2 <- ind1
+      if(!is.null(which.Order)) ind2 <- ind1[rk1 %in% which.Order]
+      #
+      x2 <- x[ind2]
+      or2.0 <- order(x2, decreasing = TRUE)
+      #
+      ind.s <- ind2[or2.0]
+      #
+      ind.ns <- ind0[-ind2]
+      if(length(ind.ns) && !is.null(which.nonlbs))
+         ind.ns <- ind.ns[ind.ns%in%which.nonlbs]
+      #
+      #------------------------------------------------------------------------
+      x0 <- x[ind.s]
+      y0 <- x[ind.s]
       
-      col.lbl <- col.lbl[rx]
-      lab.pts <- lab.pts[rx]
-      cex.lbl <- cex.lbl[rx]
-      adj.lbl <- adj.lbl[rx]
-      return(list(x0=x0,y0=y0,lab=lab.pts[oN],col=col.lbl[oN],cex=cex.lbl[oN],adj=adj.lbl[oN]))
+      col.lbs <- col.lbs[ind.s]
+      lab.pts <- lab.pts[ind.s]
+      cex.lbs <- cex.lbs[ind.s]
+      adj.lbs <- adj.lbs[ind.s]
+
+      return(list(x0=x0,y0=y0,lab=lab.pts,col=col.lbs,cex=cex.lbs,adj=adj.lbs,ord=ind.s, ns=ind.ns))
 }
 
 
@@ -53,10 +67,12 @@ setMethod("qqplot", signature(x = "ANY",
              ##               (for working with \command{Sweave}) no extra device is opened and height/width are not set
              mfColRow = TRUE,     ## shall we use panel partition mfrow=c(1,1)?
              n.CI = n,            ## number of points to be used for CI
-             withLab = FALSE,     ## shall observation labels be plotted in
+             with.lab = FALSE,     ## shall observation labels be plotted in
              lab.pts = NULL,      ## observation labels to be used
              which.lbs = NULL,    ## which observations shall be labelled
              which.Order = NULL,  ## which of the ordered (remaining) observations shall be labelled
+             which.nonlbs = NULL, ## which of the non-labelled observations shall be plotted
+             attr.pre = FALSE,    ## do indices refer to order pre or post ordering
              order.traf = NULL,   ## an optional trafo; by which the observations are ordered (as order(trafo(obs))
              col.IdL = "red",     ## color for the identity line
              lty.IdL = 2,         ## line type for the identity line
@@ -76,11 +92,17 @@ setMethod("qqplot", signature(x = "ANY",
              pch.sCI = par("pch"),## symbol for points (for discrete mass points) in simultaneous CI
              cex.sCI = par("cex"),## magnification factor for points (for discrete mass points) in simultaneous CI
              added.points.CI = TRUE, ## should the CIs be drawn through additional points?
-             cex.pch = par("cex"),## magnification factor for the plotted symbols
-             col.pch = par("col"),## color for the plotted symbols
-             cex.lbl = par("cex"),## magnification factor for the plotted observation labels
-             col.lbl = par("col"),## color for the plotted observation labels
-             adj.lbl = par("adj"),## adj parameter for the plotted observation labels
+             cex.pch = par("cex"),## magnification factor for the plotted symbols (for backward compatibility only, cex.pts in the sequel)
+             col.pch = par("col"),## color for the plotted symbols (for backward compatibility only, col.pts in the sequel)
+             cex.pts = 1,         ## magnification factor for labelled shown observations
+             col.pts = par("col"),## color for labelled shown observations
+             pch.pts = 19,        ## symbol for labelled shown observations
+             cex.npts = 1,        ## magnification factor for non-labelled shown observations
+             col.npts = grey(.5), ## color for non-labelled shown observations
+             pch.npts = 20,       ## symbol for non-labelled shown observations
+             cex.lbs = par("cex"),## magnification factor for the plotted observation labels
+             col.lbs = par("col"),## color for the plotted observation labels
+             adj.lbs = par("adj"),## adj parameter for the plotted observation labels
              alpha.trsp = NA,     ## alpha transparency to be added afterwards
              jit.fac = 0,         ## jittering factor used for discrete distributions
              jit.tol = .Machine$double.eps, ## tolerance for jittering: if distance 
@@ -115,68 +137,152 @@ setMethod("qqplot", signature(x = "ANY",
                             as.character(date()), 
                             xcc))
                }else function(inx)inx
-    xj <- x
+
+    rank0x <- rank(x)
+    xj <- sort(x)
+
     if(any(.isReplicated(x, jit.tol))&&jit.fac>0)
        xj[.isReplicated(x, jit.tol)] <- jitter(x[.isReplicated(x, jit.tol)], factor=jit.fac)
 
-    ord.x <- order(xj)
+    rank1x <- rank(xj)[rank0x]
+    ind.x <- seq(along=x)
+    xj <- sort(xj)
 
     pp <- ppoints(n)
-    yc <- q(y)(pp)
+    yc <- q.l(y)(pp)
 
     yc.o <- yc
 
     if("support" %in% names(getSlots(class(y))))
        yc <- sort(jitter(yc, factor=jit.fac))
 
-    alp.v <- .makeLenAndOrder(alpha.trsp,ord.x)
+    alp.v <- .makeLenAndOrder(alpha.trsp,ind.x)
     alp.t <- function(x,a1) if(is.na(x)) x else addAlphTrsp2col(x,a1)
     alp.f <- if(length(alpha.trsp)==1L && is.na(alpha.trsp))
              function(x,a) x else function(x,a) mapply(x,alp.t,a1=a)
-    cex.pch <- .makeLenAndOrder(cex.pch,ord.x)
-    cex.lbl <- .makeLenAndOrder(cex.lbl,ord.x)
-    adj.lbl <- .makeLenAndOrder(adj.lbl,ord.x)
-    col.pch <- alp.f(.makeLenAndOrder(col.pch,ord.x),alp.v)
-    col.lbl <- alp.f(.makeLenAndOrder(col.lbl,ord.x),alp.v)
 
-    if(withLab){
-      if(is.null(lab.pts)) lab.pts <- paste(ord.x)
-      else lab.pts <- .makeLenAndOrder(lab.pts,ord.x)
+    if(missing(cex.lbs)) cex0.lbs <- par("cex")
+    cex0.lbs <- .makeLenAndOrder(cex.lbs,ind.x)
+    if(missing(adj.lbs)) adj0.lbs <- par("adj")
+    adj0.lbs <- .makeLenAndOrder(adj.lbs,ind.x)
+    if(missing(col.lbs)) col0.lbs <- par("col")
+    col0.lbs <- alp.f(.makeLenAndOrder(col.lbs,ind.x),alp.v)
+    if(missing(lab.pts)||is.null(lab.pts)) lab0.pts <- ind.x else
+      lab0.pts <- .makeLenAndOrder(lab.pts,ind.x)
+
+    lbprep <- .labelprep(x = x, y = yc.o[rank1x], lab.pts = lab0.pts,
+                         col.lbs = col0.lbs, cex.lbs = cex0.lbs,
+                         adj.lbs = adj0.lbs, which.lbs = which.lbs,
+                         which.Order = which.Order, order.traf = order.traf,
+                         which.nonlbs = which.nonlbs)
+
+    n.ns <- length(lbprep$ns)
+    n.s <- length(lbprep$ord)
+
+    shown <- c(lbprep$ord,lbprep$ns)
+
+    xs <- x[shown]
+    ycs <- (yc.o[rank1x])[shown]
+
+    ordx <- order(xs)
+    xso <- xs[ordx]
+    ycso <- ycs[ordx]
+
+    if(missing(cex.pch)) cex.pch <- par("cex")
+    if(missing(col.pch)) col.pch <- par("col")
+    if(missing(cex.pts)) cex.pts <- if(missing(cex.pch)) 1 else cex.pch
+    if(missing(col.pts)) col.pts <- if(missing(col.pch)) par("col") else col.pch
+    if(missing(pch.pts)) pch.pts <- 19
+    if(missing(cex.npts)) cex.npts <- 1
+    if(missing(col.npts)) col.npts <- par("col")
+    if(missing(pch.npts)) pch.npts <- 20
+
+    if(with.lab) lab.pts <- lbprep$lab.pts
+
+    if(attr.pre){
+       if(with.lab){
+          col.lbs <- lbprep$col.lbs
+          cex.lbs <- lbprep$cex.lbs
+          adj.lbs <- lbprep$adj.lbs
+       }
+       cex.pts <- .makeLenAndOrder(cex.pts,ind.x)
+       col.pts <- alp.f(.makeLenAndOrder(col.pts,ind.x),alp.v)
+       pch.pts <- .makeLenAndOrder(pch.pts,ind.x)
+       cex.pts <- cex.pts[shown]
+       col.pts <- col.pts[shown]
+       pch.pts <- pch.pts[shown]
+    }else{
+       ind.s <- 1:n.s
+       ind.ns <- 1:n.ns
+       if(with.lab){
+          if(missing(cex.lbs)) cex.lbs <- par("cex")
+          cex.lbs <- (.makeLenAndOrder(cex.lbs,ind.s))
+          if(missing(adj.lbs)) adj.lbs <- par("adj")
+          adj.lbs <- (.makeLenAndOrder(adj.lbs,ind.s))
+          if(missing(col.lbs)) col.lbs <- par("col")
+          col.lbs <- (alp.f(.makeLenAndOrder(col.lbs,ind.s),alp.v[lbprep$ord]))
+       }
+       cex.pts <- .makeLenAndOrder(cex.pts,ind.s)
+       col.pts <- alp.f(.makeLenAndOrder(col.pts,ind.s),alp.v[lbprep$ord])
+       pch.pts <- .makeLenAndOrder(pch.pts,ind.s)
+       cex.npts <- .makeLenAndOrder(cex.npts,ind.ns)
+       col.npts <- alp.f(.makeLenAndOrder(col.npts,ind.ns),alp.v[lbprep$ns])
+       pch.npts <- .makeLenAndOrder(pch.npts,ind.ns)
+       col.pts <- c(col.pts,col.npts)
+       cex.pts <- c(cex.pts,cex.npts)
+       pch.pts <- c(pch.pts,pch.npts)
     }
+    cex.pts <- cex.pts[ordx]
+    col.pts <- col.pts[ordx]
+    pch.pts <- pch.pts[ordx]
+
 
     if(check.NotInSupport){
-       xo <- x[ord.x]
-       nInSupp <- which(xo < q(y)(0))
+       xo <- xso #x[ord.x]
+       nInSupp <- which(xo < q.l(y)(0))
 
-       nInSupp <- unique(sort(c(nInSupp,which( xo > q(y)(1)))))
+       nInSupp <- unique(sort(c(nInSupp,which( xo > q.l(y)(1)))))
        if("support" %in% names(getSlots(class(y))))
           nInSupp <- unique(sort(c(nInSupp,which( ! xo %in% support(y)))))
        if("gaps" %in% names(getSlots(class(y))))
           nInSupp <- unique(sort(c(nInSupp,which( .inGaps(xo,gaps(y))))))
        if(length(nInSupp)){
-          col.pch[nInSupp] <- col.NotInSupport
-          if(withLab)
-#             col.lbl[ord.x[nInSupp]] <- col.NotInSupport
-             col.lbl[nInSupp] <- col.NotInSupport
+#          col.pch[nInSupp] <- col.NotInSupport
+          col.pts[nInSupp] <- col.NotInSupport
+          if(with.lab)
+#             col.lbs[ord.x[nInSupp]] <- col.NotInSupport
+             col.lbs[nInSupp] <- col.NotInSupport
        }
     }
 
+    if(n < length(x)){
+       with.lab <- FALSE
+       nos <- length(shown)
+       idx <- sample(1:nos,size=n,replace=FALSE)
+       cex.pts <- cex.pts[idx]
+       col.pts <- col.pts[idx]
+       pch.pts <- pch.pts[idx]
+       xso <- xso[idx]
+       ycso <- ycso[idx]
+    }
 
-    if(n!=length(x)) withLab <- FALSE
+
 
     if(datax){ 
-      mcl$x <- xj
-      mcl$y <- yc
+      mcl$x <- xso#xj
+      mcl$y <- ycso #yc
     }else{
-      mcl$y <- xj
-      mcl$x <- yc
+      mcl$y <- xso# xj
+      mcl$x <- ycso #yc
     }
     mcl <- .deleteItemsMCL(mcl)
-    mcl$cex <- cex.pch
-    mcl$col <- col.pch
+    mcl$pch <- pch.pts
+    mcl$cex <- cex.pts
+    mcl$col <- col.pts
 
     mcl$xlab <- .mpresubs(mcl$xlab)
     mcl$ylab <- .mpresubs(mcl$ylab)
+
 
     if (!is.null(eval(mcl$main)))
         mcl$main <- .mpresubs(eval(mcl$main))
@@ -192,10 +298,8 @@ setMethod("qqplot", signature(x = "ANY",
     if(mfColRow) opar1 <- par(mfrow = c(1,1), no.readonly = TRUE)
 
     ret <- do.call(stats::qqplot, args=mcl)
-    lbprep <- NULL
-    if(withLab&& plot.it){
-       lbprep <- .labelprep(xj,yc,lab.pts,
-                            col.lbl,cex.lbl, adj.lbl,which.lbs,which.Order,order.traf)
+
+    if(with.lab&& plot.it){
        xlb0 <- if(datax) lbprep$x0 else lbprep$y0
        ylb0 <- if(datax) lbprep$y0 else lbprep$x0
        text(x = xlb0, y = ylb0, labels = lbprep$lab,
@@ -252,7 +356,7 @@ setMethod("qqplot", signature(x = "ANY",
                   legend.postf = legend.postf, legend.alpha = legend.alpha, 
                   debug = debug,
                   args.stats.qqplot = mcl,
-                  withLab = withLab,
+                  with.lab = with.lab,
                   lbprep = lbprep
                   )
         if(plot.it){
@@ -270,7 +374,7 @@ setMethod("qqplot", signature(x = "ANY",
         }
        }
     }
-    qqplotInfo <- c(ret, qqplotInfo, qqb)
+    qqplotInfo <- c(call=mc, ret, qqplotInfo, qqb)
     class(qqplotInfo) <- c("qqplotInfo","DiagnInfo")
     return(invisible(qqplotInfo))
     })
@@ -284,16 +388,20 @@ setMethod("qqplot", signature(x = "ANY",
     ylab = deparse(substitute(y)), ...){
 
     mc <- match.call(call = sys.call(sys.parent(1)))
-    if(missing(xlab)) mc$xlab <- as.character(deparse(mc$x))
-    if(missing(ylab)) mc$ylab <- as.character(deparse(mc$y))
+    mcx <- as.character(deparse(mc$x))
+    mcy <- as.character(deparse(mc$y))
+    if(missing(xlab)) mc$xlab <- mcx
+    if(missing(ylab)) mc$ylab <- mcy
     mcl <- as.list(mc)[-1]
 
     mcl$y <- yD <- y@distribution
     if(!is(yD,"UnivariateDistribution"))
        stop("Not yet implemented.")
 
-    return(invisible(do.call(getMethod("qqplot", signature(x="ANY", y="UnivariateDistribution")),
-            args=mcl)))
+    retv <- do.call(getMethod("qqplot", signature(x="ANY", y="UnivariateDistribution")),
+            args=mcl)
+    retv$call <- mc        
+    return(invisible(retv))
     })
 
 setMethod("qqplot", signature(x = "ANY",
@@ -304,8 +412,10 @@ setMethod("qqplot", signature(x = "ANY",
     ylab = deparse(substitute(y)), ...){
 
     mc <- match.call(call = sys.call(sys.parent(1)))
-    if(missing(xlab)) mc$xlab <- as.character(deparse(mc$x))
-    if(missing(ylab)) mc$ylab <- as.character(deparse(mc$y))
+    mc1 <- match.call(call = sys.call(sys.parent(1)), expand.dots=FALSE)
+    mcx <- as.character(deparse(mc$x))
+    mcy <- as.character(deparse(mc$y))
+    if(missing(xlab)) mc$xlab <- mcx
     mcl <- as.list(mc)[-1]
 
     param <- ParamFamParameter(main=untransformed.estimate(y), nuisance=nuisance(y),
@@ -321,7 +431,10 @@ setMethod("qqplot", signature(x = "ANY",
 
     PFam0 <- modifyModel(PFam, param)
     mcl$y <- PFam0
-    return(invisible(do.call(getMethod("qqplot", signature(x="ANY", y="ProbFamily")),
-            args=mcl)))
+    if(missing(ylab)) mcl$ylab <- paste(name(PFam0),gettext("fitted by"), mcy)
+    retv <- do.call(getMethod("qqplot", signature(x="ANY", y="ProbFamily")),
+            args=mcl)
+    retv$call <- mc        
+    return(invisible(retv))
     })
 

@@ -21,6 +21,7 @@ setMethod("addProp<-", "ProbFamily",
 setMethod("r", "ProbFamily", function(object) r(distribution(object)))
 setMethod("d", "ProbFamily", function(object) d(distribution(object)))
 setMethod("p", "ProbFamily", function(object) p(distribution(object)))
-setMethod("q", "ProbFamily", function(save = "default", status = 0, 
+setMethod("q.l", "ProbFamily", function(object) q.l(distribution(object)))
+setMethod("q", "ProbFamily", function(save = "default", status = 0,
                               runLast = TRUE) q(distribution(save)))
            ### odd arg-list due to existing function in base package 
