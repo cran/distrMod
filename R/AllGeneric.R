@@ -242,6 +242,9 @@ if(!isGeneric("untransformed.estimate")){
 if(!isGeneric("startPar")){
     setGeneric("startPar", function(object, ...) standardGeneric("startPar"))
 }
+if(!isGeneric("optimReturn")){
+    setGeneric("optimReturn", function(object, ...) standardGeneric("optimReturn"))
+}
 if(!isGeneric("makeOKPar")){
     setGeneric("makeOKPar", function(object, ...) standardGeneric("makeOKPar"))
 }              

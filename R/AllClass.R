@@ -465,7 +465,8 @@ setClass("MCEstimate",
                         criterion.fct = "function",
                         method = "character",
                         optimwarn = "character",
-                        startPar = "ANY"),
+                        startPar = "ANY",
+                        optimReturn = "ANY"),
          prototype(name = "Minimum criterion estimate",
                    estimate = numeric(0),
                    samplesize = numeric(0),
@@ -482,9 +483,15 @@ setClass("MCEstimate",
                                       list(fval = x, mat = matrix(1))},
                                 mat = matrix(1)),
                    optimwarn = "",
-                   startPar = NULL
+                   startPar = NULL,
+                   optimReturn = NULL
                    ),
          contains = "Estimate")
+
+
+setClass("MLEstimate", contains="MCEstimate")
+setClass("MDEstimate", contains="MCEstimate")
+setClass("CvMMDEstimate", contains="MCEstimate")
 
 ## To Do: class MLEstimate which is compatible with class
 ## mle or maybe class summary.mle of package "stats4"

@@ -51,13 +51,31 @@ L2ParamFamily(name, distribution = Norm(), distrSymm,
     \code{param} of class \code{"ParamFamParameter"}) to a mapping from 
     observation \code{x} to the value of the L2derivative;  
     \code{L2deriv.fct} is used by \code{modifyModel} to 
-    move the L2deriv according to a change in the parameter }
+    move the L2deriv according to a change in the parameter,
+    and to fill slot \code{L2deriv}.
+    More specifically, let us call the parts \code{main} and \code{nuisance}
+    of the parameter the \emph{unknown} parameter. If this unknown parameter is
+    one-dimensional, the return value of \code{L2deriv.fct} must be a function
+    in argument \code{x}, which is vectorized, (i.e.,
+    callable for a vector-valued \code{x}), and has a one-dimensional, numeric
+    return value. In case the dimension of the unknown parameter is larger
+    than one, the return value must be a list of functions, each of which
+    satisfies the conditions formulated for the case of a one-dimensional
+    parameter of interest. The order of the components of this list is
+    the same as the order of the parameter coordinates in \code{main}, followed
+    by the ones in \code{nuisance}.}
   \item{L2derivSymm}{ object of class \code{"FunSymmList"}: 
-    symmetry of the maps contained in \code{L2deriv} }
+    symmetry of the maps contained in \code{L2deriv}; a list
+    of symmetry properties of the same length as the return value of
+    \code{ L2deriv.fct }.}
   \item{L2derivDistr}{ object of class \code{"UnivarDistrList"}: 
-    distribution of \code{L2deriv} }
+    distribution of \code{L2deriv}; the length of this list
+    of univariate distributions must be of the same length as the
+    return value of \code{ L2deriv.fct }.}
   \item{L2derivDistrSymm}{ object of class \code{"DistrSymmList"}: 
-    symmetry of the distributions contained in \code{L2derivDistr} }
+    symmetry of the distributions contained in \code{L2derivDistr};
+    the length of this list of symmetry properties must be
+    of the same length as the  return value of \code{ L2deriv.fct }. }
   \item{FisherInfo.fct}{function: mapping from the parameter space (argument
     \code{param} of class \code{"ParamFamParameter"}) to the set of positive
     semidefinite matrices; \code{FisherInfo.fct} is used by \code{modifyModel} to 

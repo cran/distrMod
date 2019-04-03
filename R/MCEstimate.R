@@ -3,6 +3,7 @@
 ###############################################################################
 
 
+setMethod("optimReturn", "MCEstimate", function(object) object@optimReturn)
 setMethod("optimwarn", "MCEstimate", function(object) object@optimwarn)
 setMethod("criterion", "MCEstimate", function(object) object@criterion)
 setMethod("criterion.fct", "MCEstimate", function(object) object@criterion.fct)

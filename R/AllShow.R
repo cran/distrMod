@@ -82,7 +82,7 @@ setMethod("show", "ParamFamParameter",
 
 setMethod("show", "ParamWithShapeFamParameter",
     function(object){
-       show(as(object,"ParamFamParameter"))
+       getMethod("show","ParamFamParameter")(object)
        if(object@withPosRestr)
           cat(gettext("Shape parameter must not be negative.\n"))
 })
@@ -259,7 +259,7 @@ setMethod("show", "Estimate",
 setMethod("show", "MCEstimate", 
     function(object){
        digits <- getOption("digits")
-       show(as(object,"Estimate"))
+        getMethod("show", "Estimate")(object)
        if(getdistrModOption("show.details")!="minimal"){
         cat("Criterion:\n")
         print(criterion(object), quote = FALSE)}

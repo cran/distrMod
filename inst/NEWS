@@ -8,6 +8,124 @@
  information)
 
 ##############
+v 2.8
+##############
+
+user-visible CHANGES:
+
++ require more recent versions of distr, distrEx
++ plot methods now return an S3 object of class \code{c("plotInfo","DiagnInfo")}, i.e., a list containing the 
+  information needed to produce the respective plot, which at a later stage could be used by different graphic engines (like, e.g. 
+  \code{ggplot}) to produce the plot in a different framework. A more detailed description will follow in a subsequent version.
++ DESCRIPTION tag SVNRevision changed to VCS/SVNRevision
++ "cleverer parsing of dots" in M[L,C,D]Estimator:
+  Triggered by an error observed by Kornelius Rohmeyer, we now parse the dots (...) argument 
+  of M[L,C,D]Estimator a  little more closely and filter out obvious clashes: We filter out taboo arguments 
+  (causing clashes with formals in optim/optimize and calling arguments); from the remaining ones only 
+  [exactly] _named_ arguments of the optimizer (optim/optimize) and those matching either exactly arguments 
+  of the criterion or all remaining ones (if ... is a formal of the criterion) are passed on: 
+  This way, one can, if desired, do evaluation-wise validity checks in the criterion. 
++ For diagnostic purposes, MCEstimate-class gains a slot optimReturn (of class "ANY" and filled by
+  NULL by default) which is filled by the return value of the optimizer in "mceCalc" -- it has a
+  corresponding accessor
++ distinguish three cases for CvMMDEstimator selected by  argument muDatOrMod = c("Dat","Mod", "Other"):
+  in case "Dat", mu = emp. cdf (default), in case "Mod", mu = current best fit model distribution,
+  and in case "Other" one has to supply an integration  probability mu. 
+  => consistency between estimate and asyCov
++ added some theory/references to help file to MD estimators
++ the L2derivatives of the SimpleL2ParamFamilies and the L2GroupFamilies now respect 
+  restrictions in the support of the underlying distribution: the L2derivatives are 0
+  whenever the argument x has liesInSupport(distribution,x, checkFin = TRUE) == FALSE
+  (i.e., in discrete distiributions, with a more refined version, extending the checking
+  of the numerically truncated support).
++ new model classes / generators LogisticLocationScaleFamily, CauchyLocationFamily
++ changed default for CvMMDEstiamtor to variant "Mod" (consistent to fitdistrplus)
++ more precise / explicit description of the requirements of slots L2deriv and L2deriv.fct in 
+  the help files to generator L2ParamFamily and to L2ParamFamily-class.
++ E() methods with signature(object = "L2ParamFamily" , ...) gain argument diagnostic
+  (like E()-methods in distrEx v 2.8.0)
++ triggered by a mail by K. Hornik who spotted output in checking the centering of L2deriv varying from 
+  architecture to architecture, (which is below machine accuracy hence to be ignored) we now delete 
+  non-significant digits in centering 
+  
+bug fixes
++ discovered some issues with local variables in L2Families (global values were used instead...)  
++ default for asCov of CvMMDEstimator was inconsistent: the estimator was using emp.cdf, but
+  the asyCov was using mu the current best fit model distribution 
++ in the wrappers to MDEstimator: CvMMDEstimator, KolmogorovMDEstimator, TotalVarMDEstimator, 
+  HellingerMDEstimator, we had the "wrong" call in slot estimate.call
++ show-method for ParamWithShapeFamParameter and MCEstimate did unnecessary casting to superclasses
+  hence hid the true class
++ argument distance did not show it came from CvMDist, CvMDist2 via CvMMDEstiamtor when unparsed -- 
+  now the unparsed argument in CvMMDEstimator is called CvMDist0 so shows that it is related to 
+  CvMDist 
++ in fam.fall to NbinomFamily (with two parameters ) we had matrix(Tr, dimnames = DN) without
+  specifying nrow and ncol 
++ logical of length>1 in if-clause in trafoEst()   
+  
+under the hood:
+
++ As this is more for internal purposes, example code for the parsing of dots argument 
+  is in lines ll 275--334 in mleCalc-methods.R (wrapped in a if(FALSE){ }).
++ in code in SimpleL2ParamFamilies.R: 
+   + param.0 denotes the local current parameter of the L2Family  
+   + param is used as function argument
+   + <paramname>.0 is used in .fct - functions as local variant (intern to fct) of the current parameter
+   + in the substituted L2deriv.fct, we use <paramname>.1 which is substituted for <paramname>.0
+   + in case <paramname>.0 is already used otherwise (as in NbinomMeanSizeFamily) we use <paramname>.00 instead
++ replaced integration for AbscontDistribution(s) in .CvMMDCovariance by integration on quantile scale
+   => CvMMDEstimator now works with variances even for Gamma distributions for shape < 1 ...   
++ tuned .CvMMDCovariance() in asCvMVarianceQtl.R for speed (like with kStepEstimator timings are 
+   taken in comment ##-t-##) as the function .CvMMDCovariance was much slower than 
+   .oldCvMMDCovariance for Generalized EVD with Mu Unknown... / now they are at equal there 
++ revised .CvMMDCovariance() to get more performant for discrete distributions / 
+   -> thereby corrected an error in the intermediate formulae, which by
+  centering/standarizing of the IC in the end already cancelled out beforehand...
+  but now we are more accurate as to differences in the integration measure mu 
+  and the model distribution (important for integration w.r.t. emp. measure)
+  the revised .CvMMDCovariance()  uses vectorization in evaluation of random variables
+  and, wherever possible in integration; for the latter, this can be suppressed by
+  an argument useApply=TRUE through the ... argument  
+  in addition .CvMMDCovariance() now has argument "diagnostic" (like E())
+  and in calls to E(), the "..." argument is filtered
++ .process.meCalcRes gains arg "x" to be able to pass on emp.CDF for mu in CvMMDEstimator
+   if arg asvar.fct of MCEstimator has "x" in formals the observations x are passed on to asvar.fct, 
+   otherwise they are not; correspondingly "x" is passed on to .process.meCalcRes in
+   MCEstimator(), MDEstimator(), MLEstimator(). 
++ old .CvMMDCovariance() becomes .oldCvMMDCovariance
++ new wrapper .CvMMDCovarianceWithMux which uses emp cdf as mu
++ new wrappe CvMDist2 which by default uses model distribution as mu
++ CvMMDEstimator gains argument muDatOrMod = c("Dat","Mod") to distinguish two cases
++ moved code to .[old]CvMMDCovariance from 0distrModUtils.R to new file asCvMVarianceQtl.R
++ some fiddeling with the names of MCEstimators: 
+  all functions MDEstimator, CvMMDEstimator, KolmogorovMDEstimator, TotalVarMDEstimator, 
+  HellingerMDEstimator, MLEstimator, MCEstimator gain an extra argument nmsffx for 
+  potential suffices to be appended to the estimator name. 
++ in MDEstimator with Cramer von Mises distance in case 
+    * distance == CvMDist   && !is.null(mu) -> "( mu = <muname> )"
+    * distance == CvMDist   && is.null(mu)  -> "( mu = emp. cdf )"
+    * distance == CvMDist2                  -> "( mu = model distr. )"
+  is appended to the default estimator name 
++ similarly in wrapper CvMMDEstimator in case  argument 'muDatOrMod' is matched to 
+  * muDatOrMod=="Dat"   -> "( mu = emp. cdf )"
+  * muDatOrMod=="Mod"   -> "( mu = model distr. )"
+  * muDatOrMod=="Other" -> "( mu = <muname> )"
+  is appended to the default estimator name 
++ based on this tag "( mu = ... )" later on, in pkg RobAStBase, a (conditional) 
+  coerce method produces the pIC of the MDE by means of .CvMMDCovariance[WithMux]
++ new subclasses "MLEstimate", "MDEstimate", "CvMMDEstimate" for internal method dispatch  
++ (robust) start parameters for Nbinom family with two parameters
++ (robust) start (search) parameters for Poisson family 
++ now specified that we want to use distr::solve
++ E() methods with signature(object = "L2ParamFamily" , ...) use filtering of dots arguments
+  (like E()-methods in distrEx v 2.8.0)
++ E methods with signature(object = "L2ParamFamily" , ...) if (diagnostic==TRUE) return 
+  diagnostic attributes of S3 class  "DiagnosticClass"
++ .CvMMDCovariance() if (diagnostic==TRUE) returns diagnostic attributes of S3 class  
+  "DiagnosticClass"
+
+
+##############
 v 2.7
 ##############
 

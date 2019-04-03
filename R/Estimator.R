@@ -119,7 +119,7 @@ trafoEst <- function(fct, estimator){
                                nuisance = theta[idx],
                                fixed = estimator@fixed)
   fctv <- fct(main(param))
-  if(!names(fctv)==c("fval","mat") || ! is.list(fctv))
+  if(!all(names(fctv)==c("fval","mat")) || ! is.list(fctv))
      stop("Function 'fct' must be like function 'tau' in '?trafo-methods'")
 
     if(!.isUnitMatrix(fctv$mat)){

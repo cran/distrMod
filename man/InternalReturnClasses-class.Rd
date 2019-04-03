@@ -12,7 +12,9 @@
 \alias{GParetoFamily-class}
 \alias{BetaFamily-class}
 \alias{NormLocationScaleFamily-class}
+\alias{CauchyLocationFamily-class}
 \alias{CauchyLocationScaleFamily-class}
+\alias{LogisticLocationScaleFamily-class}
 
 \title{Internal return classes for generating functions}
 \description{internal return classes for generating functions 'L2ParamFamily' and 
@@ -23,12 +25,13 @@ In this file we describe classes
 \code{BinomFamily}, \code{PoisFamily}, \code{GammaFamily},
 \code{BetaFamily}, and class \code{GParetoFamily} ``extending'' (no new slots!)
 class \code{L2ParamFamily} (the latter via \code{L2ScaleShapeUnion}),
-class \code{NormLocationFamily},
+class \code{NormLocationFamily}, class \code{CauchyLocationFamily}
 ``extending'' (no new slots!) class \code{"L2LocationFamily"}, classes
 \code{NormScaleFamily}, \code{ExpScaleFamily}, and \code{LnormScaleFamily} 
 ``extending'' (no new slots!) class \code{"L2ScaleFamily"}, and classes
-\code{CauchyLocationScaleFamily} and \code{NormLocationScaleFamily},
-``extending'' (no new slots!) class \code{"L2LocationScaleFamily"}.
+\code{CauchyLocationScaleFamily}, \code{LogisticLocationScaleFamily} and
+\code{NormLocationScaleFamily}, ``extending'' (no new slots!)
+class \code{"L2LocationScaleFamily"}.
 }
 \section{Objects from these classes}{
   Objects are only generated internally by the mentioned generating functions. 
@@ -117,8 +120,8 @@ Class \code{"L2ParamFamily"},  directly.\cr
 Class \code{"ParamFamily"}, by class \code{"L2ParamFamily"}.\cr
 Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
 \cr
-Class \code{NormLocationFamily},
-``extends'' (no new slots!):\cr
+Class \code{NormLocationFamily}, class \code{CauchyLocationFamily}
+``extend'' (no new slots!):\cr
 Class \code{"L2LocationFamily"}, directly.\cr
 Class \code{"L2LocationScaleUnion"}, by class \code{"L2LocationFamily"}.\cr
 Class \code{"L2GroupParamFamily"}, by class \code{"L2LocationScaleUnion"}.\cr
@@ -135,7 +138,8 @@ Class \code{"L2ParamFamily"},  directly.\cr
 Class \code{"ParamFamily"}, by class \code{"L2ParamFamily"}.\cr
 Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
 \cr
-\code{CauchyLocationScaleFamily} and \code{NormLocationScaleFamily}
+\code{CauchyLocationScaleFamily}, \code{LogisticLocationScaleFamily},
+and \code{NormLocationScaleFamily}
 ``extend'' (no new slots!):\cr
 Class \code{"L2LocationScaleFamily"}, directly.\cr
 Class \code{"L2LocationScaleUnion"}, by class \code{"L2LocationScaleFamily"}.\cr

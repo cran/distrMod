@@ -79,9 +79,35 @@ setMethod("returnlevelplot", signature(x = "ANY",
              debug = FALSE, ## shall additional debug output be printed out?
              withSubst = TRUE
     ){ ## return value as in stats::qqplot
+    mc <- match.call(call = sys.call(sys.parent(1)))
+    dots <- match.call(call = sys.call(sys.parent(1)),
+                       expand.dots = FALSE)$"..."
+    args0 <- list(x = x, y = y, n = n, withIdLine = withIdLine,
+             withConf = withConf, withConf.pw  = withConf.pw,
+             withConf.sim = withConf.sim, plot.it = plot.it, datax = datax,
+             xlab = xlab, ylab = ylab, width = width, height = height,
+             withSweave = withSweave, mfColRow = mfColRow,
+             n.CI = n.CI, with.lab = with.lab, lab.pts = lab.pts,
+             which.lbs = which.lbs, which.Order = which.Order,
+             order.traf = order.traf, col.IdL = col.IdL, lty.IdL = lty.IdL,
+             lwd.IdL = lwd.IdL, alpha.CI = alpha.CI, exact.pCI = exact.pCI,
+             exact.sCI = exact.sCI, nosym.pCI = nosym.pCI, col.pCI = col.pCI,
+             lty.pCI = lty.pCI, lwd.pCI = lwd.pCI, pch.pCI = pch.pCI,
+             cex.pCI = cex.pCI, col.sCI = col.sCI, lty.sCI = lty.sCI,
+             lwd.sCI = lwd.sCI, pch.sCI = pch.sCI, cex.sCI = cex.sCI,
+             added.points.CI = added.points.CI, cex.pch = cex.pch,
+             col.pch = col.pch, cex.lbs = cex.lbs, col.lbs = col.lbs,
+             adj.lbs = adj.lbs, alpha.trsp = alpha.trsp, jit.fac = jit.fac,
+             jit.tol = jit.tol, check.NotInSupport = check.NotInSupport,
+             col.NotInSupport = col.NotInSupport, with.legend = with.legend,
+             legend.bg = legend.bg, legend.pos = legend.pos,
+             legend.cex = legend.cex, legend.pref = legend.pref,
+             legend.postf = legend.postf, legend.alpha = legend.alpha,
+             debug = debug, withSubst = withSubst)
+    plotInfo <- list(call = mc, dots=dots, args=args0)
 
     MaxOrPOT <- match.arg(MaxOrPOT)
-    mc <- match.call(call = sys.call(sys.parent(1)))
+
     xcc <- as.character(deparse(mc$x))
 
    .mpresubs <- if(withSubst){
@@ -92,8 +118,8 @@ setMethod("returnlevelplot", signature(x = "ANY",
                             xcc))
                }else function(inx)inx
 
-    if(missing(xlab)){mc$xlab <-  paste(gettext("Return level of"), xcc)}
-    if(missing(ylab)){mc$ylab <-  gettext("Return period (years)")}
+    if(missing(xlab)){mc$xlab <- paste(gettext("Return level of"), xcc)}
+    if(missing(ylab)){mc$ylab <- gettext("Return period (years)")}
     if(missing(main)) mc$main <- gettext("Return level plot")
     mcl <- as.list(mc)[-1]
     mcl$datax <- NULL
@@ -302,20 +328,25 @@ setMethod("returnlevelplot", signature(x = "ANY",
        if(datax){
           mcl$xlab <- mc$xlab
           mcl$ylab <- mc$ylab
-          do.call(plot, c(list(x=xallc1, y=yallc1, log=logs,type="n"),mcl))
-          do.call(points, c(list(x=xso, y=ycso), mcl))
+          plotInfo$plotArgs <- c(list(x=xallc1, y=yallc1, log=logs, type="n"),mcl)
+          plotInfo$pointArgs <- c(list(x=xso, y=ycso), mcl)
        }else{
           mcl$ylab <- mc$xlab
           mcl$xlab <- mc$ylab
-          do.call(plot,  c(list(x=yallc1, y=xallc1, log=logs,type="n"),mcl))
-          do.call(points, c(list(x=ycso, y=xso), mcl))
+          plotInfo$plotArgs <- c(list(x=yallc1, y=xallc1, log=logs,type="n"),mcl)
+          plotInfo$pointArgs <- c(list(x=ycso, y=xso), mcl)
        }
+       do.call(plot, plotInfo$plotArgs)
+       plotInfo$usr <- par("usr")
+       do.call(points, plotInfo$pointArgs)
     }
 
     if(with.lab&& plot.it){
        lbprep$y0 <- p2rl(lbprep$y0)
        xlb0 <- if(datax) lbprep$x0 else lbprep$y0
        ylb0 <- if(datax) lbprep$y0 else lbprep$x0
+       plotInfo$textArgs <- list(x = xlb0, y = ylb0, labels = lbprep$lab,
+            cex = lbprep$cex, col = lbprep$col, adj = adj.lbs)
        text(x = xlb0, y = ylb0, labels = lbprep$lab,
             cex = lbprep$cex, col = lbprep$col, adj = adj.lbs)
     }
@@ -323,10 +354,13 @@ setMethod("returnlevelplot", signature(x = "ANY",
     if(withIdLine){
        if(plot.it){
           if(datax){
+             plotInfo$IdLineArgs <- list(xyallc,pxyallc,col=col.IdL,lty=lty.IdL,lwd=lwd.IdL)
              lines(xyallc,pxyallc,col=col.IdL,lty=lty.IdL,lwd=lwd.IdL)
           }else{
+             plotInfo$IdLineArgs <- list(pxyallc,xyallc,col=col.IdL,lty=lty.IdL,lwd=lwd.IdL)
              lines(pxyallc,xyallc,col=col.IdL,lty=lty.IdL,lwd=lwd.IdL)
           }
+
        }
        qqb <- NULL
        if(#is(y,"AbscontDistribution")&&
@@ -371,7 +405,9 @@ setMethod("returnlevelplot", signature(x = "ANY",
                   qqb0=NULL, transf0=p2rl, debug = debug)
        }
     }}
-    return(invisible(c(ret,qqb)))
+    plotInfo <- c(plotInfo, ret=ret,qqb=qqb)
+    class(plotInfo) <- c("plotInfo","DiagnInfo")
+    return(invisible(plotInfo))
     })
 
 ## into distrMod
@@ -383,8 +419,19 @@ setMethod("returnlevelplot", signature(x = "ANY",
     ylab = deparse(substitute(y)), ...){
 
     mc <- match.call(call = sys.call(sys.parent(1)))
+    mc1 <- match.call(call = sys.call(sys.parent(1)), expand.dots=FALSE)
     mcx <- as.character(deparse(mc$x))
     mcy <- as.character(deparse(mc$y))
+    dots <- mc1$"..."
+    args0 <- list(x = x, y = y,
+                  n = if(!missing(n)) n else length(x),
+                  withIdLine = withIdLine, withConf = withConf,
+    withConf.pw  = if(!missing(withConf.pw)) withConf.pw else if(!missing(withConf)) withConf else NULL,
+    withConf.sim = if(!missing(withConf.sim)) withConf.sim else if(!missing(withConf)) withConf else NULL,
+                  plot.it = plot.it, xlab = xlab, ylab = ylab)
+
+    plotInfo <- list(call=mc, dots=dots, args=args0)
+
     if(missing(xlab)) mc$xlab <- paste(gettext("Return Level of"), mcx)
     if(missing(ylab)) mc$ylab <- paste(gettext("Return Period at"), mcy)
     mcl <- as.list(mc)[-1]
@@ -393,8 +440,12 @@ setMethod("returnlevelplot", signature(x = "ANY",
     if(!is(yD,"UnivariateDistribution"))
        stop("Not yet implemented.")
 
-    return(invisible(do.call(getMethod("returnlevelplot", signature(x="ANY", y="UnivariateDistribution")),
-            args=mcl)))
+    retv <- do.call(getMethod("returnlevelplot", signature(x="ANY", y="UnivariateDistribution")),
+            args=mcl)
+    retv$call <- retv$dots <- retv$args <- NULL
+    plotInfo <- c(plotInfo,retv)
+    class(plotInfo) <- c("plotInfo","DiagnInfo")
+    return(invisible(plotInfo))
     })
 
 setMethod("returnlevelplot", signature(x = "ANY",
@@ -408,7 +459,17 @@ setMethod("returnlevelplot", signature(x = "ANY",
     mc1 <- match.call(call = sys.call(sys.parent(1)), expand.dots=FALSE)
     mcx <- as.character(deparse(mc$x))
     mcy <- as.character(deparse(mc$y))
-    if(missing(xlab)) mc$xlab <- paste(gettext("Return Level of"), as.character(deparse(mc$x)))
+    dots <- mc1$"..."
+    args0 <- list(x = x, y = y,
+                  n = if(!missing(n)) n else length(x),
+                  withIdLine = withIdLine, withConf = withConf,
+    withConf.pw  = if(!missing(withConf.pw)) withConf.pw else if(!missing(withConf)) withConf else NULL,
+    withConf.sim = if(!missing(withConf.sim)) withConf.sim else if(!missing(withConf)) withConf else NULL,
+                  plot.it = plot.it, xlab = xlab, ylab = ylab)
+
+    plotInfo <- list(call=mc, dots=dots, args=args0)
+
+    if(missing(xlab)) mc$xlab <- paste(gettext("Return Level of"), mcx)
     mcl <- as.list(mc)[-1]
 
     param <- ParamFamParameter(main=untransformed.estimate(y), nuisance=nuisance(y),
@@ -426,6 +487,10 @@ setMethod("returnlevelplot", signature(x = "ANY",
     mcl$y <- PFam0
     if(missing(ylab)) mcl$ylab <- paste(gettext("Return Period at fitted"), name(PFam0), "\n -- fit by ", mcy)
 
-    return(invisible(do.call(getMethod("returnlevelplot", signature(x="ANY", y="ProbFamily")),
-            args=mcl)))
+    retv <- do.call(getMethod("returnlevelplot", signature(x="ANY", y="ProbFamily")),
+            args=mcl)
+    retv$call <- retv$dots <- retv$args <- NULL
+    plotInfo <- c(plotInfo,retv)
+    class(plotInfo) <- c("plotInfo","DiagnInfo")
+    return(invisible(plotInfo))
     })

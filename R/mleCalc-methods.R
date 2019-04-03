@@ -14,12 +14,12 @@ setMethod("samplesize", signature="numeric", function(object){
 meRes <- function(x, estimate, criterion.value, param, crit.fct,
                   method = "explicit solution",
                   crit.name = "Maximum Likelihood", Infos, warns = "",
-                  startPar = NULL)
+                  startPar = NULL, optReturn = NULL)
         return(list(estimate = estimate, criterion = criterion.value,
                     param = param, crit.fct = crit.fct, method = method, 
                     crit.name = crit.name, Infos = Infos, 
                     samplesize = samplesize(x), warns = warns,
-                    startPar = startPar))
+                    startPar = startPar, optReturn = optReturn))
 
 get.criterion.fct <- function(theta, Data, ParamFam, criterion.ff, fun, ...){
 
@@ -104,14 +104,79 @@ setMethod("mceCalc", signature(x = "numeric", PFam = "ParamFamily"),
         lnx <- length(nuisance(PFam))
         fixed <- fixed(PFam)
 
+## added 2018 07 30: parse the dots argument a little to filter
+## out arguments which could be of interest to optim/optimize resp. to criterion
+## consequence: MCEstimator can be called with (exactly) named arguments of
+## optimize/optim and with (exactly) named additional arguments (from position
+## 3 on) of the criterion function; in particular if check.validity is a formal.
+## All other arguments are not passed on / in particular if ... is not a formal
+## and if check.validity is not a formal of the criterion, it is simply ignored.
+
+#       mceCalcDots1 <- match.call(call = sys.call(sys.parent(1)),
+#                                 expand.dots = FALSE)$"..."
+       mceCalcDots <- list(...)
+#       cat("------------\n");print(mceCalcDots);cat("------------\n");
+
+       filterDots <- function(dots){
+          if(length(dots)){
+               dotsOptIz <- NULL
+               nfmlsOptiz <- NULL
+
+               dotsNames <- names(dots)
+               if(length(param(PFam)) == 1){
+                  nfmlsOptIz <- names(formals(optimize))
+                  nOptProh <- c("f","interval")
+               }else{
+                  nfmlsOptIz <- names(formals(optim))
+                  nOptProh <- c("fn","par")
+               }
+               nfmlsOptIz <- nfmlsOptIz[! (nfmlsOptIz %in% nOptProh)]
+               if(length(nfmlsOptIz))
+                  dotsOptIz <- dots[dotsNames %in% nfmlsOptIz]
+               if(length(dotsOptIz)==0) dotsOptIz <- NULL
+
+               dotsRest <- dots[!(dotsNames %in% nfmlsOptIz)]
+               nfmlsCrit <- names(formals(criterion))
+               dotsForCrit <- NULL
+
+               if(length(dotsRest)&&length(nfmlsCrit)>2){
+                  dotsRestNames <- names(dotsRest)
+                  nmprohib <- c("Data", "theta", "ParamFamily",
+                                "criterionF", nfmlsOptIz)
+                  nmprohib <- nmprohib[nmprohib!="..."]
+                  nfmlsCrit <- nfmlsCrit[! (nfmlsCrit %in% nmprohib)]
+                  dotsRestNamesProhib <- dotsRestNames %in% nmprohib
+
+                  dotsRest <- dotsRest[!dotsRestNamesProhib]
+                  if(length(dotsRest)){
+                     dotsRestNames <- names(dotsRest)
+                     critL <- (dotsRestNames %in% nfmlsCrit)
+                     critL <- critL | ("..." %in% nfmlsCrit)
+                     dotsForCrit <- dotsRest[critL]
+                  }
+                  if(length(dotsForCrit)==0) dotsForCrit <- NULL
+               }
+               dotsForOpt <- c(dotsOptIz,dotsForCrit[!names(dotsForCrit)%in% nOptProh])
+               return(list(dotsForOpt=dotsForOpt, dotsCrit=dotsForCrit, dotsOnlyOpt=dotsOptIz))
+          }else return(NULL)
+       }
+
+       dotsToPass <- do.call(filterDots, list(mceCalcDots))
+#       print(dotsToPass)
+#       print(names(dotsToPass$dotsCrit))
        allwarns <- character(0)
        fun <- function(theta, Data, ParamFamily, criterionF, ...){
                vP <- TRUE
+               dotsfun <- list(...)
+               names(dotsfun) <- gsub("dotsForC\\.","",names(dotsfun))
+#               cat(".....\n");print(dotsfun);cat(".....\n")
+#               cat("!!!!\n")
+#               print(names(dotsfun))
+#               print(names(dotsToPass$dotsCrit))
+#               cat("!!!!\n")
+               dotsForC0 <- dotsfun[names(dotsfun)%in%names(dotsToPass$dotsCrit)]
+#               print(dotsForC0)
                if(validity.check) vP <- validParameter(ParamFamily, theta)
-               dots <- list(...)
-               dots$trafo <- NULL
-               dots$penalty <- NULL
-               dots$withBiasC <- NULL
                if(is.function(penalty)) penalty <- penalty(theta)
                if(!vP) {crit0 <- penalty; theta <- mO(theta)
                }else{
@@ -120,8 +185,8 @@ setMethod("mceCalc", signature(x = "numeric", PFam = "ParamFamily"),
                                        names(nuisance(ParamFamily)))
                   else  names(theta) <- names(main(ParamFamily))
                   distr.new <- try(ParamFamily@modifyParam(theta), silent = TRUE)
-                  argList <- c(list(Data, distr.new), dots)
-                  argList$check.validity <- NULL
+                  argList <- list(Data, distr.new)
+                  if(!is.null(dotsForC0)) argList <- c(argList, dotsForC0)
                   if(withthetaPar) argList <- c(argList, list(thetaPar = theta))
                   if(is(distr.new,"try.error")){
                       crit0 <- penalty
@@ -148,20 +213,30 @@ setMethod("mceCalc", signature(x = "numeric", PFam = "ParamFamily"),
                return(critP)}
 
     if(length(param(PFam)) == 1){
-        res <- optimize(f = fun, interval = startPar, Data = x,
-                      ParamFamily = PFam, criterionF = criterion, ...)
-        theta <- res$minimum
+        argsOptimize <- list(f = fun, interval = startPar, Data = x,
+                             ParamFamily = PFam, criterionF = criterion)
+        if(!is.null(dotsToPass$dotsOnlyOpt))
+            argsOptimize <- c(argsOptimize, dotsToPass$dotsOnlyOpt)
+        if(!is.null(dotsToPass$dotsCrit))
+            argsOptimize <- c(argsOptimize, dotsForC=dotsToPass$dotsCrit)
+        optres <- do.call(optimize, argsOptimize)
+        theta <- optres$minimum
         names(theta) <- names(main(PFam))
-        crit <- res$objectiv
+        crit <- optres$objective
         method <- "optimize"
     }else{
         if(is(startPar,"Estimate")) startPar <- untransformed.estimate(startPar)
-        res <- optim(par = startPar, fn = fun, Data = x,
-                   ParamFamily = PFam, criterionF = criterion, ...)
-        theta <- as.numeric(res$par)
+        argsOptim <- list(par = startPar, fn = fun, Data = x,
+                          ParamFamily = PFam, criterionF = criterion)
+        if(!is.null(dotsToPass$dotsOnlyOpt))
+            argsOptim <- c(argsOptim, dotsToPass$dotsOnlyOpt)
+        if(!is.null(dotsToPass$dotsCrit))
+            argsOptim <- c(argsOptim, dotsForC=dotsToPass$dotsCrit)
+        optres <- do.call(optim, argsOptim)
+        theta <- as.numeric(optres$par)
         names(theta) <- c(names(main(PFam)),names(nuisance(PFam)))
         method <- "optim"
-        crit <- res$value
+        crit <- optres$value
     }
 
     vP <- TRUE
@@ -175,6 +250,7 @@ setMethod("mceCalc", signature(x = "numeric", PFam = "ParamFamily"),
     param <- .callParamFamParameter(PFam, theta, idx, nuis, fixed)
 
     fun2 <- function(theta, Data, ParamFamily, criterion, ...){
+               dotsTP <- filterDots(list(...))
                vP <- TRUE
                if(validity.check) vP <- validParameter(ParamFamily, theta)
                if(!vP) theta <- makeOKPar(ParamFamily)(theta)
@@ -183,16 +259,83 @@ setMethod("mceCalc", signature(x = "numeric", PFam = "ParamFamily"),
                                        names(nuisance(ParamFamily)))
                else  names(theta) <- names(main(ParamFamily))
                distr.new <- ParamFamily@modifyParam(theta)
-               crit1 <- criterion(Data, distr.new, ...)
+               crit1 <- do.call(criterion, c(list(Data, distr.new),
+                                dotsToPass$dotsCrit))
                return(crit1)}
 
-    crit.fct <- get.criterion.fct(theta, Data = x, ParamFam = PFam, 
+    crit.fct <- get.criterion.fct(theta, Data = x, ParamFam = PFam,
                                    criterion.ff = criterion, fun2, ...)
-    
+
     return(meRes(x, theta, crit, param, crit.fct, method = method,
                  crit.name = crit.name, Infos = Infos, warns= allwarns,
-                 startPar = startPar))
+                 startPar = startPar, optReturn = optres))
            })
+
+
+##########################################################################
+# added 2018 07 30
+##########################################################################
+if(FALSE){
+require(distrMod)
+nF <- NormLocationScaleFamily()
+negLoglikelihood <- function(x, Distribution){
+  res <- -sum(log(Distribution@d(x)))
+  names(res) <- "Negative Log-Likelihood"
+  return(res)
+}
+negLoglikelihood2 <- function(x, Distribution, ...){
+  dots <- list(...)
+  print(dots)
+  res <- -sum(log(Distribution@d(x)))
+  names(res) <- "Negative Log-Likelihood"
+  return(res)
+}
+negLoglikelihood3 <- function(x, Distribution, check.validity, fn=3){
+  print(c(chk=check.validity))
+  print(c(fn=fn))
+  res <- -sum(log(Distribution@d(x)))
+  names(res) <- "Negative Log-Likelihood"
+  return(res)
+}
+set.seed(123)
+x <- rnorm(10)
+MCEstimator(x = x, ParamFamily = nF, criterion = negLoglikelihood)
+re <- MCEstimator(x = x, ParamFamily = nF, criterion = negLoglikelihood,
+            hessian = TRUE)
+re
+optimReturn(re)
+
+MCEstimator(x = x, ParamFamily = nF, criterion = negLoglikelihood2,
+            fups="fu")
+fo <- list(a="fu",c=list(b="e",3))
+refo <- MCEstimator(x = x, ParamFamily = nF, criterion = negLoglikelihood2,
+            fups=fo)
+optimReturn(refo)
+
+re2 <- MCEstimator(x = x, ParamFamily = nF, criterion = negLoglikelihood2,
+            fups="fu", hessian = TRUE, fn="LU")
+re2
+optimReturn(re2)
+MCEstimator(x = x, ParamFamily = nF, criterion = negLoglikelihood3)
+MCEstimator(x = x, ParamFamily = nF, criterion = negLoglikelihood3, fn="LU")
+
+## this shows how to do validity checks every fourth evaluation
+count <- 0
+negLoglikelihood4 <- function(x, Distribution, check.validity){
+  count <<- count +1
+  if(count %% 4==0)print(c(chk=check.validity))
+  print(count)
+  res <- -sum(log(Distribution@d(x)))
+  names(res) <- "Negative Log-Likelihood"
+  return(res)
+}
+MCEstimator(x = x, ParamFamily = nF, criterion = negLoglikelihood4)
+
+}
+##########################################################################
+# end added 2018 07 30
+##########################################################################
+
 
 ################################################################################
 ####### particular methods

@@ -42,7 +42,7 @@ setAs("MCEstimate", "mle", def = function(from){
                 ## "invert" (locally!) the transformation,
                 # i.e. th1 "=" trafo^-1(th0)                
                 D1 <- (trafo(from)$fct)(th0)$mat
-                th1 <- est1 + solve(D1, th0-est0)
+                th1 <- est1 + distr::solve(D1, th0-est0)
                 ## call critrium.fct with this transformed parameter
                 do.call(from@criterion.fct,as.list(th1))
           }

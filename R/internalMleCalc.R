@@ -23,8 +23,9 @@
 #internal helper
 ##########################################################################
 .process.meCalcRes <- function(res, PFam, trafo, res.name, call,
-                               asvar.fct, check.validity, ...,
-                               .withEvalAsVar = TRUE){
+                               asvar.fct, check.validity, ..., toClass = "",
+                               .withEvalAsVar = TRUE, x = NULL, nmsffx = ""){
+
     lmx <- length(main(PFam))
     lnx <- length(nuisance(PFam))
     idx <- 1:lmx
@@ -50,6 +51,7 @@
     est.name <-  if(crit.name=="") "Minimum criterion estimate"  else
                     paste("Minimum", crit.name, "estimate", sep = " ") 
 
+    if(any(nmsffx != "")) est.name <- paste(est.name, nmsffx, collapse=" ")
     if(is.null(res$Infos))
         Infos <- matrix(c(character(0),character(0)), ncol=2,
                         dimnames=list(character(0), c("method", "message")))
@@ -93,14 +95,21 @@
     if(!missing(asvar.fct))
        if(!is.null(asvar.fct)){
            asvar.tfct <- function(PFam, param, ...){
-              asvar.try <- try(asvar.fct(L2Fam = PFam, param = param, ...),
-                                         silent = TRUE)
+              lcdots <- list(...)
+              asvarArgList <- c(list(L2Fam = PFam, param = param), lcdots)
+              if("x" %in% names(formals(asvar.fct)))
+                 asvarArgList <- c(asvarArgList, x=x)
+              asvar.try <- try(do.call(asvar.fct, asvarArgList), silent = TRUE)
+#              print(asvar.try)
               as0 <- if(is(asvar.try,"try-error")) NULL else asvar.try
               return(as0)
            }
-           asvar <- substitute(do.call(asfct, args=c(list(PFam0, param0, ...))),
-                               list(asfct=asvar.tfct, PFam0=PFam, param0=param))
+           dots.now <- list(...)
+           asvar <- substitute(do.call(asfct, args=c(list(PFam0, param0),dots.s)),
+                               list(asfct=asvar.tfct, PFam0=PFam, param0=param,
+                                    dots.s = dots.now))
        }
+#    print(eval(asvar))
     if(.withEvalAsVar) asvar <- eval(asvar)
     
     untransformed.estimate <- theta
@@ -132,7 +141,8 @@
     if(hasnodim.main & hasnodim.nuis)
         untransformed.estimate <- .deleteDim(untransformed.estimate)
 
-    res.me <- new("MCEstimate", name = est.name, estimate = estimate, 
+    if(missing(toClass)||toClass == "") toClass <- "MCEstimate"
+    res.me <- new(toClass, name = est.name, estimate = estimate,
                   criterion = crit, asvar = asvar, Infos = Infos, 
                   samplesize = res$samplesize, nuis.idx = nuis.idx, 
                   estimate.call = call, trafo = traf0,
@@ -140,6 +150,7 @@
                   untransformed.asvar = untransformed.asvar,
                   criterion.fct = res$crit.fct, method = res$method,
                   fixed = fixed(param), optimwarn = res$warns,
+                  optimReturn = res$optReturn,
                   startPar = res$startPar)
     return(res.me)
 }

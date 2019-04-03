@@ -105,7 +105,17 @@ Class \code{"ProbFamily"}, directly.
       accessor function for slot \code{fam.call}. }
 
     \item{plot}{\code{signature(x = "ParamFamily")}: 
-      plot of slot \code{distribution}. }
+      plot of slot \code{distribution}.
+
+      The return value of the plot method is an S3 object of class
+      \code{c("plotInfo","DiagnInfo")}, i.e., a list
+      containing the information needed to produce the
+      respective plot, which at a later stage could be used by different
+      graphic engines (like, e.g. \code{ggplot}) to produce the plot
+      in a different framework. A more detailed description will follow in
+      a subsequent version.
+
+      }
 
     \item{show}{\code{signature(object = "ParamFamily")}}
 

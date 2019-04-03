@@ -40,9 +40,9 @@ L2LocationFamily <- function(loc = 0, name, centraldistribution = Norm(),
                "with location parameter 'loc'")
     if(missing(LogDeriv)) LogDeriv <- .getLogDeriv(centraldistribution)
     L2deriv.fct <- function(param){
-                   loc <- main(param)
+                   loc.0 <- main(param)
                    fct <- function(x){}
-                   body(fct) <- substitute({ LogDeriv(x - loc) }, list(loc = loc))
+                   body(fct) <- substitute({ LogDeriv(x - loc.1) }, list(loc.1 = loc.0))
                    return(fct)}
     L2deriv <- EuclRandVarList(RealRandVariable(list(L2deriv.fct(param)), Domain = Reals())) 
 
@@ -194,13 +194,26 @@ L2ScaleFamily <- function(scale = 1, loc = 0, name, centraldistribution = Norm()
                "the group of transformations 'g(y) = scale*y'",
                "with scale parameter 'scale'")
     if(missing(LogDeriv)) LogDeriv <- .getLogDeriv(centraldistribution)
-    L2deriv.fct <- function(param){
-                   scale <- main(param)
+    if(is.finite(q.l(centraldistribution)(0)) || is.finite(q.l(centraldistribution)(1)) ){
+       L2deriv.fct <- function(param){
+                   scale.0 <- main(param)
+                   distr.0 <- scale.0*centraldistribution + loc
                    fct <- function(x){}
-                   body(fct) <- substitute({ ((x - loc)/scale*LogDeriv((x - loc)/scale)-1)/scale },
-                                             list(loc = loc, scale = scale))
+                   body(fct) <- substitute({y <- 0*x
+                                 inS <- liesInSupport(distr.0, x, checkFin = TRUE)
+                                 y[inS] <- ((x[inS] - loc.1)/scale*LogDeriv((x[inS] - loc.1)/scale.1)-1)/scale.1
+                                 return(y)},
+                                 list(loc.1 = loc, scale.1 = scale.0))
                    return(fct)}
-    L2deriv <- EuclRandVarList(RealRandVariable(list(L2deriv.fct(param)), Domain = Reals())) 
+    }else{
+       L2deriv.fct <- function(param){
+                   scale.0 <- main(param)
+                   fct <- function(x){}
+                   body(fct) <- substitute({ ((x - loc.1)/scale.1*LogDeriv((x - loc.1)/scale.1)-1)/scale.1 },
+                                             list(loc.1 = loc, scale.1 = scale.0))
+                   return(fct)}
+    }
+    L2deriv <- EuclRandVarList(RealRandVariable(list(L2deriv.fct(param)), Domain = Reals()))
 
 
     L2derivDistr <- if(missing(L2derivDistr.0))
@@ -365,15 +378,15 @@ L2LocationScaleFamily <- function(loc = 0, scale = 1, name,
                              locscalename["loc"] else 1
                    snm <- if(locscalename["scale"] %in% nmsL)
                              locscalename["scale"] else 2          
-                   mean <- main(param)[lnm]
-                   sd <-   main(param)[snm]
+                   mean.0 <- main(param)[lnm]
+                   sd.0 <-   main(param)[snm]
                    fct1 <- function(x){}
                    fct2 <- function(x){}
-                   body(fct1) <- substitute({ LogDeriv((x - loc)/scale)/scale },
-                                             list(loc = mean, scale = sd))
+                   body(fct1) <- substitute({ LogDeriv((x - loc.1)/scale.1)/scale.1 },
+                                             list(loc.1 = mean.0, scale.1 = sd.0))
                    body(fct2) <- substitute({ 
-                        ((x - loc)/scale * LogDeriv((x - loc)/scale)-1)/scale },
-                                             list(loc = mean, scale = sd))
+                        ((x - loc.1)/scale.1 * LogDeriv((x - loc.1)/scale.1)-1)/scale.1 },
+                                             list(loc.1 = mean.0, scale.1 = sd.0))
                    return(list(fct1, fct2))}
 
     L2deriv <- EuclRandVarList(RealRandVariable(L2deriv.fct(param), 
@@ -547,15 +560,15 @@ L2LocationUnknownScaleFamily <- function(loc = 0, scale = 1, name,
 
     if(missing(LogDeriv)) LogDeriv <- .getLogDeriv(centraldistribution)
     L2deriv.fct <- function(param){
-                   mean <- main(param)
-                   sd <-   nuisance(param)
+                   mean.0 <- main(param)
+                   sd.0  <-  nuisance(param)
                    fct1 <- function(x){}
                    fct2 <- function(x){}
-                   body(fct1) <- substitute({ LogDeriv((x - loc)/scale)/scale },
-                                             list(loc = mean, scale = sd))
+                   body(fct1) <- substitute({ LogDeriv((x - loc.1)/scale.1)/scale.1 },
+                                             list(loc.1 = mean.0, scale.1 = sd.0))
                    body(fct2) <- substitute({ 
-                        ((x - loc)/scale * LogDeriv((x - loc)/scale)-1)/scale },
-                                             list(loc = mean, scale = sd))
+                        ((x - loc.1)/scale.1 * LogDeriv((x - loc.1)/scale.1)-1)/scale.1 },
+                                             list(loc.1 = mean.0, scale.1 = sd.0))
                    return(list(fct1, fct2))}
 
     L2deriv <- EuclRandVarList(RealRandVariable(L2deriv.fct(param), 
@@ -723,18 +736,38 @@ L2ScaleUnknownLocationFamily <- function(loc = 0, scale = 1, name,
                "with location parameter 'loc' and scale parameter 'scale'")
 
     if(missing(LogDeriv)) LogDeriv <- .getLogDeriv(centraldistribution)
-    L2deriv.fct <- function(param){
-                   mean <- nuisance(param)
-                   sd <-   main(param)
+    if(is.finite(q.l(centraldistribution)(0)) || is.finite(q.l(centraldistribution)(1)) ){
+       L2deriv.fct <- function(param){
+                   mean.0 <- nuisance(param)
+                   sd.0 <-   main(param)
+                   distr.0 <- sd.0*centraldistribution+mean.0
                    fct1 <- function(x){}
                    fct2 <- function(x){}
-                   body(fct1) <- substitute({ LogDeriv((x - loc)/scale)/scale },
-                                             list(loc = mean, scale = sd))
-                   body(fct2) <- substitute({ 
-                        ((x - loc)/scale * LogDeriv((x - loc)/scale)-1)/scale },
-                                             list(loc = mean, scale = sd))
+                   body(fct1) <- substitute({y <- 0*x
+                                   inS <- liesInSupport(distr.0, x, checkFin = TRUE)
+                                   y[inS] <-  LogDeriv((x[inS] - loc.1)/scale.1)/scale.1
+                                   return(y)},
+                                   list(loc.1 = mean.0, scale.1 = sd.0))
+                   body(fct2) <- substitute({y <- 0*x
+                                   inS <- liesInSupport(distr.0, x, checkFin = TRUE)
+                                   y[inS] <- ((x[inS] - loc.1)/scale.1 *
+                                      LogDeriv((x[inS] - loc.1)/scale.1)-1)/scale.1
+                                   return(y)},
+                                   list(loc.1 = mean.0, scale.1 = sd.0))
                    return(list(fct1, fct2))}
-
+    }else{
+       L2deriv.fct <- function(param){
+                   mean.0 <- nuisance(param)
+                   sd.0 <-   main(param)
+                   fct1 <- function(x){}
+                   fct2 <- function(x){}
+                   body(fct1) <- substitute({ LogDeriv((x - loc.1)/scale.1)/scale.1 },
+                                             list(loc.1 = mean.0, scale.1 = sd.0))
+                   body(fct2) <- substitute({
+                        ((x - loc.1)/scale.1 * LogDeriv((x - loc.1)/scale.1)-1)/scale.1 },
+                                             list(loc.1 = mean.0, scale.1 = sd.0))
+                   return(list(fct1, fct2))}
+    }
     L2deriv <- EuclRandVarList(RealRandVariable(L2deriv.fct(param), 
                                Domain = Reals())) 
 

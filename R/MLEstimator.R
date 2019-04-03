@@ -8,7 +8,8 @@ MLEstimator <- function(x, ParamFamily, startPar = NULL,
                         Infos, trafo = NULL, penalty = 1e20,
                         validity.check = TRUE, na.rm = TRUE,
                         ..., .withEvalAsVar = TRUE,
-                        dropZeroDensity = TRUE){
+                        dropZeroDensity = TRUE,
+                        nmsffx = "", .with.checkEstClassForParamFamily = TRUE){
 
     ## preparation: getting the matched call
     es.call <- match.call()
@@ -38,7 +39,7 @@ MLEstimator <- function(x, ParamFamily, startPar = NULL,
 
     asv <- if("FisherInfo" %in% slotNames(ParamFamily)){
               function(PFam = ParamFamily, param, ...)
-                                  solve(FisherInfo(PFam, param = param))
+                                  distr::solve(FisherInfo(PFam, param = param))
            }else NULL
     
     argList <- list(res0, PFam = ParamFamily, trafo = trafo,
@@ -48,6 +49,9 @@ MLEstimator <- function(x, ParamFamily, startPar = NULL,
 
     if(!is.null(asv))   argList <- c(argList, asvar.fct = asv)
     if(!is.null(dots))  argList <- c(argList, dots)
+    argList <- c(argList, x = x)
+    if(any(nmsffx!="")) argList <- c(argList, nmsffx = nmsffx)
+    argList$toClass <- "MLEstimate"
 
     ## digesting the results of mceCalc
     res <- do.call(what = ".process.meCalcRes", args = argList)
@@ -57,5 +61,8 @@ MLEstimator <- function(x, ParamFamily, startPar = NULL,
     res@name <- "Maximum likelihood estimate"
     res@completecases <- completecases
     
-    return(.checkEstClassForParamFamily(ParamFamily,res))
+    if(.with.checkEstClassForParamFamily)
+         res <- .checkEstClassForParamFamily(ParamFamily,res)
+
+    return(res)
 }

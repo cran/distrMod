@@ -23,7 +23,7 @@
 
 %% almost as usual
 \author{Matthias Kohl\\FH Furtwangen\And
-        Peter Ruckdeschel\\Fraunhofer ITWM Kaiserslautern}
+        Peter Ruckdeschel\\ Carl von Ossietzky University, Oldenburg}%Fraunhofer ITWM Kaiserslautern}
 \title{\proglang{R} Package~\pkg{distrMod}: \proglang{S}4 Classes and Methods for Probability Models}
 
 %% for pretty printing and a nice hypersummary also set:
@@ -62,18 +62,15 @@ estimators, minimum distance estimators, S4 classes, S4 methods} %% without form
   Hochschule Furtwangen\\
 Fakult\"at Maschinenbau und Verfahrenstechnik\\
 Jakob-Kienzle-Strasse 17\\
-78054 Villingen-Schwenningen \\
+78054 Villingen-Schwenningen, Germany \\
   E-mail: \email{Matthias.Kohl@hs-furtwangen.de}\\
   \bigskip \\
   Peter Ruckdeschel\\
-  TU Kaiserslautern\\ 
-  FB Mathematik\\ 
-  P.O.Box 3049\\ 
-  67653 Kaiserslautern, Germany\\
-  and\\ 
-  Fraunhofer-ITWM\\ 
-  Fraunhofer-Platz 1\\ 
-  67663 Kaiserslautern, Germany\\
+  Institute for Mathematics\\
+  School of Mathematics and Sciences\\
+  Carl von Ossietzky University Oldenburg,
+  Postfach 25 03\\
+  26111 Oldenburg, Germany\\
   E-mail: \email{peter.ruckdeschel@uni-oldenburg.de}
 }
 %% It is also possible to add a telephone and fax number
@@ -158,7 +155,7 @@ for which one may want to have confidence intervals, some profiling, etc. For
 objects of these classes we provide various methods for standard \proglang{R} functions; 
 see Sections~\ref{modelsec} and \ref{estsec} for more details.
 
-\textbf{Availability } The current version of package~\pkg{distrMod} is 2.2
+\textbf{Availability } The current version of package~\pkg{distrMod} is 2.8
 and can be found on the Comprehensive \proglang{R} Archive Network at 
 \url{https://CRAN.R-project.org/package=distrMod}. The development version of the distr-family is located at R-Forge;
 see~\citet{RForge}.

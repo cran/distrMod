@@ -1,6 +1,9 @@
 \name{MCEstimate-class}
 \docType{class}
 \alias{MCEstimate-class}
+\alias{MDEstimate-class}
+\alias{MLEstimate-class}
+\alias{CvMMDEstimate-class}
 \alias{criterion}
 \alias{criterion,MCEstimate-method}
 \alias{criterion.fct}
@@ -10,6 +13,8 @@
 \alias{method,MCEstimate-method}
 \alias{optimwarn}
 \alias{optimwarn,MCEstimate-method}
+\alias{optimReturn}
+\alias{optimReturn,MCEstimate-method}
 \alias{criterion<-}
 \alias{criterion<-,MCEstimate-method}
 \alias{coerce,MCEstimate,mle-method}
@@ -21,7 +26,12 @@
 \section{Objects from the Class}{
   Objects can be created by calls of the form \code{new("MCEstimate", ...)}.
   More frequently they are created via the generating functions
-  \code{MCEstimator}, \code{MDEstimator} or \code{MLEstimator}. 
+  \code{MCEstimator}, \code{MDEstimator} or \code{MLEstimator}.
+  More specifically, \code{MDEstimator}, \code{CvMMDEstimator},
+  and \code{MLEstimator} return objects of classes \code{MDEstimate},
+  \code{CvMMDEstimate}, and \code{MLEstimate} respectively, which each
+  are immediate subclasses of \code{MCEstimate} (without further slots,
+  for internal use in method dispatch).
 }
 \section{Slots}{
   \describe{
@@ -49,6 +59,9 @@
       additional informations. }
     \item{\code{optimwarn}}{ object of class \code{"character"}
       warnings issued during optimization. }
+    \item{\code{optimReturn}}{ object of class \code{"ANY"}
+      the return value of the optimizer (or \code{NULL} if, e.g.,
+      closed form solutions are used). }
     \item{\code{startPar}}{ --- object of class \code{"ANY"}; filled either
      with \code{NULL} (no starting value used) or with \code{"numeric"}
       --- the value of the starting parameter. }
@@ -87,6 +100,9 @@ Class \code{"Estimate"}, directly.
 
     \item{optimwarn}{\code{signature(object = "MCEstimate")}:
       accessor function for slot \code{optimwarn}. }
+
+    \item{optimReturn}{\code{signature(object = "MCEstimate")}:
+      accessor function for slot \code{optimReturn}. }
 
     \item{startPar}{\code{signature(object = "MCEstimate")}:
       accessor function for slot \code{startPar}. }

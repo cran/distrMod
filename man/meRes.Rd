@@ -9,7 +9,8 @@ in functions \code{\link{mceCalc}} and \code{\link{mleCalc}}}
 
 \usage{
 meRes(x, estimate, criterion.value, param, crit.fct, method = "explicit solution",
-      crit.name = "Maximum Likelihood", Infos, warns = "", startPar = NULL)
+      crit.name = "Maximum Likelihood", Infos, warns = "", startPar = NULL,
+      optReturn = NULL)
 get.criterion.fct(theta, Data, ParamFam, criterion.ff, fun, ...)
 \S4method{samplesize}{numeric}(object)
 }
@@ -39,7 +40,10 @@ get.criterion.fct(theta, Data, ParamFam, criterion.ff, fun, ...)
    (with certain checking whether parameter value is permitted and possibly
     penalizing if not; see code to , for example.)}
   \item{startPar}{value of argument \code{StartPar} --- starting parameter used.}
-  \item{\dots}{further arguments to be passed 
+  \item{optReturn}{ object of class \code{"ANY"}
+      the return value of the optimizer (or \code{NULL} if, e.g.,
+      closed form solutions are used). }
+  \item{\dots}{further arguments to be passed
                to \code{optim} / \code{optimize}} 
   \item{object}{numeric; the data at which to evaluate the estimate}
   }

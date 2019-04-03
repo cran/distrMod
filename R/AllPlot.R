@@ -3,9 +3,16 @@ setMethod("plot", signature(x = "ParamFamily", y = "missing"),
     function(x, ...){ 
         e1 <- x@distribution
         if(!is(e1, "UnivariateDistribution")) stop("not yet implemented")
-
-        plot(e1) 
+        mc <- match.call(call = sys.call(sys.parent(1)))
+        dots <- match.call(call = sys.call(sys.parent(1)),
+                        expand.dots = FALSE)$"..."
+        args0 <- list(x=x)
+        plotInfo <- list(call = mc, dots=dots, args=args0)
+        plotInfo$distribution <- plot(e1,...)
+        class(plotInfo) <- c("plotInfo","DiagnInfo")
+        return(invisible(plotInfo))
     })
+
 setMethod("plot", signature(x = "L2ParamFamily", y = "missing"),
     function(x, withSweave = getdistrOption("withSweave"), 
              main = FALSE, inner = TRUE, sub = FALSE, 
@@ -13,7 +20,16 @@ setMethod("plot", signature(x = "L2ParamFamily", y = "missing"),
              bmar = par("mar")[1], tmar = par("mar")[3], ...,
              mfColRow = TRUE, to.draw.arg = NULL, withSubst= TRUE){
 
-        xc <- match.call(call = sys.call(sys.parent(1)))$x
+        mc <- match.call(call = sys.call(sys.parent(1)))
+        dots <- match.call(call = sys.call(sys.parent(1)),
+                        expand.dots = FALSE)$"..."
+        args0 <- list(x=x, withSweave = withSweave,
+             main = main, inner = inner, sub = sub,
+             col.inner = col.inner, cex.inner = cex.inner,
+             bmar = bmar, tmar = tmar, mfColRow = mfColRow,
+             to.draw.arg = to.draw.arg, withSubst= withSubst)
+        plotInfo <- list(call = mc, dots=dots, args=args0)
+        xc <- mc$x
         xcc <- as.character(deparse(xc))
        .mpresubs <- if(withSubst){
                    function(inx) 
@@ -23,9 +39,7 @@ setMethod("plot", signature(x = "L2ParamFamily", y = "missing"),
                             xcc))
                }else function(inx)inx
     
-        dots <- match.call(call = sys.call(sys.parent(1)), 
-                       expand.dots = FALSE)$"..."
-        
+
         dots$to.draw.arg <- NULL
         trafO <- trafo(x@param)
 #        dims <- nrow(trafO)
@@ -54,6 +68,12 @@ setMethod("plot", signature(x = "L2ParamFamily", y = "missing"),
             pl <- .panel.mingle(dots,"panel.last")
         }
         pL <- .fillList(pL, length(to.draw))
+
+        plotInfo$to.draw <- to.draw
+        plotInfo$panelFirst <- pF
+        plotInfo$panelLast <- pL
+
+
         plotCount <- 1
 
         l2dpl <- to.draw[to.draw > 3]
@@ -224,7 +244,8 @@ setMethod("plot", signature(x = "L2ParamFamily", y = "missing"),
            lis0$to.draw.arg  <- todrw 
            lis0[["panel.first"]] <- pF[plotCount+(0:2)]
            lis0[["panel.last"]]  <- pL[plotCount+(0:2)]
-           do.call(plot, args = lis0)
+           plotInfo$distr <- do.call(plot, args = lis0)
+           plotInfo$distr$List <- lis0
            plotCount <- plotCount + 1
         }
         o.warn <- options("warn")
@@ -234,9 +255,12 @@ setMethod("plot", signature(x = "L2ParamFamily", y = "missing"),
    #     opar$cin <- opar$cra <- opar$csi <- opar$cxy <-  opar$din <- NULL
         on.exit(par(opar, no.readonly = TRUE))
         
-        if (!withSweave)
-             devNew()
-        
+        if (!withSweave){
+             devNewArgs <- list()
+             if(!is.null(dots$width)) devNewArgs[["width"]] <- dots[["width"]]
+             if(!is.null(dots$height)) devNewArgs[["height"]] <- dots[["height"]]
+             do.call(devNew, devNewArgs)
+        }
         parArgs <- NULL
         if(mfColRow)
            parArgs <- list(mfrow = c(nrows, ncols))
@@ -245,40 +269,61 @@ setMethod("plot", signature(x = "L2ParamFamily", y = "missing"),
         parArgs <- c(parArgs,list(mar = c(bmar,omar[2],tmar,omar[4]), no.readonly = TRUE))
        
         dots$ylim <- NULL
+        plotInfo$parArgs <- parArgs
         do.call(par,args=parArgs)
+
+        plotInfo$L2derivPlotUsr <- plotInfo$L2derivPlotArgs <- vector("list",dims0)
+        plotInfo$L2derivPlotLines <- plotInfo$L2derivPlotTitle <- vector("list",dims0)
         for(i in 1:dims0){
             indi <- l2dpl[i]-3
             if(!is.null(ylim)) dots$ylim <- ylim[,d.0+d.1+i]       
             dots$panel.first <- pF[[plotCount]]
             dots$panel.last  <- pL[[plotCount]]
-            do.call(plot, args=c(list(x=x.vec, y=sapply(x.vec, L2deriv@Map[[indi]]),
-                                 type = plty, lty = lty,
-                                 xlab = "x",
-                                 ylab = expression(paste(L[2], " derivative"))),
-                                 dots))
+            plotInfo$L2derivPlotArgs[[i]] <- c(list(x=x.vec,
+                   y=sapply(x.vec, L2deriv@Map[[indi]]),
+                   type = plty, lty = lty, xlab = "x",
+                   ylab = expression(paste(L[2], " derivative"))),
+                   dots)
+            do.call(plot, args=c(list(x=x.vec,
+                   y=sapply(x.vec, L2deriv@Map[[indi]]),
+                   type = plty, lty = lty, xlab = "x",
+                   ylab = expression(paste(L[2], " derivative"))),
+                   dots))
+            plotInfo$L2derivPlotUsr[[i]] <- par("usr")
             plotCount <- plotCount + 1
             if(is(e1, "DiscreteDistribution")){
                 x.vec1 <- seq(from = min(x.vec), to = max(x.vec), length = 1000)
                 do.call(lines, args=c(list(x.vec1, sapply(x.vec1, L2deriv@Map[[indi]]),
                               lty = "dotted"),dots))
+                plotInfo$L2derivPlotLines[[i]] <- c(list(x.vec1, sapply(x.vec1,
+                    L2deriv@Map[[indi]]), lty = "dotted"),dots)
             }
-            if(innerLog)
+            if(innerLog){
                do.call(title, args = c(list(main = innerT[i]), dotsT, 
                        line = lineT, cex.main = cex.inner, 
                        col.main = col.inner))
+               plotInfo$L2derivPlotTitle[[i]] <- c(list(main = innerT[i]), dotsT,
+                       line = lineT, cex.main = cex.inner,
+                       col.main = col.inner)
+            }
         }
 
         if(!hasArg(cex.main)) cex.main <- par("cex.main") else cex.main <- dots$"cex.main"
         if(!hasArg(col.main)) col.main <- par("col.main") else col.main <- dots$"col.main"
-        if (mainL)
+        if (mainL){
             mtext(text = main, side = 3, cex = cex.main, adj = .5,
                   outer = TRUE, padj = 1.4, col = col.main)
-
+            plotInfo$mainL <- list(text = main, side = 3, cex = cex.main, adj = .5,
+                  outer = TRUE, padj = 1.4, col = col.main)
+        }
         if(!hasArg(cex.sub)) cex.sub <- par("cex.sub") else cex.sub <- dots$"cex.sub"
         if(!hasArg(col.sub)) col.sub <- par("col.sub") else col.sub <- dots$"col.sub"
-        if (subL)
+        if (subL){
             mtext(text = sub, side = 1, cex = cex.sub, adj = .5,
                   outer = TRUE, line = -1.6, col = col.sub)
-
-     invisible()
+            plotInfo$subL <- list(text = sub, side = 1, cex = cex.sub, adj = .5,
+               outer = TRUE, line = -1.6, col = col.sub)
+        }
+     class(plotInfo) <- c("plotInfo","DiagnInfo")
+     return(invisible(plotInfo))
     })

@@ -86,12 +86,12 @@ class \code{"ProbFamily"}.}
                   via arguments \code{which.lbs}, \code{which.Order}, \code{which.nonlbs}
                   (\code{FALSE})? }
 \item{which.lbs}{integer or \code{NULL}; which observations shall be labelled}
-\item{which.Order}{integer or \code{NULL}; which of the ordered (remaining)
-observations shall be labelled}
 \item{which.nonlbs}{indices of the observations which should be plotted but
         not labelled; either an integer vector with the indices of the observations
           to be plotted into graph or \code{NULL} --- then all non-labelled
           observations are plotted.}
+\item{which.Order}{integer or \code{NULL}; which of the ordered (remaining)
+observations shall be labelled}
 \item{order.traf}{function or \code{NULL}; an optional trafo by which the
 observations are ordered (as order(trafo(obs)).}
 \item{col.IdL}{color for the identity line}
@@ -251,6 +251,7 @@ are also valid for this signature.}
    intervals.
 }
 \examples{
+set.seed(20190331)
 returnlevelplot(r(Norm(15,sqrt(30)))(40), Chisq(df=15))
 ### more could be seen after installing RobExtremes and ismev
 #
@@ -260,7 +261,9 @@ if(require(RobExtremes) && require(ismev)){
  gevfit <- gev.fit(portpirie[,2]) ## taken from example from ismev::gev.fit
  GEVF <- GEVFamily(scale=gevfit$mle[2],shape=gevfit$mle[3],loc=gevfit$mle[1])
  erg <- returnlevelplot(portpirie[,2], GEVF)
- print(erg)
+ print(names(erg))
+ print(names(erg$plotArgs))
+ print(names(erg$IdLineArgs))
  returnlevelplot(portpirie[,2], GEVF, datax=TRUE)
 
  data(rain)

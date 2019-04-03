@@ -4,7 +4,7 @@ importFrom("graphics", "abline", "legend", "lines", "mtext", "par",
            "points", "text", "title")
 importFrom("stats", "aggregate", "approxfun", "complete.cases",
            "dbinom", "dnbinom", "dnorm", "dpois", "na.omit", "optim",
-           "optimize", "ppoints", "qchisq", "qnbinom", "qnorm")
+           "optimize", "ppoints", "qchisq", "qnbinom", "qnorm", "quantile")
 import("MASS")
 import("distr")
 import("distrEx")
@@ -37,9 +37,9 @@ exportClasses("ParamWithScaleFamParameter", "ParamWithShapeFamParameter",
 exportClasses("BinomFamily","PoisFamily", "NormLocationFamily",
        "NormScaleFamily", "ExpScaleFamily",
        "LnormScaleFamily", "GammaFamily", "BetaFamily", "NormLocationScaleFamily",
-       "CauchyLocationScaleFamily")
+       "CauchyLocationScaleFamily", "LogisticLocationScaleFamily", "CauchyLocationFamily")
 exportClasses("NormType", "QFNorm", "InfoNorm", "SelfNorm")
-exportClasses("Estimate", "MCEstimate")
+exportClasses("Estimate", "MCEstimate", "MLEstimate", "MDEstimate", "CvMMDEstimate")
 exportClasses("Confint")
 exportMethods("distrSymm")
 exportMethods("distribution", "props", "props<-", "addProp<-", "main", "main<-",
@@ -60,7 +60,7 @@ exportMethods("r", "d", "p", "q", "q.l",
               "name.estimate", "trafo.estimate", "nuisance.estimate", 
               "fixed.estimate", "Infos", "Infos<-", "addInfo<-",
               "criterion", "criterion<-", "criterion.fct", "method",
-              "samplesize", "asvar", "asvar<-", "optimwarn",
+              "samplesize", "asvar", "asvar<-", "optimwarn", "optimReturn",
 			  "withPosRestr", "withPosRestr<-")
 exportMethods("untransformed.estimate", "untransformed.asvar")
 exportMethods("confint")
@@ -81,11 +81,12 @@ export("ParamFamParameter", "ParamFamily", "L2ParamFamily",
        "BinomFamily", "PoisFamily", "NbinomFamily", "NormLocationFamily",
        "NormScaleFamily", "ExpScaleFamily",
        "LnormScaleFamily", "GammaFamily", "BetaFamily", "NormLocationScaleFamily",
-       "CauchyLocationScaleFamily", "NbinomwithSizeFamily", "NbinomMeanSizeFamily")
+       "CauchyLocationScaleFamily", "NbinomwithSizeFamily", "NbinomMeanSizeFamily",
+	   "LogisticLocationScaleFamily", "CauchyLocationFamily")
 export("asCov", "trAsCov", "asHampel", "asBias", "asMSE", "asUnOvShoot", 
        "fiCov", "trFiCov", "fiHampel", "fiMSE", "fiBias", "fiUnOvShoot")
 export("positiveBias", "negativeBias", "symmetricBias", 
-       "asymmetricBias", "asSemivar")
+       "asymmetricBias", "asSemivar", "LOGISTINT2")
 export("isKerAinKerB")
 export("L2LocationFamily", "L2ScaleFamily", "L2LocationScaleFamily")
 export("EuclideanNorm", "QuadFormNorm")
@@ -94,4 +95,5 @@ export("NormScaleUnknownLocationFamily", "NormLocationUnknownScaleFamily")
 export("L2LocationUnknownScaleFamily", "L2ScaleUnknownLocationFamily")
 export("meRes", "get.criterion.fct")
 export("addAlphTrsp2col")
-export(".deleteDim",".isUnitMatrix",".CvMMDCovariance")
+export(".deleteDim",".isUnitMatrix",
+       ".CvMMDCovariance", ".oldCvMMDCovariance", ".CvMMDCovarianceWithMux")

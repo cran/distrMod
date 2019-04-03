@@ -15,7 +15,7 @@ These functions are used internally by functions \code{MCEstimator} and
 \usage{
 .negLoglikelihood(x, Distribution, ..., dropZeroDensity = TRUE)
 .process.meCalcRes(res, PFam, trafo, res.name, call, asvar.fct, check.validity,
-                   ..., .withEvalAsVar = TRUE)
+                   ..., toClass="", .withEvalAsVar = TRUE, x = NULL, nmsffx = "")
 .callParamFamParameter(PFam, theta, idx, nuis, fixed)
 }
 
@@ -47,6 +47,8 @@ These functions are used internally by functions \code{MCEstimator} and
   \item{dropZeroDensity}{logical of length 1; shall observations with
      density zero be dropped? Optimizers like \code{optim} require finite
      values, so get problems when negative loglikelihood is evaluated. }
+  \item{nmsffx}{character: a potential suffix to be appended to the estimator name.}
+  \item{toClass}{character: if not \code{""} the name of a more specific return class.}
 }
 
 \details{

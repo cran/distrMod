@@ -69,7 +69,10 @@
       properties of the family. }
     \item{\code{L2deriv}}{
       object of class \code{"EuclRandVariable"}:
-      L2 derivative of the family. }
+      L2 derivative of the family. Its map slot must contain a list of functions.
+      Each function in this list must have just one argument \code{x},
+      which is vectorized, (i.e., callable for a vector-valued \code{x}),
+      and has a one-dimensional, numeric return value.}
     \item{\code{L2deriv.fct}}{
       object of class \code{"function"}: mapping from 
       the parameter space (argument \code{param} of class 
@@ -77,18 +80,32 @@
       value of the L2derivative; \code{L2deriv.fct} is then used from observation
       \code{x} to value of the L2derivative; \code{L2deriv.fct} is used by 
       \code{modifyModel} to  move the L2deriv according to a change in the 
-      parameter }
-    \item{\code{L2derivSymm}}{[
-      object of class \code{"FunSymmList"}:
-      symmetry of the maps included in \code{L2deriv}. }
-    \item{\code{L2derivDistr}}{
-      object of class \code{"OptionalDistrListOrCall"} (i.e., \code{NULL} or
-      an object of class \code{"DistrList"} or the respective call to generate
-      the latter object): if non-null and non-call, a
-      list which includes the distribution of \code{L2deriv}. }
-    \item{\code{L2derivDistrSymm}}{
-      object of class \code{"DistrSymmList"}:
-      symmetry of the distributions included in \code{L2derivDistr}. }
+      parameter.
+    More specifically, let us call the parts \code{main} and \code{nuisance}
+    of the parameter the \emph{unknown} parameter. If this unknown parameter is
+    one-dimensional, the return value of \code{L2deriv.fct} must be a function
+    in argument \code{x}, which is vectorized, (i.e.,
+    callable for a vector-valued \code{x}), and has a one-dimensional, numeric
+    return value. In case the dimension of the unknown parameter is larger
+    than one, the return value must be a list of functions, each of which
+    satisfies the conditions formulated for the case of a one-dimensional
+    parameter of interest. The order of the components of this list is
+    the same as the order of the parameter coordinates in \code{main}, followed
+    by the ones in \code{nuisance}.}
+  \item{L2derivSymm}{ object of class \code{"FunSymmList"}:
+    symmetry of the maps contained in \code{L2deriv}; a list
+    of symmetry properties of the same length as the return value of
+    \code{ L2deriv.fct }.}
+  \item{L2derivDistr}{object of class \code{"OptionalDistrListOrCall"}
+     (i.e., \code{NULL} or an object of class \code{"DistrList"} or
+     the respective call to generate the latter object): if non-null
+     and non-call, a list which includes the distribution of \code{L2deriv};
+     the length of this list of univariate distributions must be of the same
+     length as the return value of \code{ L2deriv.fct }.}
+  \item{L2derivDistrSymm}{ object of class \code{"DistrSymmList"}:
+    symmetry of the distributions contained in \code{L2derivDistr};
+    the length of this list of symmetry properties must be
+    of the same length as the  return value of \code{ L2deriv.fct }. }
     \item{\code{FisherInfo.fct}}{
       object of class \code{"function"}: 
       mapping from the parameter space (argument  \code{param} of class 
@@ -214,19 +231,36 @@ Class \code{"ProbFamily"}, by class \code{"ParamFamily"}.
          \item{\code{"\%D"}}{time/date-string when the plot was generated}
       }
 
-In addition, argument \code{\dots} may contain arguments \code{panel.first},
-\code{panel.last}, i.e., hook expressions to be evaluated at the very beginning
-and at the very end of each panel (within the then valid coordinates).
-To be able to use these hooks for each panel individually, they may also be
-lists of expressions (of the same length as the number of panels and
-run through in the same order as the panels).
-    }
+      In addition, argument \code{\dots} may contain arguments \code{panel.first},
+      \code{panel.last}, i.e., hook expressions to be evaluated at the very beginning
+      and at the very end of each panel (within the then valid coordinates).
+      To be able to use these hooks for each panel individually, they may also be
+     lists of expressions (of the same length as the number of panels and
+     run through in the same order as the panels).
 
+     The return value of the plot methods is an S3 object of class
+     \code{c("plotInfo","DiagnInfo")}, i.e., a list
+     containing the information needed to produce the
+     respective plot, which at a later stage could be used by different
+     graphic engines (like, e.g. \code{ggplot}) to produce the plot
+     in a different framework. A more detailed description will follow in
+     a subsequent version.
+}
 
     \item{modifyModel}{\code{signature(model = "L2ParamFamily", param = "ParamFamParameter")}:
       moves the L2-parametric Family \code{model} to parameter \code{param} }
   }
 }
+
+\details{
+In the \code{E}-methods, diagnostics on the involved integrations are available
+if argument   \code{diagnostic} is \code{TRUE}. Then there is attribute
+\code{diagnostic} attached to the return value, which may be inspected
+  and accessed through \code{\link[distrEx:distrExIntegrate]{showDiagnostic}} and
+  \code{\link[distrEx:distrExIntegrate]{getDiagnostic}}.
+
+}
+
 \references{
   Rieder, H. (1994) \emph{Robust Asymptotic Statistics}. New York: Springer.
 
