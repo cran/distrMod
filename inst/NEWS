@@ -8,6 +8,18 @@
  information)
 
 ##############
+v 2.8.1
+##############
+user-visible CHANGES:
++ revised code to delete fuzz when checking the centering/consistency of L2deriv varying from 
+  -- relative accuracy is now determined by the size of FI 
+under the hood:
++ introduce S3 class "relMatrix" (and S3 method print.relMatrix) to capture the fact that when 
+  computing relative differences in consistency matrices, some entries in the denominator may 
+  be 0; in order to avoid output of Inf / NaN we catch the output and replace such entries 
+  by "."
+
+##############
 v 2.8
 ##############
 
@@ -44,9 +56,6 @@ user-visible CHANGES:
   the help files to generator L2ParamFamily and to L2ParamFamily-class.
 + E() methods with signature(object = "L2ParamFamily" , ...) gain argument diagnostic
   (like E()-methods in distrEx v 2.8.0)
-+ triggered by a mail by K. Hornik who spotted output in checking the centering of L2deriv varying from 
-  architecture to architecture, (which is below machine accuracy hence to be ignored) we now delete 
-  non-significant digits in centering 
   
 bug fixes
 + discovered some issues with local variables in L2Families (global values were used instead...)  

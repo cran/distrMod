@@ -1,5 +1,6 @@
 \name{checkL2deriv}
 \alias{checkL2deriv}
+\alias{print.relMatrix}
 
 \title{Generic function for checking L2-derivatives}
 \description{
@@ -8,10 +9,13 @@
 }
 \usage{
 checkL2deriv(L2Fam, ...)
+\method{print}{relMatrix}(x,...)
 }
 \arguments{
   \item{L2Fam}{ L2-differentiable family of probability measures }
-  \item{\dots}{ additional parameters }
+  \item{x}{ argument to be printed }
+  \item{\dots}{ additional parameters (ignored/for compatibility with S3 generic 
+                in case \code{print.relMatrix}) }
 }
 \details{ 
   The precisions of the centering and the Fisher information
@@ -27,7 +31,11 @@ checkL2deriv(L2Fam, ...)
 
 \note{The return value gives the non-rounded values (which will be machine dependent),
       whereas on argument \code{out==TRUE} (the default) we only issue the values up to
-     5 digits which should be independent of the machine.}
+      5 digits which should be independent of the machine. For the output of relative
+	  differences, we adjust accuracy to the size of the maximal (absolute) value of 
+	  the Fisher information. In case of the consistency condition, at positions where
+	  the denominator is 0, we print a "."; this is done through helper S3 method
+	  \code{print.relMatrix}.}
 
 \references{
   Rieder, H. (1994) \emph{Robust Asymptotic Statistics}. New York: Springer.

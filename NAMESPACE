@@ -97,3 +97,4 @@ export("meRes", "get.criterion.fct")
 export("addAlphTrsp2col")
 export(".deleteDim",".isUnitMatrix",
        ".CvMMDCovariance", ".oldCvMMDCovariance", ".CvMMDCovarianceWithMux")
+S3method(print, relMatrix)

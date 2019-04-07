@@ -187,22 +187,27 @@ setMethod("checkL2deriv", "L2ParamFamily",
 
         cent <- E(object = L2Fam, fun = L2deriv)
 
+        FI <- as(L2Fam@FisherInfo, "matrix")
+        Prec <- ceiling(12-round(max(log(abs(FI)+1e-14,10)))/2)
+
         if(out){
-     	     PrecCent <- 12-round(max(log(abs(cent)+1e-14,10)))
-           cent.out <- round(cent*10^PrecCent)/10^PrecCent
+           cent.out <- round(cent*10^Prec)/10^Prec
            cat("precision of centering:\t", cent.out, "\n")
         }
         consist <- E(object = L2Fam, fun = L2deriv %*% t(L2deriv))
-        FI <- as(L2Fam@FisherInfo, "matrix")
         consist <- consist - FI
         if(out){
             oldOps <- options()
             on.exit(do.call(options,oldOps))
+            consist.out <- round(consist*10^Prec)/10^Prec
             options(digits=5,scipen=-2)
             cat("precision of Fisher information:\n")
-            print(consist)
+            print(consist.out)
+
             cat("precision of Fisher information - relativ error [%]:\n")
-            print(100*consist/FI)
+            relconsist.out <- round(consist/FI*10^(Prec+2))/10^Prec
+            class(relconsist.out) <- c("relMatrix",class(consist.out))
+            print(relconsist.out)
 
             cat("condition of Fisher information:\n")
             print(kappa(FI))
@@ -216,3 +221,20 @@ setMethod("checkL2deriv", "L2ParamFamily",
         return(invisible(ret.value))
     })
 
+### helper functions/S3 methods for output of rel differences when denominator
+##  can be 0
+
+.toForMat <- function(x){ ## replace NaN positions by "."
+                diX <- dim(x)
+                x0 <- format(x,nsmall=3,digits=3)
+                x0[is.na(x)] <- "."
+                x0[!is.finite(x)] <- "."
+                dim(x0) <- diX
+                x0
+                }
+
+print.relMatrix <- function(x,...){
+                      x1 <- .toForMat(x)
+                      print(x1, quote=FALSE)
+                      return(invisible(NULL))
+                      }
