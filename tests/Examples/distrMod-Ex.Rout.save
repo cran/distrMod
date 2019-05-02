@@ -92,7 +92,7 @@ Loading required package: RandVar
 Loading required package: MASS
 Loading required package: stats4
 :distrMod>  Object Oriented Implementation of Probability Models
-:distrMod>  (version 2.8.1)
+:distrMod>  (version 2.8.2)
 :distrMod> 
 :distrMod>  Some functions from pkg's 'base' and 'stats' are
 :distrMod>  intentionally masked ---see distrModMASK().
@@ -167,6 +167,7 @@ An object of class "PosSemDefSymmMatrix"
            shape1     shape2
 shape1  1.0000000 -0.6449341
 shape2 -0.6449341  1.0000000
+> ## IGNORE_RDIFF_BEGIN
 > checkL2deriv(B1)
 precision of centering:	 3.96327e-05 3.963591e-05 
 precision of Fisher information:
@@ -179,6 +180,7 @@ precision of Fisher information - relativ error [%]:
 [2,] -2.56e-04 -1.85e-03
 condition of Fisher information:
 [1] 5.2777
+> ## IGNORE_RDIFF_END
 > 
 > 
 > 
@@ -419,7 +421,7 @@ function (x)
         dimnames = list(nms, nms0))
     list(fval = fval0, mat = mat0)
 }
-<bytecode: 0x000000000d34f360>
+<bytecode: 0x000000000c79e3a8>
 Trafo / derivative matrix at which estimate was produced:
        scale shape
 shape  0.000     1
@@ -620,8 +622,9 @@ function (x)
         1)/c(scale = 1)
     return(y)
 }
-<environment: 0x000000000e638530>
+<environment: 0x0000000014db0328>
 
+> ## IGNORE_RDIFF_BEGIN
 > checkL2deriv(E1)
 precision of centering:	 -2.042661e-06 
 precision of Fisher information:
@@ -632,6 +635,7 @@ precision of Fisher information - relativ error [%]:
 [1,] -3.6e-03
 condition of Fisher information:
 [1] 1
+> ## IGNORE_RDIFF_END
 > 
 > 
 > 
@@ -749,6 +753,7 @@ An object of class "PosDefSymmMatrix"
       scale    shape
 scale     1 1.000000
 shape     1 1.644934
+> ## IGNORE_RDIFF_BEGIN
 > checkL2deriv(G1)
 precision of centering:	 -2.042661e-06 1.791171e-06 
 precision of Fisher information:
@@ -761,6 +766,7 @@ precision of Fisher information - relativ error [%]:
 [2,] -9.5e-04 -2.4e-03
 condition of Fisher information:
 [1] 10.603
+> ## IGNORE_RDIFF_END
 > 
 > 
 > 
@@ -777,6 +783,7 @@ condition of Fisher information:
 > 
 > ### ** Examples
 > 
+> ## IGNORE_RDIFF_BEGIN
 > InfoNorm()
 An object of class "InfoNorm"
 Slot "QuadForm":
@@ -789,8 +796,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A = A)
-<bytecode: 0x000000000d5f1b98>
-<environment: 0x000000000d5f5498>
+<bytecode: 0x000000000da8c148>
+<environment: 0x000000000da8a458>
 
 > 
 > ## The function is currently defined as
@@ -799,6 +806,7 @@ function ()
 {
     new("InfoNorm")
 }
+> ## IGNORE_RDIFF_END
 > 
 > 
 > 
@@ -1072,7 +1080,7 @@ function (x)
         1)/c(meanlog = 1)
     return(y)
 }
-<environment: 0x00000000065c9f70>
+<environment: 0x0000000011e53cf0>
 
 > checkL2deriv(L1)
 precision of centering:	 -0.003003394 
@@ -1307,7 +1315,9 @@ Kolmogorov distance
 > ## Total variation minimum distance estimator
 > ## Note: you can also use function MDEstimator!
 > ## discretize Gamma distribution
-> MCEstimator(x = x, ParamFamily = G, criterion = TotalVarDist, 
+> 
+> ## IGNORE_RDIFF_BEGIN
+> MCEstimator(x = x, ParamFamily = G, criterion = TotalVarDist,
 +             crit.name = "Total variation distance")
 Evaluations of Minimum Total variation distance estimate:
 ---------------------------------------------------------
@@ -1322,6 +1332,7 @@ estimate:
 Criterion:
 Total variation distance 
                0.4866141 
+> ## IGNORE_RDIFF_END
 > 
 > ## or smooth empirical distribution (takes some time!)
 > #MCEstimator(x = x, ParamFamily = G, criterion = TotalVarDist, 
@@ -2103,6 +2114,7 @@ condition of Fisher information:
 > 
 > ### ** Examples
 > 
+> ## IGNORE_RDIFF_BEGIN
 > EuclNorm <- NormType("EuclideanNorm",EuclideanNorm)
 > fct(EuclNorm)
 function(x){ 
@@ -2111,10 +2123,11 @@ function(x){
     else 
         return(sqrt(colSums(x^2)))
 }
-<bytecode: 0x000000000d7b0298>
+<bytecode: 0x00000000123dccb0>
 <environment: namespace:distrMod>
 > name(EuclNorm)
 [1] "EuclideanNorm"
+> ## IGNORE_RDIFF_END
 > 
 > 
 > 
@@ -2131,6 +2144,7 @@ function(x){
 > 
 > ### ** Examples
 > 
+> ## IGNORE_RDIFF_BEGIN
 > NormType()
 An object of class "NormType"
 Slot "name":
@@ -2143,9 +2157,10 @@ function(x){
     else 
         return(sqrt(colSums(x^2)))
 }
-<bytecode: 0x000000000d7b0298>
+<bytecode: 0x00000000123dccb0>
 <environment: namespace:distrMod>
 
+> ## IGNORE_RDIFF_END
 > 
 > 
 > 
@@ -2586,6 +2601,7 @@ condition of Fisher information:
 > 
 > ### ** Examples
 > 
+> ## IGNORE_RDIFF_BEGIN
 > QFNorm()
 An object of class "QFNorm"
 Slot "QuadForm":
@@ -2598,8 +2614,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A= A0)
-<bytecode: 0x0000000014108388>
-<environment: 0x0000000014109fd0>
+<bytecode: 0x000000001138cef8>
+<environment: 0x000000000fbd4da0>
 
 > 
 > ## The function is currently defined as
@@ -2608,6 +2624,7 @@ function ()
 {
     new("QFNorm")
 }
+> ## IGNORE_RDIFF_END
 > 
 > 
 > 
@@ -2624,6 +2641,7 @@ function ()
 > 
 > ### ** Examples
 > 
+> ## IGNORE_RDIFF_BEGIN
 > SelfNorm()
 An object of class "SelfNorm"
 Slot "QuadForm":
@@ -2636,8 +2654,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A = A)
-<bytecode: 0x00000000138dd9d0>
-<environment: 0x00000000138e33d8>
+<bytecode: 0x0000000015369200>
+<environment: 0x0000000013be6280>
 
 > 
 > ## The function is currently defined as
@@ -2646,6 +2664,7 @@ function ()
 {
     new("SelfNorm")
 }
+> ## IGNORE_RDIFF_END
 > 
 > 
 > 
@@ -2662,8 +2681,11 @@ function ()
 > 
 > ### ** Examples
 > 
+> ## IGNORE_RDIFF_BEGIN
 >   addAlphTrsp2col(rgb(1,0.3,0.03), 25)
 [1] "#FF4D0819"
+>   ## gives "#FF4C0819" on 32bit and "#FF4D0819" on 64bit
+> ## IGNORE_RDIFF_END
 >   addAlphTrsp2col("darkblue", 25)
 [1] "#00008B19"
 >   addAlphTrsp2col("#AAAAAAAA",25)
@@ -3655,7 +3677,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x0000000014f4f340>
+<bytecode: 0x00000000148f3898>
 > print(param(NS), show.details = "minimal")
 An object of class "ParamWithScaleFamParameter"
 name:	location and scale
@@ -3704,7 +3726,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x0000000014f4f340>
+<bytecode: 0x00000000148f3898>
 Trafo / derivative matrix:
             mean         sd
 mu/sig 0.3668695 -0.3024814
@@ -3747,7 +3769,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x0000000014f4f340>
+<bytecode: 0x00000000148f3898>
 Trafo / derivative matrix:
          mean      sd
 mu/sig 0.3669 -0.3025
@@ -3827,132 +3849,13 @@ negative log-likelihood
 > returnlevelplot(r(Norm(15,sqrt(30)))(40), Chisq(df=15))
 > ### more could be seen after installing RobExtremes and ismev
 > #
-> if(require(RobExtremes) && require(ismev)){
-+ 
-+  data(portpirie)
-+  gevfit <- gev.fit(portpirie[,2]) ## taken from example from ismev::gev.fit
-+  GEVF <- GEVFamily(scale=gevfit$mle[2],shape=gevfit$mle[3],loc=gevfit$mle[1])
-+  erg <- returnlevelplot(portpirie[,2], GEVF)
-+  print(names(erg))
-+  print(names(erg$plotArgs))
-+  print(names(erg$IdLineArgs))
-+  returnlevelplot(portpirie[,2], GEVF, datax=TRUE)
-+ 
-+  data(rain)
-+  gpdfit <- gpd.fit(rain,10) ## taken from example from ismev::gpd.fit
-+  GPDF <- GParetoFamily(scale=gpdfit$mle[1],shape=gpdfit$mle[2],loc=10)
-+  returnlevelplot(rain, GPDF, MaxOrPOT="POT", xlim=c(1e-1,1e3))
-+ }
-Loading required package: RobExtremes
-Loading required package: ROptEst
-Loading required package: RobAStBase
-Loading required package: rrcov
-Loading required package: robustbase
-Scalable Robust Estimators with High Breakdown Point (version 1.4-7)
-
-:RobAStBase>  Robust Asymptotic Statistics (version 1.2.0)
-:RobAStBase> 
-:RobAStBase>  Some functions from pkg's 'stats' and 'graphics'
-:RobAStBase>  are intentionally masked ---see RobAStBaseMASK().
-:RobAStBase> 
-:RobAStBase>  Note that global options are controlled by
-:RobAStBase>  RobAStBaseoptions() ---c.f. ?"RobAStBaseoptions".
-:RobAStBase> 
-:RobAStBase>  For more information see ?"RobAStBase",
-:RobAStBase>  NEWS("RobAStBase"), as well as
-:RobAStBase>    http://robast.r-forge.r-project.org/
-
-
-Attaching package: 'RobAStBase'
-
-The following object is masked from 'package:graphics':
-
-    clip
-
-Loading required package: evd
-:RobExtremes>  Optimally Robust Estimation for Extreme Value
-:RobExtremes>  Distributions (version 1.2.0)
-:RobExtremes> 
-:RobExtremes> 
-:RobExtremes>  For more information see ?"RobExtremes",
-:RobExtremes>  NEWS("RobExtremes"), as well as
-:RobExtremes>    http://robast.r-forge.r-project.org/
-
-
-Attaching package: 'RobExtremes'
-
-The following objects are masked from 'package:robustbase':
-
-    Qn, Sn
-
-Loading required package: ismev
-Loading required package: mgcv
-Loading required package: nlme
-
-Attaching package: 'nlme'
-
-The following object is masked from 'package:rrcov':
-
-    getData
-
-The following object is masked from 'package:RandVar':
-
-    Dim
-
-This is mgcv 1.8-28. For overview type 'help("mgcv-package")'.
-
-Attaching package: 'ismev'
-
-The following objects are masked from 'package:RobExtremes':
-
-    gev.diag, gev.prof, gev.profxi, gpd.diag, gpd.prof, gpd.profxi
-
-$conv
-[1] 0
-
-$nllh
-[1] -4.339058
-
-$mle
-[1]  3.87474692  0.19804120 -0.05008773
-
-$se
-[1] 0.02793211 0.02024610 0.09825633
-
- [1] "call"       "dots"       "args"       "plotArgs"   "pointArgs" 
- [6] "usr"        "IdLineArgs" "ret.x"      "ret.y"      "qqb.crit"  
-[11] "qqb.err"   
- [1] "x"    "y"    "log"  "type" "xlab" "ylab" "main" "pch"  "cex"  "col" 
-[1] ""    ""    "col" "lty" "lwd"
-$threshold
-[1] 10
-
-$nexc
-[1] 2003
-
-$conv
-[1] 0
-
-$nllh
-[1] 6123.465
-
-$mle
-[1] 7.43768624 0.05045225
-
-$rate
-[1] 0.1142547
-
-$se
-[1] 0.23606472 0.02256649
-
+> 
+> ## IGNORE_RDIFF_BEGIN
+> ## IGNORE_RDIFF_END
+> 
 > 
 > 
 > cleanEx()
-
-detaching 'package:ismev', 'package:mgcv', 'package:nlme',
-  'package:RobExtremes', 'package:evd', 'package:ROptEst',
-  'package:RobAStBase', 'package:rrcov', 'package:robustbase'
-
 > nameEx("symmetricBias-class")
 > ### * symmetricBias-class
 > 
@@ -4144,7 +4047,7 @@ Evaluations of Maximum likelihood estimate:
  (0.2113366) (1.9183645)
 > ## confidence interval
 >  confint(res)
-A[n] asymptotic (LAN-based) confidence interval:
+A[n] asymptotic (CLT-based) confidence interval:
            2.5 %    97.5 %
 mu/sig 0.4102811  1.238705
 sig^2  3.6698685 11.189719
@@ -4189,7 +4092,7 @@ sig^2  3.6698685 11.189719
 > res <- trafoEst(mtrafo, res0)
 > ## confidence interval
 >  confint(res)
-A[n] asymptotic (LAN-based) confidence interval:
+A[n] asymptotic (CLT-based) confidence interval:
            2.5 %    97.5 %
 mu/sig 0.4102811  1.238705
 sig^2  3.6698685 11.189719
@@ -4232,7 +4135,7 @@ sig^2  3.6698685 11.189719
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  29.69 0.99 31.06 NA NA 
+Time elapsed:  43.45 1.58 81.53 NA NA 
 > grDevices::dev.off()
 null device 
           1 

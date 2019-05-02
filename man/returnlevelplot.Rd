@@ -255,6 +255,11 @@ set.seed(20190331)
 returnlevelplot(r(Norm(15,sqrt(30)))(40), Chisq(df=15))
 ### more could be seen after installing RobExtremes and ismev
 #
+
+## IGNORE_RDIFF_BEGIN
+\donttest{ ## at R CMD check --as-cran, it does not find package cluster
+           ## when trying to attach package rrcov
+           ## so remove this from testing
 if(require(RobExtremes) && require(ismev)){
 
  data(portpirie)
@@ -270,6 +275,9 @@ if(require(RobExtremes) && require(ismev)){
  gpdfit <- gpd.fit(rain,10) ## taken from example from ismev::gpd.fit
  GPDF <- GParetoFamily(scale=gpdfit$mle[1],shape=gpdfit$mle[2],loc=10)
  returnlevelplot(rain, GPDF, MaxOrPOT="POT", xlim=c(1e-1,1e3))
-}}
+}
+}
+## IGNORE_RDIFF_END
+}
 \keyword{hplot}
 \keyword{distribution}

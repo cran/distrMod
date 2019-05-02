@@ -40,9 +40,11 @@ the generating function \code{\link{NormType}}}
 %\note{}
 \seealso{\code{\link{BiasType-class}}}
 \examples{
+## IGNORE_RDIFF_BEGIN
 EuclNorm <- NormType("EuclideanNorm",EuclideanNorm)
 fct(EuclNorm)
 name(EuclNorm)
+## IGNORE_RDIFF_END
 }
 \concept{asymptotic risk}
 \concept{bias}

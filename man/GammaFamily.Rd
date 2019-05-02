@@ -31,7 +31,9 @@ GammaFamily(scale = 1, shape = 1, trafo, withL2derivDistr = TRUE)
 \examples{
 (G1 <- GammaFamily())
 FisherInfo(G1)
+## IGNORE_RDIFF_BEGIN
 checkL2deriv(G1)
+## IGNORE_RDIFF_END
 }
 \concept{Gamma model}
 \keyword{models}

@@ -97,8 +97,11 @@ MCEstimator(x = x, ParamFamily = G, criterion = KolmogorovDist,
 ## Total variation minimum distance estimator
 ## Note: you can also use function MDEstimator!
 ## discretize Gamma distribution
-MCEstimator(x = x, ParamFamily = G, criterion = TotalVarDist, 
+
+## IGNORE_RDIFF_BEGIN
+MCEstimator(x = x, ParamFamily = G, criterion = TotalVarDist,
             crit.name = "Total variation distance")
+## IGNORE_RDIFF_END
 
 ## or smooth empirical distribution (takes some time!)
 #MCEstimator(x = x, ParamFamily = G, criterion = TotalVarDist, 

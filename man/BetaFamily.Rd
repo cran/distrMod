@@ -28,7 +28,9 @@ BetaFamily(shape1 = 1, shape2 = 1, trafo, withL2derivDistr = TRUE)
 \examples{
 (B1 <- BetaFamily())
 FisherInfo(B1)
+## IGNORE_RDIFF_BEGIN
 checkL2deriv(B1)
+## IGNORE_RDIFF_END
 }
 \concept{Beta model}
 \keyword{models}

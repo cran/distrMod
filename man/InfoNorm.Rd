@@ -19,10 +19,12 @@
 %\note{}
 \seealso{\code{\link{InfoNorm-class}}}
 \examples{
+## IGNORE_RDIFF_BEGIN
 InfoNorm()
 
 ## The function is currently defined as
 function(){ new("InfoNorm") }
+## IGNORE_RDIFF_END
 }
 \concept{asymptotic covariance}
 \concept{risk}

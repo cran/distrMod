@@ -24,10 +24,12 @@
 %\note{}
 \seealso{\code{\link{QFNorm-class}}}
 \examples{
+## IGNORE_RDIFF_BEGIN
 QFNorm()
 
 ## The function is currently defined as
 function(){ new("QFNorm") }
+## IGNORE_RDIFF_END
 }
 \concept{asymptotic covariance}
 \concept{risk}

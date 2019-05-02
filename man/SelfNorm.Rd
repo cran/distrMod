@@ -19,10 +19,12 @@
 %\note{}
 \seealso{\code{\link{SelfNorm-class}}}
 \examples{
+## IGNORE_RDIFF_BEGIN
 SelfNorm()
 
 ## The function is currently defined as
 function(){ new("SelfNorm") }
+## IGNORE_RDIFF_END
 }
 \concept{asymptotic covariance}
 \concept{risk}

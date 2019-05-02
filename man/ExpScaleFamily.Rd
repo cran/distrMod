@@ -30,7 +30,9 @@ ExpScaleFamily(scale = 1, trafo)
 (E1 <- ExpScaleFamily())
 plot(E1)
 Map(L2deriv(E1)[[1]])
+## IGNORE_RDIFF_BEGIN
 checkL2deriv(E1)
+## IGNORE_RDIFF_END
 }
 \concept{exponential scale model}
 \concept{scale model}
