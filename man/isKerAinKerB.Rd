@@ -27,8 +27,11 @@ isKerAinKerB(A, B, tol = .Machine$double.eps)
 \examples{
 ma <- cbind(1,1,c(1,1,7))
 D <- t(ma \%*\% c(0,1,-1))
+## IGNORE_RDIFF_BEGIN
+## note that results may vary according to BLAS
 isKerAinKerB(D,ma)
 isKerAinKerB(ma,D)
+## IGNORE_RDIFF_END
 }
 \keyword{algebra}
 \keyword{array}
