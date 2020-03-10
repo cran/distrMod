@@ -120,7 +120,7 @@ setMethod("mceCalc", signature(x = "numeric", PFam = "ParamFamily"),
        filterDots <- function(dots){
           if(length(dots)){
                dotsOptIz <- NULL
-               nfmlsOptiz <- NULL
+               nfmlsOptIz <- NULL
 
                dotsNames <- names(dots)
                if(length(param(PFam)) == 1){
@@ -260,7 +260,7 @@ setMethod("mceCalc", signature(x = "numeric", PFam = "ParamFamily"),
                else  names(theta) <- names(main(ParamFamily))
                distr.new <- ParamFamily@modifyParam(theta)
                crit1 <- do.call(criterion, c(list(Data, distr.new),
-                                dotsToPass$dotsCrit))
+                                dotsTP$dotsCrit))
                return(crit1)}
 
     crit.fct <- get.criterion.fct(theta, Data = x, ParamFam = PFam,

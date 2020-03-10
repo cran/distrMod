@@ -8,6 +8,13 @@
  information)
 
 ##############
+v 2.8.4
+##############
+under the hood:
++ adapted S4-method setAs to coerce from MCEstimate to class stats4::mle after stats::mle4 
+  changed its slot structure
+
+##############
 v 2.8.3
 ##############
 under the hood:

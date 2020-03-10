@@ -1,4 +1,4 @@
-2b8da2c7edb0e73c611df7e25c6ecba9 *DESCRIPTION
+aa0b205a22dea12f53add1b0ef6a76db *DESCRIPTION
 b9a8adb396d5f967d2bc33d24c04ea1e *NAMESPACE
 aac3fcd0a02427a61bb639bef5a9c3d1 *R/0distrModOptions.R
 491e70733a05a65625a2e77e20f0fce6 *R/0distrModUtils.R
@@ -32,12 +32,12 @@ c73303e1d16c48d0ea94781a4dd63fca *R/checkEstClassForParamFamilyMethods.R
 f4bda830a80faa824b79e7c9c554f1a5 *R/confint.R
 7b54739e109778926d10857fd2736061 *R/existsPIC.R
 231a43b6d807991ea2353de89dafe881 *R/internalMleCalc.R
-60096aea7be8b31eddb5b6e560753f85 *R/mleCalc-methods.R
+594847523120e21d95d92d671c094ec7 *R/mleCalc-methods.R
 72ae2d932f195f1819f493c4281e131a *R/modifyModel.R
 df2de7b3112c0d3cc652643227c0b76e *R/norms.R
 e87b856e307a3ab37d6470fcc3955397 *R/qqplot.R
 04fc388da9a7363d1cd23b95ad46d69e *R/returnlevelplot.R
-9728fa8fcaf134e8c803db613d5c5978 *R/setAs.R
+48226feca89f4960c4bbb5de28759d40 *R/setAs.R
 717a563605c662f0181689c659b4ac98 *R/validParameter.R
 346a9f2705d201eef26490e851a6b6bb *build/vignette.rds
 e05b2a9efa784fcdb5f4891ba01c128e *demo/00Index
@@ -45,11 +45,11 @@ e05b2a9efa784fcdb5f4891ba01c128e *demo/00Index
 bf3a58725125f652e738a8c00029d809 *demo/modelExp3.R
 e5e7a4d65a543c1ed32e51eb091824af *inst/CITATION
 11054c31472178f19d29cb50931f2f33 *inst/MASKING
-fe9f6f9f83cf930fe75dba49af5547e1 *inst/NEWS
+00d9ea5b82055d72ab3ac7f5f88d3e8f *inst/NEWS
 a7e3e3e32e47277454c6c4c4319bbbe6 *inst/TOBEDONE
 92131095aabff6efeae4b8636a2acc89 *inst/doc/distrMod.R
 27a63cffac6c8c7028b819e42f1d6f08 *inst/doc/distrMod.Rnw
-b63aafd01530467ba911d4998fc39593 *inst/doc/distrMod.pdf
+c871550ba09d7606c393171c49f8769b *inst/doc/distrMod.pdf
 1e89fe402bd24aca5668a3be022fdb65 *inst/scripts/BetaFam.R
 952d5b03b93fb4f60067f1134967cecb *inst/scripts/PoisFam.R
 252332c41ea02f54b71d3f2eb2626a69 *inst/scripts/censoredPois.R
@@ -58,7 +58,7 @@ b63aafd01530467ba911d4998fc39593 *inst/doc/distrMod.pdf
 e0ecdb5ecf75dd9f311497c9ce255ada *inst/scripts/example_CvMMDE.R
 3c8ee1caa423ae4024fbc7ee58b4b9cc *inst/scripts/examples2.R
 3fd721ed078e2ac0b880a271b8198a0d *inst/scripts/modelExp3.R
-fd2087e3831285ef5feecf1d7fc92e82 *man/0distrMod-package.Rd
+34599e410ecba9bd7ec258e77fe94a31 *man/0distrMod-package.Rd
 e39f3d6f91a8a58b8463a4681c02c0bf *man/BetaFamily.Rd
 697ebfb4772b7cee6ca6b22d3c12155c *man/BiasType-class.Rd
 3ebd5c265989592569146e8288195e03 *man/BinomFamily.Rd
@@ -92,7 +92,7 @@ de803f0d96f8f3f633545f915b1a0ea9 *man/L2ScaleUnknownLocationFamily.Rd
 d6964609c00b024abe784269b3a2b07b *man/MCEstimate-class.Rd
 e14f5571d2884b8169e8d0855d14911d *man/MCEstimator.Rd
 8147d16b5616d2ee880583b8a6670a1e *man/MDEstimator.Rd
-650455b0faecb2f1b63bda29c17b9a1e *man/MLEstimator.Rd
+6bf2bee3f94edbdccb15c1609ddbb02e *man/MLEstimator.Rd
 8d95d4ff3a13632a40efc003a767a046 *man/NBinomFamily.Rd
 d65606449df1268555934261aea12f85 *man/NonSymmetric-class.Rd
 6d6c57dbc8feab295c0786f2fb5f2668 *man/NonSymmetric.Rd
@@ -151,7 +151,7 @@ c64a51fbde11d40c466e227dfad9d89a *man/fiUnOvShoot-class.Rd
 7a3c53fbd1c6b2c80f8e2a0e2051e02a *man/fiUnOvShoot.Rd
 44bcac15d8e5f6eef0d459ae99c731c3 *man/internal-methods.Rd
 7a57906094e6f6229d2586548a4ba1c4 *man/internalClassUnions-class.Rd
-858442c6bbe4467477b6263436fc7314 *man/internalmleHelpers.Rd
+5b4d5897a3b6e0c29dd3847197722ea7 *man/internalmleHelpers.Rd
 f4256c931be606fa0a64f775b9245da8 *man/internals-qqplot.Rd
 550ba30cf13a291878de17e2f6106d71 *man/internals.Rd
 d26cbed0b4f673e8290d1f2369eab796 *man/isKerAinKerB.Rd
@@ -174,7 +174,7 @@ ded044c74aae1a1a795fe96dff482b54 *man/trFiCov-class.Rd
 d2230442d0c9cae04670a93e26162c18 *man/trafo-methods.Rd
 a07049d5d32c24964b12535f041ad366 *man/trafoEst.Rd
 b2298b63e2f7e888cd250c145f2b23c6 *man/validParameter-methods.Rd
-aaf7d856aee223a00c83a2ce20e31f4d *tests/Examples/distrMod-Ex.Rout.save
+dcf9e8f7204cd81d5c40d47e15d774f6 *tests/Examples/distrMod-Ex.Rout.save
 af8a3e9fbcd485009b8a2c19b719fdbc *vignettes/Estimate.pdf
 a54e71853ce8414aac6bbe476698b6b4 *vignettes/ParamFamParameter.pdf
 82b64527729401dd8e1d51b3113ce97d *vignettes/ProbFamily.pdf

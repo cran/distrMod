@@ -55,14 +55,16 @@ setAs("MCEstimate", "mle", def = function(from){
       to@call <- substitute(mle(minuslogl = crit.f, start = startPar), 
                             list(crit.f = crit.f0,
                                  startPar = start.f0))
-      to@coef <- from@estimate
-      fe <- if(is.null(from@untransformed.estimate))
-               from@estimate else from@untransformed.estimate
+      to@coef <- fe <- from@estimate
       to@fullcoef <- c(fe,from@fixed)
       to@vcov <- if(!is.null(from@asvar)) 
                  from@asvar/from@samplesize else matrix(NA,1,1)
       to@min <- from@criterion
       to@details <- as.list(c(from@Infos))
+      if(base::version$major >= 4){
+         to@fixed <- to@fullcoef
+         if(is.null(from@fixed)) to@fixed <- to@fixed+NA
+      }
       to@method <- from@method
       to@minuslogl <- crit.f0
 to})

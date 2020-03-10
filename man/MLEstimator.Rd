@@ -68,6 +68,8 @@ MLEstimator(x, ParamFamily, startPar = NULL,
 ## 1. Binomial data
 #############################
 ## (empirical) data
+# seed for reproducibility:
+set.seed(20200306)
 x <- rbinom(100, size=25, prob=.25)
 
 ## ML-estimate
@@ -90,6 +92,8 @@ MLEstimator(x, PoisFamily())
 ## 3. Normal (Gaussian) location and scale
 #############################
 ## (empirical) data
+# seed for reproducibility:
+set.seed(20200306)
 x <- rnorm(100)
 
 ## ML-estimate
@@ -102,6 +106,8 @@ c(mean(x),sd(x))
 ## 4. Gamma model
 #############################
 ## (empirical) data
+# seed for reproducibility:
+set.seed(20200306)
 x <- rgamma(50, scale = 0.5, shape = 3)
 
 ## parametric family of probability measures
@@ -170,6 +176,8 @@ loc.true <- 1
 scl.true <- 2
 
 ## (empirical) data
+# seed for reproducibility:
+set.seed(20200306)
 x <- rcauchy(50, location = loc.true, scale = scl.true)
 
 ## Maximum likelihood estimator

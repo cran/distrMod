@@ -1,7 +1,6 @@
 \name{internal_mlehelpers_for_distrMod}
 \alias{internal_mlehelpers_for_distrMod}
 \alias{.negLoglikelihood}
-\alias{.get.criterion.fct}
 \alias{.process.meCalcRes}
 \alias{.samplesize}
 \alias{.callParamFamParameter}
@@ -55,15 +54,6 @@ These functions are used internally by functions \code{MCEstimator} and
 \code{.negLoglikelihood} uses the \code{log} -argument of the corresponding \code{d}-slot
  of the distribution if available; else produces \code{log(d(Distribution)(x))}.
  
-\code{.get.criterion.fct} produces a function \code{criterion.fct} 
-      to fill slot \code{minuslogl} when an object of class \code{MCEstimate}
-      is coerced to class \code{mle} (from package \pkg{stats4});
-      this way we may use profiling methods introduced there also for objects
-      of our classes. More specifically, we produce a function where all 
-      coordinates/components of \code{theta} appear as separate named 
-      arguments, which then calls \code{fun} with these separate arguments 
-      again stacked to one (named) vector argument;
-
 \code{.process.meCalcRes} processes the resulting return value list of methods
 \code{mceCalc} and \code{mleCalc} to give a corresponding object of
 class \code{MCEstimate}. 
