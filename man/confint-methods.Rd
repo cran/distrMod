@@ -34,22 +34,19 @@ confint(object, method, \dots)
                 for various methods}
   \item{\dots}{additional argument(s) for methods.}
 }
-\value{
-  \item{signature \code{ANY,missing}:}{
-  A matrix (or vector) with columns giving lower and upper confidence
-  limits for each parameter. These will be labelled as (1-level)/2 and
-  1 - (1-level)/2 in \% (by default 2.5\% and 97.5\%).}
-  \item{signature \code{Estimate,missing}:}{An object of class \code{Confint}}
-}
 \details{
   \code{confint} is a generic function.  Its behavior differs according to
   its arguments.
   \describe{
    \item{signature \code{ANY,missing}:}{the default method;
    uses the S3 generic of package \pkg{stats},
-    see \code{\link[stats]{confint}}.}
+    see \code{\link[stats]{confint}};
+	its return value is a matrix (or vector) with columns giving lower and upper confidence
+  limits for each parameter. These will be labelled as (1-level)/2 and
+  1 - (1-level)/2 in \% (by default 2.5\% and 97.5\%).}
     \item{signature \code{Estimate,missing}:}{ 
-  will return a corresponding confidence interval assuming
+  will return an object of class \code{Confint} which corresponds to a 
+  confidence interval assuming
   asymptotic normality, and hence needs suitably filled slot \code{asvar}
   in argument \code{object}. Besides the actual bounds, organized in 
   an array just as in the S3 generic, the return value also captures 

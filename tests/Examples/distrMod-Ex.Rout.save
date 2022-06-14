@@ -1,7 +1,7 @@
 
-R Under development (unstable) (2020-03-05 r77909) -- "Unsuffered Consequences"
-Copyright (C) 2020 The R Foundation for Statistical Computing
-Platform: i386-w64-mingw32/i386 (32-bit)
+R version 4.1.2 Patched (2022-01-17 r81511) -- "Bird Hippie"
+Copyright (C) 2022 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -92,7 +92,7 @@ Loading required package: RandVar
 Loading required package: MASS
 Loading required package: stats4
 :distrMod>  Object Oriented Implementation of Probability Models
-:distrMod>  (version 2.8.4)
+:distrMod>  (version 2.8.5)
 :distrMod> 
 :distrMod>  Some functions from pkg's 'base' and 'stats' are
 :distrMod>  intentionally masked ---see distrModMASK().
@@ -421,7 +421,7 @@ function (x)
         dimnames = list(nms, nms0))
     list(fval = fval0, mat = mat0)
 }
-<bytecode: 0x0bc6d9d0>
+<bytecode: 0x00000000207b07a0>
 Trafo / derivative matrix at which estimate was produced:
        scale shape
 shape  0.000     1
@@ -622,7 +622,7 @@ function (x)
         1)/c(scale = 1)
     return(y)
 }
-<environment: 0x0c16b990>
+<environment: 0x000000001f0b16c8>
 
 > ## IGNORE_RDIFF_BEGIN
 > checkL2deriv(E1)
@@ -796,8 +796,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A = A)
-<bytecode: 0x0d604ac8>
-<environment: 0x0d6068a8>
+<bytecode: 0x000000002658fdd0>
+<environment: 0x0000000026591ac0>
 
 > 
 > ## The function is currently defined as
@@ -1080,7 +1080,7 @@ function (x)
         1)/c(meanlog = 1)
     return(y)
 }
-<environment: 0x11315a18>
+<environment: 0x00000000237637a0>
 
 > checkL2deriv(L1)
 precision of centering:	 -0.003003394 
@@ -2132,7 +2132,7 @@ function(x){
     else 
         return(sqrt(colSums(x^2)))
 }
-<bytecode: 0x11d86f90>
+<bytecode: 0x00000000205c6e80>
 <environment: namespace:distrMod>
 > name(EuclNorm)
 [1] "EuclideanNorm"
@@ -2166,7 +2166,7 @@ function(x){
     else 
         return(sqrt(colSums(x^2)))
 }
-<bytecode: 0x11d86f90>
+<bytecode: 0x00000000205c6e80>
 <environment: namespace:distrMod>
 
 > ## IGNORE_RDIFF_END
@@ -2623,8 +2623,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A= A0)
-<bytecode: 0x11329fe8>
-<environment: 0x1132aa08>
+<bytecode: 0x00000000205b09e8>
+<environment: 0x000000002410f9f8>
 
 > 
 > ## The function is currently defined as
@@ -2663,8 +2663,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A = A)
-<bytecode: 0x14974540>
-<environment: 0x14975140>
+<bytecode: 0x00000000205049b8>
+<environment: 0x0000000021f64820>
 
 > 
 > ## The function is currently defined as
@@ -3687,7 +3687,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x14981bb0>
+<bytecode: 0x000000001c904bf8>
 > print(param(NS), show.details = "minimal")
 An object of class "ParamWithScaleFamParameter"
 name:	location and scale
@@ -3736,7 +3736,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x14981bb0>
+<bytecode: 0x000000001c904bf8>
 Trafo / derivative matrix:
             mean         sd
 mu/sig 0.3668695 -0.3024814
@@ -3779,7 +3779,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x14981bb0>
+<bytecode: 0x000000001c904bf8>
 Trafo / derivative matrix:
          mean      sd
 mu/sig 0.3669 -0.3025
@@ -4145,7 +4145,7 @@ sig^2  3.6698685 11.189719
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  84.49 2.45 148.6 NA NA 
+Time elapsed:  25.22 0.45 25.88 NA NA 
 > grDevices::dev.off()
 null device 
           1 

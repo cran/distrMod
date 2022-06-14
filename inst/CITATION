@@ -9,12 +9,15 @@ citEntry(entry = "Article",
   volume       = "35",
   number       = "10",
   pages        = "1--27",
-  url          = "http://www.jstatsoft.org/v35/i10/",
-
+    volume = "35",
+    number = "10",
+    pages = "1--27",
+    doi = "10.18637/jss.v035.i10",
   textVersion  =
   paste("Matthias Kohl, Peter Ruckdeschel (2010).",
         "R Package distrMod: S4 Classes and Methods for Probability Models.",
         "Journal of Statistical Software, 35(10), 1-27.",
-        "URL http://www.jstatsoft.org/v35/i10/.")
+        "DOI 10.18637/jss.v035.i10",
+        "URL https://www.jstatsoft.org/v35/i10/.")
 )
 

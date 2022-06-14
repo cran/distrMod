@@ -8,8 +8,18 @@
  information)
 
 ##############
+v 2.8.5
+##############
+user-visible CHANGES:
++ replaced obsolete URLs to JSS papers by respective DOIs
+
+under the hood:
++ in reply to request by K. Horning 20220613, changed help to confint-methods, no longer using \value{...}
+
+##############
 v 2.8.4
 ##############
+
 under the hood:
 + adapted S4-method setAs to coerce from MCEstimate to class stats4::mle after stats::mle4 
   changed its slot structure

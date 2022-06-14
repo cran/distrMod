@@ -45,30 +45,38 @@ trafo(object) <- value
   conditions as above).}
   \item{\dots}{additional argument(s) for methods; not used so far.}
 }
-\value{
-  The return value depends on the signature.
-  For \code{trafo.fct}, we return the corresponding function 
-  \eqn{\tau()}{tau()} (see below).
-  For \code{trafo}, we have:
-  \item{signature \code{Estimate,missing}:}{a list of length two with components
-  \code{fct} and \code{mat} (see below)}
-  \item{signature \code{Estimate,ParamFamParameter}:}{a list of length two with components
-  \code{fct} and \code{mat} (see below)}
-  \item{signature \code{ParamFamParameter,missing}:}{a matrix (see below)}
-  \item{signature \code{ParamFamily,missing}:}{a matrix (see below)}
-  \item{signature \code{ParamFamily,ParamFamParameter}:}{a list of length two
-  with components \code{fct} and \code{mat} (see below)}
-  }
+
 \details{
   \code{trafo} is a slot of class \code{ParamFamParameter}, which
   in turn is a slot of class \code{ParamFamily}. It also sort of
   arises in class \code{Estimate}, i.e., all slots can be identified
   by the information contained in an instance thereof.
 
+  As usual, \code{trafo} also is the accessor and replacement method 
+  for this slot. Its corresponding return value depends on the signature
+  for which the accessor / replacement method is used. More specifically,
+  for \code{trafo}, we have methods for the following signatures:
+  \describe{
+  \item{signature \code{Estimate,missing}:}{returns a list of length two with components
+  \code{fct} and \code{mat} (see below)}
+  \item{signature \code{Estimate,ParamFamParameter}:}{returns a list of length two with components
+  \code{fct} and \code{mat} (see below)}
+  \item{signature \code{ParamFamParameter,missing}:}{returns a matrix (see below)}
+  \item{signature \code{ParamFamily,missing}:}{returns a matrix (see below)}
+  \item{signature \code{ParamFamily,ParamFamParameter}:}{returns a list of length two
+  with components \code{fct} and \code{mat} (see below)}
+  }
+  
+  
   \code{trafo} realizes partial influence curves; i.e.; we are only
   interested in some possibly lower dimensional smooth (not necessarily
   linear or even coordinate-wise) aspect/transformation \eqn{\tau}{tau}
   of the parameter \eqn{\theta}{theta}.
+
+  For the this function \eqn{\tau()}{tau()}, we provide an accessor 
+  \code{trafo.fct} for signature \code{ParamFamily-method}
+  returning this function.  
+  
 
   To be coherent with the corresponding \emph{nuisance}
   implementation, we make the following convention:
