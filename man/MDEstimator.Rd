@@ -202,6 +202,8 @@ KolmogorovMDEstimator(x = x, ParamFamily = G)
 MDEstimator(x = x, ParamFamily = G, distance = CvMDist)
 
 \donttest{
+### these examples take too much time for R CMD check --as-cran
+
 ## von Mises minimum distance estimator with default mu = Mod
 MDEstimator(x = x, ParamFamily = G, distance = CvMDist,
             asvar.fct = .CvMMDCovarianceWithMux)

@@ -1,5 +1,6 @@
 \name{LogisticLocationScaleFamily}
 \alias{LogisticLocationScaleFamily}
+\alias{LogisticFamily}
 \alias{LOGISTINT2}
 
 
@@ -35,6 +36,7 @@ LOGISTINT2
 \seealso{\code{\link{L2ParamFamily-class}}, \code{\link[distr]{Logis-class}}}
 \examples{
 (L1 <- LogisticLocationScaleFamily())
+## synonymous: L1 <- LogisticFamily()
 plot(L1)
 FisherInfo(L1)
 ### need smaller integration range:

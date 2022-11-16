@@ -1,5 +1,6 @@
 \name{NormLocationScaleFamily}
 \alias{NormLocationScaleFamily}
+\alias{NormFamily}
 
 \title{Generating function for normal location and scale families}
 \description{
@@ -28,6 +29,7 @@ NormLocationScaleFamily(mean = 0, sd = 1, trafo)
 \seealso{\code{\link{L2ParamFamily-class}}, \code{\link[distr]{Norm-class}}}
 \examples{
 (N1 <- NormLocationScaleFamily())
+## synonymous: N1 <- NormFamily()
 plot(N1)
 FisherInfo(N1)
 checkL2deriv(N1)

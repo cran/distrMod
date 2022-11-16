@@ -1,5 +1,6 @@
 \name{CauchyLocationScaleFamily}
 \alias{CauchyLocationScaleFamily}
+\alias{CauchyFamily}
 
 \title{Generating function for Cauchy location and scale families}
 \description{
@@ -28,6 +29,7 @@ CauchyLocationScaleFamily(loc = 0, scale = 1, trafo)
 \seealso{\code{\link{L2ParamFamily-class}}, \code{\link[distr]{Cauchy-class}}}
 \examples{
 (C1 <- CauchyLocationScaleFamily())
+## synonymous: C1 <- CauchyFamily()
 plot(C1)
 FisherInfo(C1)
 ### need smaller integration range:

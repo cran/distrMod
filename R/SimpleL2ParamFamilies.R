@@ -655,6 +655,9 @@ NormLocationScaleFamily <- function(mean = 0, sd = 1, trafo){
     return(res)
 }
 
+## alias 
+NormFamily <-  NormLocationScaleFamily 
+
 ###############################################################################
 ## other location and / or scale models
 ###############################################################################
@@ -799,6 +802,8 @@ CauchyLocationScaleFamily <- function(loc = 0, scale = 1, trafo){
 }
 
 
+## alias 
+CauchyFamily <-  CauchyLocationScaleFamily 
 
 ##################################################################
 ## Logistic location scale family
@@ -833,6 +838,8 @@ LogisticLocationScaleFamily <- function(location = 0, scale = 1, trafo){
     return(res)
 }
 
+## alias 
+LogisticFamily <-  LogisticLocationScaleFamily 
 
 
 #####################################

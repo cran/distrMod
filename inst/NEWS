@@ -8,6 +8,15 @@
  information)
 
 ##############
+v 2.9.0
+##############
+user-visible CHANGES:
++ as proposed by M. Kohl:
+  new aliases NormFamily for NormLocationScaleFamily, LogisticFamily for LogisticLocationScaleFamily, 
+  CauchyFamily for CauchyLocationScaleFamily,
+
+
+##############
 v 2.8.5
 ##############
 user-visible CHANGES:
