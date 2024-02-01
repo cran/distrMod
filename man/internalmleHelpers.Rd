@@ -34,7 +34,7 @@ These functions are used internally by functions \code{MCEstimator} and
   \item{res.name}{the name of the corresponding estimator}
   \item{call}{the original call with which the estimate was produced}
   \item{asvar.fct}{a function producing an asymptotic covariance matrix or \code{NULL}.}
-  \item{validity.check}{logical: shall return parameter value be checked for
+  \item{check.validity}{logical: shall return parameter value be checked for
     validity?}
   \item{theta}{parameter vector}
   \item{idx}{indices of the main part of the component}

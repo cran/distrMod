@@ -1,6 +1,6 @@
 Package: distrMod
-Version: 2.9.0
-Date: 2022-11-14
+Version: 2.9.1
+Date: 2024-01-30
 Title: Object Oriented Implementation of Probability Models
 Description: Implements S4 classes for probability models based on packages 'distr' and
             'distrEx'.
@@ -14,17 +14,16 @@ Suggests: ismev, evd,
 Enhances: RobExtremes
 ByteCompile: yes
 License: LGPL-3
-Encoding: latin1
 URL: http://distr.r-forge.r-project.org/
-LastChangedDate: {$LastChangedDate: 2022-06-13 19:41:57 +0200 (Mo, 13
-        Jun 2022) $}
-LastChangedRevision: {$LastChangedRevision: 1367 $}
-VCS/SVNRevision: 1395
+LastChangedDate: {$LastChangedDate: 2024-01-31 17:12:45 +0100 (Mi, 31
+        Jan 2024) $}
+LastChangedRevision: {$LastChangedRevision: 1432 $}
+VCS/SVNRevision: 1429
 NeedsCompilation: no
-Packaged: 2022-11-14 19:18:44 UTC; ruckdesc
+Packaged: 2024-01-31 17:33:48 UTC; ruckdesc
 Author: Matthias Kohl [aut, cph],
   Peter Ruckdeschel [cre, cph],
   R Core Team [ctb, cph] (for source file 'format.perc')
 Maintainer: Peter Ruckdeschel <peter.ruckdeschel@uni-oldenburg.de>
 Repository: CRAN
-Date/Publication: 2022-11-16 03:50:18 UTC
+Date/Publication: 2024-02-01 09:40:05 UTC

@@ -8,6 +8,7 @@
 \alias{.oldCvMMDCovariance}
 \alias{.show.with.sd}
 \alias{.getLogDeriv}
+\alias{.csimpsum}
 \alias{.deleteDim}
 
 \title{Internal functions of package distrMod}

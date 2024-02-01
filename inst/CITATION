@@ -1,11 +1,10 @@
-citHeader("To cite distrMod in publications use:")
-
-citEntry(entry = "Article",
+bibentry(bibtype = "Article",
+  mheader = "To cite distrMod in publications use:",
   title        = "{R} Package {distrMod}: {S}4 Classes and Methods for Probability Models",
-  author       = personList(as.person("Matthias Kohl"),
+  author       = c(as.person("Matthias Kohl"),
                    as.person("Peter Ruckdeschel")),
   journal      = "Journal of Statistical Software",
-  year         = "2010",
+  year         = 2010,
   volume       = "35",
   number       = "10",
   pages        = "1--27",

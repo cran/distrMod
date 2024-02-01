@@ -1,7 +1,7 @@
 
-R Under development (unstable) (2022-09-25 r82916 ucrt) -- "Unsuffered Consequences"
-Copyright (C) 2022 The R Foundation for Statistical Computing
-Platform: x86_64-w64-mingw32/x64 (64-bit)
+R Under development (unstable) (2024-01-25 r85826 ucrt) -- "Unsuffered Consequences"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -31,7 +31,7 @@ Loading required package: startupmsg
 
 Loading required package: sfsmisc
 :distr>  Object Oriented Implementation of Distributions (version
-:distr>  2.9.0)
+:distr>  2.9.3)
 :distr> 
 :distr>  Attention: Arithmetics on distribution objects are
 :distr>  understood as operations on corresponding random variables
@@ -57,7 +57,7 @@ The following objects are masked from 'package:stats':
     df, qqplot, sd
 
 Loading required package: distrEx
-:distrEx>  Extensions of Package 'distr' (version 2.9.0)
+:distrEx>  Extensions of Package 'distr' (version 2.9.2)
 :distrEx> 
 :distrEx>  Note: Packages "e1071", "moments", "fBasics" should be
 :distrEx>  attached /before/ package "distrEx". See
@@ -81,18 +81,18 @@ The following objects are masked from 'package:stats':
     IQR, mad, median, var
 
 Loading required package: RandVar
-:RandVar>  Implementation of Random Variables (version 1.2.1)
+:RandVar>  Implementation of Random Variables (version 1.2.3)
 :RandVar> 
 :RandVar>  For more information see ?"RandVar", NEWS("RandVar"), as
 :RandVar>  well as
-:RandVar>    http://robast.r-forge.r-project.org/
+:RandVar>    https://r-forge.r-project.org/projects/robast/
 :RandVar>  This package also includes a vignette; try
 :RandVar>  vignette("RandVar").
 
 Loading required package: MASS
 Loading required package: stats4
 :distrMod>  Object Oriented Implementation of Probability Models
-:distrMod>  (version 2.9.0)
+:distrMod>  (version 2.9.1)
 :distrMod> 
 :distrMod>  Some functions from pkg's 'base' and 'stats' are
 :distrMod>  intentionally masked ---see distrModMASK().
@@ -422,7 +422,7 @@ function (x)
         dimnames = list(nms, nms0))
     list(fval = fval0, mat = mat0)
 }
-<bytecode: 0x0000017a0f4b5578>
+<bytecode: 0x000001791e030a58>
 Trafo / derivative matrix at which estimate was produced:
        scale shape
 shape  0.000     1
@@ -623,7 +623,7 @@ function (x)
         1)/c(scale = 1)
     return(y)
 }
-<environment: 0x0000017a10591d40>
+<environment: 0x0000017925f4e840>
 
 > ## IGNORE_RDIFF_BEGIN
 > checkL2deriv(E1)
@@ -797,8 +797,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A = A)
-<bytecode: 0x0000017a0fa44f10>
-<environment: 0x0000017a0fa46c48>
+<bytecode: 0x0000017923225eb0>
+<environment: 0x0000017923216f98>
 
 > 
 > ## The function is currently defined as
@@ -1081,7 +1081,7 @@ function (x)
         1)/c(meanlog = 1)
     return(y)
 }
-<environment: 0x0000017a0a709860>
+<environment: 0x000001792c72bbd8>
 
 > checkL2deriv(L1)
 precision of centering:	 -0.003003394 
@@ -2123,7 +2123,7 @@ function(x){
     else 
         return(sqrt(colSums(x^2)))
 }
-<bytecode: 0x0000017a0818c308>
+<bytecode: 0x0000017924f3be60>
 <environment: namespace:distrMod>
 > name(EuclNorm)
 [1] "EuclideanNorm"
@@ -2157,7 +2157,7 @@ function(x){
     else 
         return(sqrt(colSums(x^2)))
 }
-<bytecode: 0x0000017a0818c308>
+<bytecode: 0x0000017924f3be60>
 <environment: namespace:distrMod>
 
 > ## IGNORE_RDIFF_END
@@ -2614,8 +2614,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A= A0)
-<bytecode: 0x0000017a08292700>
-<environment: 0x0000017a0f053790>
+<bytecode: 0x000001792507a5a0>
+<environment: 0x0000017927c247b8>
 
 > 
 > ## The function is currently defined as
@@ -2654,8 +2654,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A = A)
-<bytecode: 0x0000017a07d886b0>
-<environment: 0x0000017a0f48d6c8>
+<bytecode: 0x0000017923037b68>
+<environment: 0x00000179279c0538>
 
 > 
 > ## The function is currently defined as
@@ -3485,7 +3485,7 @@ function (width = 1.96)
 > isKerAinKerB(D,ma)
 [1] FALSE
 > isKerAinKerB(ma,D)
-[1] FALSE
+[1] TRUE
 > ## IGNORE_RDIFF_END
 > 
 > 
@@ -3678,7 +3678,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x0000017a032a7ac8>
+<bytecode: 0x000001791f39b1e8>
 > print(param(NS), show.details = "minimal")
 An object of class "ParamWithScaleFamParameter"
 name:	location and scale
@@ -3727,7 +3727,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x0000017a032a7ac8>
+<bytecode: 0x000001791f39b1e8>
 Trafo / derivative matrix:
             mean         sd
 mu/sig 0.3668695 -0.3024814
@@ -3770,7 +3770,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x0000017a032a7ac8>
+<bytecode: 0x000001791f39b1e8>
 Trafo / derivative matrix:
          mean      sd
 mu/sig 0.3669 -0.3025
@@ -4136,7 +4136,7 @@ sig^2  3.6698685 11.189719
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  38.53 1 40.4 NA NA 
+Time elapsed:  36.73 1.42 39.43 NA NA 
 > grDevices::dev.off()
 null device 
           1 
