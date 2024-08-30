@@ -224,7 +224,7 @@ are also valid for this signature.}
   \code{\link[stats:qqnorm]{qqplot}} from package \pkg{stats} -- the standard QQ plot
   function,  \code{\link[distr]{qqplot}} from package \pkg{distr} for
   comparisons of distributions, and
-  \code{\link{qqbounds}}, used by \code{qqplot} to produce confidence
+  \code{\link[distr]{qqbounds}}, used by \code{qqplot} to produce confidence
    intervals.
 }
 \examples{

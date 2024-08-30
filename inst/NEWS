@@ -8,6 +8,24 @@
  information)
 
 ##############
+v 2.9.3
+##############
+
+under the hood:
+fixed two off-going \link{} targets to qqbounds (with missing package anchors) 
+in Rd files to qqplot() and returnlevelplot()
+
+##############
+v 2.9.2
+##############
+
+under the hood:
+with the help of K. Hornik identified spurious, platform dependent LF/CR issue
+and capsulated calls to infoShow() in Rd files by 
+## IGNORE_RDIFF_BEGIN
+## IGNORE_RDIFF_END
+
+##############
 v 2.9.1
 ##############
 bug fixes

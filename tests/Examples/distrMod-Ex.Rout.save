@@ -1,5 +1,5 @@
 
-R Under development (unstable) (2024-01-25 r85826 ucrt) -- "Unsuffered Consequences"
+R Under development (unstable) (2024-08-17 r87027 ucrt) -- "Unsuffered Consequences"
 Copyright (C) 2024 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64
 
@@ -24,14 +24,14 @@ Type 'q()' to quit R.
 > library('distrMod')
 Loading required package: distr
 Loading required package: startupmsg
-:startupmsg>  Utilities for Start-Up Messages (version 0.9.6)
+:startupmsg>  Utilities for Start-Up Messages (version 0.9.7)
 :startupmsg> 
 :startupmsg>  For more information see ?"startupmsg",
 :startupmsg>  NEWS("startupmsg")
 
 Loading required package: sfsmisc
 :distr>  Object Oriented Implementation of Distributions (version
-:distr>  2.9.3)
+:distr>  2.9.5)
 :distr> 
 :distr>  Attention: Arithmetics on distribution objects are
 :distr>  understood as operations on corresponding random variables
@@ -57,7 +57,7 @@ The following objects are masked from 'package:stats':
     df, qqplot, sd
 
 Loading required package: distrEx
-:distrEx>  Extensions of Package 'distr' (version 2.9.2)
+:distrEx>  Extensions of Package 'distr' (version 2.9.3)
 :distrEx> 
 :distrEx>  Note: Packages "e1071", "moments", "fBasics" should be
 :distrEx>  attached /before/ package "distrEx". See
@@ -92,7 +92,7 @@ Loading required package: RandVar
 Loading required package: MASS
 Loading required package: stats4
 :distrMod>  Object Oriented Implementation of Probability Models
-:distrMod>  (version 2.9.1)
+:distrMod>  (version 2.9.3)
 :distrMod> 
 :distrMod>  Some functions from pkg's 'base' and 'stats' are
 :distrMod>  intentionally masked ---see distrModMASK().
@@ -422,7 +422,7 @@ function (x)
         dimnames = list(nms, nms0))
     list(fval = fval0, mat = mat0)
 }
-<bytecode: 0x000001791e030a58>
+<bytecode: 0x000001e789a2e7b8>
 Trafo / derivative matrix at which estimate was produced:
        scale shape
 shape  0.000     1
@@ -623,7 +623,7 @@ function (x)
         1)/c(scale = 1)
     return(y)
 }
-<environment: 0x0000017925f4e840>
+<environment: 0x000001e780973ed8>
 
 > ## IGNORE_RDIFF_BEGIN
 > checkL2deriv(E1)
@@ -797,8 +797,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A = A)
-<bytecode: 0x0000017923225eb0>
-<environment: 0x0000017923216f98>
+<bytecode: 0x000001e70e6ade98>
+<environment: 0x000001e70e6a9c68>
 
 > 
 > ## The function is currently defined as
@@ -1081,7 +1081,7 @@ function (x)
         1)/c(meanlog = 1)
     return(y)
 }
-<environment: 0x000001792c72bbd8>
+<environment: 0x000001e70d321bd8>
 
 > checkL2deriv(L1)
 precision of centering:	 -0.003003394 
@@ -2123,7 +2123,7 @@ function(x){
     else 
         return(sqrt(colSums(x^2)))
 }
-<bytecode: 0x0000017924f3be60>
+<bytecode: 0x000001e7898a0668>
 <environment: namespace:distrMod>
 > name(EuclNorm)
 [1] "EuclideanNorm"
@@ -2157,7 +2157,7 @@ function(x){
     else 
         return(sqrt(colSums(x^2)))
 }
-<bytecode: 0x0000017924f3be60>
+<bytecode: 0x000001e7898a0668>
 <environment: namespace:distrMod>
 
 > ## IGNORE_RDIFF_END
@@ -2614,8 +2614,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A= A0)
-<bytecode: 0x000001792507a5a0>
-<environment: 0x0000017927c247b8>
+<bytecode: 0x000001e789a95858>
+<environment: 0x000001e70ac304e0>
 
 > 
 > ## The function is currently defined as
@@ -2654,8 +2654,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A = A)
-<bytecode: 0x0000017923037b68>
-<environment: 0x00000179279c0538>
+<bytecode: 0x000001e7093be128>
+<environment: 0x000001e70af3e898>
 
 > 
 > ## The function is currently defined as
@@ -3187,6 +3187,7 @@ shape 2.0485880 6.0719832
 > 
 > ### ** Examples
 > 
+> ## IGNORE_RDIFF_BEGIN
 > distrModMASK()
 ######################################################################
 #  On masking of and by other functions in package "distrMod"       
@@ -3202,6 +3203,7 @@ function[s] may still be used in exactly the same way as before
 masking:
 
 +confint()    (package "stats")
+> ## IGNORE_RDIFF_END
 > 
 > 
 > 
@@ -3678,7 +3680,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x000001791f39b1e8>
+<bytecode: 0x000001e70d318b00>
 > print(param(NS), show.details = "minimal")
 An object of class "ParamWithScaleFamParameter"
 name:	location and scale
@@ -3727,7 +3729,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x000001791f39b1e8>
+<bytecode: 0x000001e70d318b00>
 Trafo / derivative matrix:
             mean         sd
 mu/sig 0.3668695 -0.3024814
@@ -3770,7 +3772,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x000001791f39b1e8>
+<bytecode: 0x000001e70d318b00>
 Trafo / derivative matrix:
          mean      sd
 mu/sig 0.3669 -0.3025
@@ -4136,7 +4138,7 @@ sig^2  3.6698685 11.189719
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  36.73 1.42 39.43 NA NA 
+Time elapsed:  33.22 1.22 35.36 NA NA 
 > grDevices::dev.off()
 null device 
           1 
