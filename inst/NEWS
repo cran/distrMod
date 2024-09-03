@@ -8,6 +8,14 @@
  information)
 
 ##############
+v 2.9.4
+##############
+
+under the hood:
+fixes an issue as to version discrepancies in distrEx, RandVar, and distrMod as
+to comparisons with reference output
+
+##############
 v 2.9.3
 ##############
 

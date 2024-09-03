@@ -57,7 +57,7 @@ The following objects are masked from 'package:stats':
     df, qqplot, sd
 
 Loading required package: distrEx
-:distrEx>  Extensions of Package 'distr' (version 2.9.3)
+:distrEx>  Extensions of Package 'distr' (version 2.9.5)
 :distrEx> 
 :distrEx>  Note: Packages "e1071", "moments", "fBasics" should be
 :distrEx>  attached /before/ package "distrEx". See
@@ -81,7 +81,7 @@ The following objects are masked from 'package:stats':
     IQR, mad, median, var
 
 Loading required package: RandVar
-:RandVar>  Implementation of Random Variables (version 1.2.3)
+:RandVar>  Implementation of Random Variables (version 1.2.4)
 :RandVar> 
 :RandVar>  For more information see ?"RandVar", NEWS("RandVar"), as
 :RandVar>  well as
@@ -92,7 +92,7 @@ Loading required package: RandVar
 Loading required package: MASS
 Loading required package: stats4
 :distrMod>  Object Oriented Implementation of Probability Models
-:distrMod>  (version 2.9.3)
+:distrMod>  (version 2.9.4)
 :distrMod> 
 :distrMod>  Some functions from pkg's 'base' and 'stats' are
 :distrMod>  intentionally masked ---see distrModMASK().
@@ -422,7 +422,7 @@ function (x)
         dimnames = list(nms, nms0))
     list(fval = fval0, mat = mat0)
 }
-<bytecode: 0x000001e789a2e7b8>
+<bytecode: 0x000001b4c3e1d098>
 Trafo / derivative matrix at which estimate was produced:
        scale shape
 shape  0.000     1
@@ -623,7 +623,7 @@ function (x)
         1)/c(scale = 1)
     return(y)
 }
-<environment: 0x000001e780973ed8>
+<environment: 0x000001b4c5710f80>
 
 > ## IGNORE_RDIFF_BEGIN
 > checkL2deriv(E1)
@@ -797,8 +797,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A = A)
-<bytecode: 0x000001e70e6ade98>
-<environment: 0x000001e70e6a9c68>
+<bytecode: 0x000001b4bdb55228>
+<environment: 0x000001b4bdb4d308>
 
 > 
 > ## The function is currently defined as
@@ -1081,7 +1081,7 @@ function (x)
         1)/c(meanlog = 1)
     return(y)
 }
-<environment: 0x000001e70d321bd8>
+<environment: 0x000001b4c9285568>
 
 > checkL2deriv(L1)
 precision of centering:	 -0.003003394 
@@ -2123,7 +2123,7 @@ function(x){
     else 
         return(sqrt(colSums(x^2)))
 }
-<bytecode: 0x000001e7898a0668>
+<bytecode: 0x000001b4c47b9680>
 <environment: namespace:distrMod>
 > name(EuclNorm)
 [1] "EuclideanNorm"
@@ -2157,7 +2157,7 @@ function(x){
     else 
         return(sqrt(colSums(x^2)))
 }
-<bytecode: 0x000001e7898a0668>
+<bytecode: 0x000001b4c47b9680>
 <environment: namespace:distrMod>
 
 > ## IGNORE_RDIFF_END
@@ -2614,8 +2614,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A= A0)
-<bytecode: 0x000001e789a95858>
-<environment: 0x000001e70ac304e0>
+<bytecode: 0x000001b4c495ab88>
+<environment: 0x000001b4be16a8c8>
 
 > 
 > ## The function is currently defined as
@@ -2654,8 +2654,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A = A)
-<bytecode: 0x000001e7093be128>
-<environment: 0x000001e70af3e898>
+<bytecode: 0x000001b4c43c1d98>
+<environment: 0x000001b4bdd78890>
 
 > 
 > ## The function is currently defined as
@@ -3680,7 +3680,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x000001e70d318b00>
+<bytecode: 0x000001b4be71b060>
 > print(param(NS), show.details = "minimal")
 An object of class "ParamWithScaleFamParameter"
 name:	location and scale
@@ -3729,7 +3729,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x000001e70d318b00>
+<bytecode: 0x000001b4be71b060>
 Trafo / derivative matrix:
             mean         sd
 mu/sig 0.3668695 -0.3024814
@@ -3772,7 +3772,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x000001e70d318b00>
+<bytecode: 0x000001b4be71b060>
 Trafo / derivative matrix:
          mean      sd
 mu/sig 0.3669 -0.3025
@@ -4138,7 +4138,7 @@ sig^2  3.6698685 11.189719
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  33.22 1.22 35.36 NA NA 
+Time elapsed:  23.95 0.8 25.08 NA NA 
 > grDevices::dev.off()
 null device 
           1 
