@@ -5,7 +5,7 @@
 \description{
   Generates an object of class \code{"fiCov"}.
 }
-\usage{asCov()}
+\usage{fiCov()}
 %\details{}
 \value{Object of class \code{"fiCov"}}
 \references{

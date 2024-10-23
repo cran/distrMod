@@ -92,7 +92,7 @@ Loading required package: RandVar
 Loading required package: MASS
 Loading required package: stats4
 :distrMod>  Object Oriented Implementation of Probability Models
-:distrMod>  (version 2.9.4)
+:distrMod>  (version 2.9.6)
 :distrMod> 
 :distrMod>  Some functions from pkg's 'base' and 'stats' are
 :distrMod>  intentionally masked ---see distrModMASK().

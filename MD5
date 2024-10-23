@@ -1,4 +1,4 @@
-c647e05f09a0deb8e9e438310d11756e *DESCRIPTION
+5541fa4eab251655a89d28a422ebf218 *DESCRIPTION
 bbbb6737fad00f937b6480712099b2fd *NAMESPACE
 aac3fcd0a02427a61bb639bef5a9c3d1 *R/0distrModOptions.R
 3a454b9df7b1efe1d1b9bfd7766b8b5b *R/0distrModUtils.R
@@ -46,11 +46,11 @@ e05b2a9efa784fcdb5f4891ba01c128e *demo/00Index
 bf3a58725125f652e738a8c00029d809 *demo/modelExp3.R
 95aae2a04a359432789be02ee9bdb1da *inst/CITATION
 11054c31472178f19d29cb50931f2f33 *inst/MASKING
-7314973b5c3aa645067ea37ce4e3250c *inst/NEWS
+5bec4822a71d9d0d912145a0d90d2a2e *inst/NEWS
 a7e3e3e32e47277454c6c4c4319bbbe6 *inst/TOBEDONE
 92131095aabff6efeae4b8636a2acc89 *inst/doc/distrMod.R
 27a63cffac6c8c7028b819e42f1d6f08 *inst/doc/distrMod.Rnw
-4378cbb85e73d84c2910668813a969ea *inst/doc/distrMod.pdf
+4d526d21c1664390dfa11466fc3bacd3 *inst/doc/distrMod.pdf
 1e89fe402bd24aca5668a3be022fdb65 *inst/scripts/BetaFam.R
 952d5b03b93fb4f60067f1134967cecb *inst/scripts/PoisFam.R
 252332c41ea02f54b71d3f2eb2626a69 *inst/scripts/censoredPois.R
@@ -59,7 +59,7 @@ a7e3e3e32e47277454c6c4c4319bbbe6 *inst/TOBEDONE
 e0ecdb5ecf75dd9f311497c9ce255ada *inst/scripts/example_CvMMDE.R
 3c8ee1caa423ae4024fbc7ee58b4b9cc *inst/scripts/examples2.R
 3fd721ed078e2ac0b880a271b8198a0d *inst/scripts/modelExp3.R
-2e94d96a9d7d3e3f35a59ddacac0c86b *man/0distrMod-package.Rd
+128168e9b696c235be623468ea11ec06 *man/0distrMod-package.Rd
 e39f3d6f91a8a58b8463a4681c02c0bf *man/BetaFamily.Rd
 697ebfb4772b7cee6ca6b22d3c12155c *man/BiasType-class.Rd
 3ebd5c265989592569146e8288195e03 *man/BinomFamily.Rd
@@ -142,7 +142,7 @@ d6ead25755cabd7c0bee03fd33d0680e *man/existsPIC.Rd
 01ce5a28b31d199ff00977ffdb0676a6 *man/fiBias-class.Rd
 3851c8552a5cc3f8e2342da3877de7d2 *man/fiBias.Rd
 245c0fd1ef327c7b43e9586dddaa2cc3 *man/fiCov-class.Rd
-c3f113ae6164edc5a94f90a08597fce6 *man/fiCov.Rd
+2a883275a95336719a4f1cbd88fa7a61 *man/fiCov.Rd
 ad42931c6579c0559064c997be6e5415 *man/fiHampel-class.Rd
 590b11eb703f5f287806f035c62e3e35 *man/fiHampel.Rd
 2e2b30b65f943fe10fa7a0a4bfb1a4f1 *man/fiMSE-class.Rd
@@ -175,7 +175,7 @@ ded044c74aae1a1a795fe96dff482b54 *man/trFiCov-class.Rd
 fcf7ae1055591df886e334fe3e44c30f *man/trafo-methods.Rd
 a07049d5d32c24964b12535f041ad366 *man/trafoEst.Rd
 b2298b63e2f7e888cd250c145f2b23c6 *man/validParameter-methods.Rd
-d50e38a21894431e3bbab4f36d984994 *tests/Examples/distrMod-Ex.Rout.save
+e368c504a240b6bc2f27011327a3f567 *tests/Examples/distrMod-Ex.Rout.save
 af8a3e9fbcd485009b8a2c19b719fdbc *vignettes/Estimate.pdf
 a54e71853ce8414aac6bbe476698b6b4 *vignettes/ParamFamParameter.pdf
 82b64527729401dd8e1d51b3113ce97d *vignettes/ProbFamily.pdf

@@ -8,6 +8,13 @@
  information)
 
 ##############
+v 2.9.6
+##############
+
+under the hood:
+minor glitch in usage section of help to fiCov()
+
+##############
 v 2.9.4
 ##############
 
