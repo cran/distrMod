@@ -1,6 +1,6 @@
 
-R Under development (unstable) (2024-08-17 r87027 ucrt) -- "Unsuffered Consequences"
-Copyright (C) 2024 The R Foundation for Statistical Computing
+R Under development (unstable) (2025-01-10 r87562 ucrt) -- "Unsuffered Consequences"
+Copyright (C) 2025 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -24,31 +24,28 @@ Type 'q()' to quit R.
 > library('distrMod')
 Loading required package: distr
 Loading required package: startupmsg
-:startupmsg>  Utilities for Start-Up Messages (version 0.9.7)
+:startupmsg>  *** Utilities for Start-Up Messages ***
 :startupmsg> 
-:startupmsg>  For more information see ?"startupmsg",
-:startupmsg>  NEWS("startupmsg")
-
+:startupmsg>  Version information in start-up messages is
+:startupmsg>  currently suppressed. To see such information on
+:startupmsg>  startup as in versions of this pkg prior to this
+:startupmsg>  versionr, set option "StartupBanner" to a value
+:startupmsg>  different to {"off", "no-version", "no -
+:startupmsg>  version"}, e.g., by options("StartupBanner" =
+:startupmsg>  "complete") or by options("StartupBanner" = NULL)
+:startupmsg>  or by options("StartupBanner" = "something else").
+:startupmsg> 
+:startupmsg>  Detailed information about which packages are
+:startupmsg>  currently loaded or attached at which version
+:startupmsg>  (regardless of whether these have start-up
+:startupmsg>  messages managed by this package) can be obtained
+:startupmsg>  by "sessionInfo()".
+:startupmsg> 
+:startupmsg> 
 Loading required package: sfsmisc
-:distr>  Object Oriented Implementation of Distributions (version
-:distr>  2.9.5)
+:distr>  *** Object Oriented Implementation of Distributions ***
 :distr> 
-:distr>  Attention: Arithmetics on distribution objects are
-:distr>  understood as operations on corresponding random variables
-:distr>  (r.v.s); see distrARITH().
 :distr> 
-:distr>  Some functions from package 'stats' are intentionally masked
-:distr>  ---see distrMASK().
-:distr> 
-:distr>  Note that global options are controlled by distroptions()
-:distr>  ---c.f. ?"distroptions".
-:distr> 
-:distr>  For more information see ?"distr", NEWS("distr"), as well as
-:distr>    http://distr.r-forge.r-project.org/
-:distr>  Package "distrDoc" provides a vignette to this package as
-:distr>  well as to several extension packages; try
-:distr>  vignette("distr").
-
 
 Attaching package: 'distr'
 
@@ -57,22 +54,9 @@ The following objects are masked from 'package:stats':
     df, qqplot, sd
 
 Loading required package: distrEx
-:distrEx>  Extensions of Package 'distr' (version 2.9.5)
+:distrEx>  *** Extensions of Package 'distr' ***
 :distrEx> 
-:distrEx>  Note: Packages "e1071", "moments", "fBasics" should be
-:distrEx>  attached /before/ package "distrEx". See
-:distrEx>  distrExMASK().Note: Extreme value distribution
-:distrEx>  functionality has been moved to
 :distrEx> 
-:distrEx>        package "RobExtremes". See distrExMOVED().
-:distrEx> 
-:distrEx>  For more information see ?"distrEx", NEWS("distrEx"), as
-:distrEx>  well as
-:distrEx>    http://distr.r-forge.r-project.org/
-:distrEx>  Package "distrDoc" provides a vignette to this package
-:distrEx>  as well as to several related packages; try
-:distrEx>  vignette("distr").
-
 
 Attaching package: 'distrEx'
 
@@ -81,35 +65,15 @@ The following objects are masked from 'package:stats':
     IQR, mad, median, var
 
 Loading required package: RandVar
-:RandVar>  Implementation of Random Variables (version 1.2.4)
+:RandVar>  *** Implementation of Random Variables ***
 :RandVar> 
-:RandVar>  For more information see ?"RandVar", NEWS("RandVar"), as
-:RandVar>  well as
-:RandVar>    https://r-forge.r-project.org/projects/robast/
-:RandVar>  This package also includes a vignette; try
-:RandVar>  vignette("RandVar").
-
+:RandVar> 
 Loading required package: MASS
 Loading required package: stats4
-:distrMod>  Object Oriented Implementation of Probability Models
-:distrMod>  (version 2.9.6)
+:distrMod>  *** Object Oriented Implementation of Probability
+:distrMod>  Models ***
 :distrMod> 
-:distrMod>  Some functions from pkg's 'base' and 'stats' are
-:distrMod>  intentionally masked ---see distrModMASK().
 :distrMod> 
-:distrMod>  Note that global options are controlled by
-:distrMod>  distrModoptions() ---c.f. ?"distrModoptions".
-:distrMod> 
-:distrMod>  For more information see ?"distrMod",
-:distrMod>  NEWS("distrMod"), as well as
-:distrMod>    http://distr.r-forge.r-project.org/
-:distrMod>  There is a vignette to this package; try
-:distrMod>  vignette("distrMod").
-:distrMod>  Package "distrDoc" provides a vignette to the other
-:distrMod>  distrXXX packages,
-:distrMod>  as well as to several related packages; try
-:distrMod>  vignette("distr").
-
 
 Attaching package: 'distrMod'
 
@@ -422,7 +386,7 @@ function (x)
         dimnames = list(nms, nms0))
     list(fval = fval0, mat = mat0)
 }
-<bytecode: 0x000001b4c3e1d098>
+<bytecode: 0x000002610432a350>
 Trafo / derivative matrix at which estimate was produced:
        scale shape
 shape  0.000     1
@@ -623,7 +587,7 @@ function (x)
         1)/c(scale = 1)
     return(y)
 }
-<environment: 0x000001b4c5710f80>
+<environment: 0x000002610557ec40>
 
 > ## IGNORE_RDIFF_BEGIN
 > checkL2deriv(E1)
@@ -797,8 +761,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A = A)
-<bytecode: 0x000001b4bdb55228>
-<environment: 0x000001b4bdb4d308>
+<bytecode: 0x00000261022bb038>
+<environment: 0x000002610229ee08>
 
 > 
 > ## The function is currently defined as
@@ -1081,7 +1045,7 @@ function (x)
         1)/c(meanlog = 1)
     return(y)
 }
-<environment: 0x000001b4c9285568>
+<environment: 0x0000026109b1e660>
 
 > checkL2deriv(L1)
 precision of centering:	 -0.003003394 
@@ -2123,7 +2087,7 @@ function(x){
     else 
         return(sqrt(colSums(x^2)))
 }
-<bytecode: 0x000001b4c47b9680>
+<bytecode: 0x0000026105b624d0>
 <environment: namespace:distrMod>
 > name(EuclNorm)
 [1] "EuclideanNorm"
@@ -2157,7 +2121,7 @@ function(x){
     else 
         return(sqrt(colSums(x^2)))
 }
-<bytecode: 0x000001b4c47b9680>
+<bytecode: 0x0000026105b624d0>
 <environment: namespace:distrMod>
 
 > ## IGNORE_RDIFF_END
@@ -2614,8 +2578,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A= A0)
-<bytecode: 0x000001b4c495ab88>
-<environment: 0x000001b4be16a8c8>
+<bytecode: 0x000002610599d7e0>
+<environment: 0x0000026104f9b770>
 
 > 
 > ## The function is currently defined as
@@ -2654,8 +2618,8 @@ Slot "name":
 
 Slot "fct":
 function(x) QuadFormNorm(x, A = A)
-<bytecode: 0x000001b4c43c1d98>
-<environment: 0x000001b4bdd78890>
+<bytecode: 0x00000261062411f8>
+<environment: 0x0000026105371900>
 
 > 
 > ## The function is currently defined as
@@ -3680,7 +3644,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x000001b4be71b060>
+<bytecode: 0x00000261023b8a18>
 > print(param(NS), show.details = "minimal")
 An object of class "ParamWithScaleFamParameter"
 name:	location and scale
@@ -3729,7 +3693,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x000001b4be71b060>
+<bytecode: 0x00000261023b8a18>
 Trafo / derivative matrix:
             mean         sd
 mu/sig 0.3668695 -0.3024814
@@ -3772,7 +3736,7 @@ function (param)
     dimnames(mat) <- list(nfval, c("mean", "sd"))
     return(list(fval = fval, mat = mat))
 }
-<bytecode: 0x000001b4be71b060>
+<bytecode: 0x00000261023b8a18>
 Trafo / derivative matrix:
          mean      sd
 mu/sig 0.3669 -0.3025
@@ -4138,7 +4102,7 @@ sig^2  3.6698685 11.189719
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  23.95 0.8 25.08 NA NA 
+Time elapsed:  22.83 0.53 23.51 NA NA 
 > grDevices::dev.off()
 null device 
           1 
